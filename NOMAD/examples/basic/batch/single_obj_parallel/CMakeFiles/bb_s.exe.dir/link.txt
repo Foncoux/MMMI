@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/bb_s.exe.dir/bb.cpp.o -o bb_s.exe  /usr/lib/gcc/x86_64-linux-gnu/11/libgomp.so /usr/lib/x86_64-linux-gnu/libpthread.a 

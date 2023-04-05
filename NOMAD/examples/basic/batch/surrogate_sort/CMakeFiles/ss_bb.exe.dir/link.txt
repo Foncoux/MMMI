@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/ss_bb.exe.dir/bb.cpp.o -o ss_bb.exe 
