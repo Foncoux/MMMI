@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/uu.exe.dir/uu.cpp.o -o uu.exe 

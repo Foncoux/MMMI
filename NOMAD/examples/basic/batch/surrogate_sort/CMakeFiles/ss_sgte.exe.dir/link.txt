@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/ss_sgte.exe.dir/sgte.cpp.o -o ss_sgte.exe 

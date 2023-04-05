@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/bb3.exe.dir/bb3.cpp.o -o bb3.exe 

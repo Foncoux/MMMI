@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/bbMO.exe.dir/bb.cpp.o -o bbMO.exe 
