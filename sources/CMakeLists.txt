@@ -3,10 +3,10 @@ set(SOURCES
     
     ODE.cpp
     functions.cpp
-    #integrator.cpp
+    integrator.cpp
     
     )
 
-add_library(sources1 ${SOURCES})
+add_library(sources ${SOURCES})
 
 

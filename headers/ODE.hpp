@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <functional>
 #include "../headers/functions.hpp"
 
 class ODE
@@ -12,17 +11,21 @@ class ODE
     private : 
         
         int m_compartiment;
-        std::function<void(std::vector<double>&)> m_function;
+        
         
         
     public :
-        
-        std::vector<std::vector<double>> m_result_integration;
+        int (*m_function)(double, const double [], double [],void*);
+        int (*m_jacobian)(double, const double [], double *, double [], void *);
+
+        //std::vector<std::vector<double>> m_result_integration;
         ODE(int fct_choice);
+        /*
         void writeData(int taille,int compartiment);
         void evaluate(std::vector<double>& x);
         void resize_result_integration(int taille, int compartiment);
         const std::vector<std::vector<double>>& get_result_integration();
+        */
         //void set_result_integration(int taille);
         //int set_compartiment(int fct_choice);
         //void integrate(double a, double b, double h, int taille, std::vector<double> &x0);

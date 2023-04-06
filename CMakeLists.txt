@@ -21,8 +21,7 @@ endif (UNIX)
 
 include_directories(headers)
 # On inclut notre bibliothèque dans le processus de CMake
-#add_subdirectory(headers)
-#add_subdirectory(sources)
+add_subdirectory(sources)
 #add_subdirectory(test)
 
 
@@ -35,21 +34,7 @@ set(MAIN
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
 add_executable(main ${MAIN})
 
-#link_directories(${CMAKE_CURRENT_SOURCE_DIR}/NOMAD/src)
-
-
-#find_library(NOMAD_ALGOS_LIB NAMES nomadAlgos PATHS ${CMAKE_CURRENT_SOURCE_DIR}/NOMAD/lib)
-#find_library(NOMAD_UTILS_LIB NAMES nomadUtils PATHS ${CMAKE_CURRENT_SOURCE_DIR}/NOMAD/lib)
-#find_library(NOMAD_EVAL_LIB NAMES nomadEval PATHS ${CMAKE_CURRENT_SOURCE_DIR}/NOMAD/lib)
-
-
-#if(OpenMP_CXX_FOUND)
-  # target_link_libraries(main PUBLIC libnomadAlgos.so nomadUtils nomadEval sources1 OpenMP::OpenMP_CXX )
-#else()
-#  target_link_libraries(main PUBLIC ${NOMAD_ALGOS_LIB} ${NOMAD_UTILS_LIB} ${NOMAD_EVAL_LIB} sources1)
-#  
-#endif()
-target_link_libraries(main GSL::gsl GSL::gslcblas)
+target_link_libraries(main sources GSL::gsl GSL::gslcblas)
 
 
 

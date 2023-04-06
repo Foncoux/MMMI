@@ -10,6 +10,7 @@ ODE::ODE(int fct_choice)
     case 1:
         m_compartiment = 2;
         m_function = oscillateur_harm; 
+        m_jacobian = jacobian_osc; 
 
         break;
     
@@ -19,17 +20,18 @@ ODE::ODE(int fct_choice)
 
 }
 
+/*
 void ODE::evaluate(std::vector<double>& x)
 {
     m_function(x);
 }
-
-
+*/
+/*
 const std::vector<std::vector<double>>& ODE::get_result_integration(){
     return m_result_integration;
 }
-
-
+*/
+/*
 void ODE::resize_result_integration(int taille, int compartiment)
 {
     m_result_integration.resize(compartiment);
@@ -38,7 +40,9 @@ void ODE::resize_result_integration(int taille, int compartiment)
         m_result_integration[i].resize(taille);
     }
 }
+*/
 
+/*
 void ODE::writeData(int taille,int compartiment)
 {
     std::ofstream file("../data/integration.txt");
@@ -62,3 +66,4 @@ void ODE::writeData(int taille,int compartiment)
     return;
 }
 
+*/
