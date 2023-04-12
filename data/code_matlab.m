@@ -28,25 +28,27 @@ figure
 plot(t,M(1,:),'*');
 hold on
 plot(t,sol_exacte_y1);
+%%
 
 %figure
 %semilogy(t,err1,'b');
 
 % %% Affichage SIRQD
-% 
-% M=dlmread('integration.txt');
-% t=0:0.01:63.99; % à changer si nécessaire
-% 
-% 
-% figure 
+
+M=dlmread('integration.txt');
+t=1:1:289; % à changer si nécessaire
+
+M=M*17282163;
+
+figure 
 % plot(t,M(1,:));
 % hold on;
 % plot(t,M(2,:));
 % plot(t,M(3,:));
 % plot(t,M(4,:));
-% plot(t,M(5,:));
-% legend('S','I','R','Q','D');
-% 
+plot(t,M(5,:));        
+legend('S','I','R','Q','D');
+
 % %% comparaison data et simu
 % 
 % A = xlsread('data_projet_prog.xlsx')';

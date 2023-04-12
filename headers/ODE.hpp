@@ -1,16 +1,15 @@
 #ifndef ODE_HPP
 #define ODE_HPP
 
-#include <vector>
+#include <array>
 #include <iostream>
 #include <fstream>
 #include "../headers/functions.hpp"
+#include "../config/config.hpp"
 
 class ODE
 {
     private : 
-        
-        int m_compartiment;
         
         
         
@@ -18,8 +17,13 @@ class ODE
         int (*m_function)(double, const double [], double [],void*);
         int (*m_jacobian)(double, const double [], double *, double [], void *);
 
-        //std::vector<std::vector<double>> m_result_integration;
-        ODE(int fct_choice);
+        //std::array<std::vector<double>> m_result_integration;
+
+        
+
+        std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> m_result_integration;
+
+        ODE(int fct_choice,double y[]);
         /*
         void writeData(int taille,int compartiment);
         void evaluate(std::vector<double>& x);
