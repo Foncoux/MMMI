@@ -1,7 +1,7 @@
 # preciser la version minimale de cmake requise
 cmake_minimum_required(VERSION 3.16.3)
 
-enable_testing()
+
 # Nom du projet
 project(POO LANGUAGES CXX)
 
@@ -17,12 +17,12 @@ if (UNIX)
     find_package (Boost)
 endif (UNIX)
 
-
+enable_testing()
 
 include_directories(headers)
 # On inclut notre bibliothèque dans le processus de CMake
 add_subdirectory(sources)
-#add_subdirectory(test)
+add_subdirectory(test)
 
 
 
@@ -43,6 +43,6 @@ target_link_libraries(main sources GSL::gsl GSL::gslcblas)
 # Et pour que l'exécutable fonctionne, il faut lui indiquer les bibliothèques dont il dépend
 #target_link_libraries(main sources1)
 
-target_compile_options(main PUBLIC -g -Wall -Wextra)
+target_compile_options(main PUBLIC -g -Wall -Wextra -pedantic)
 
 
