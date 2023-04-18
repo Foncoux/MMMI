@@ -1,3 +1,7 @@
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#include <array>
 
 #define COMPARTIMENT 5
 #define T_FINAL 289
@@ -13,3 +17,11 @@
 
 #define DEATH_NB_DAY 289
 #define HOSP_NB_DAY 77
+
+#define NB_CONFINEMENT 4
+
+extern std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT;
+
+
+#endif
+

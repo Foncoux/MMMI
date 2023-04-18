@@ -1,6 +1,6 @@
 
 
-#include "../headers/read_data.hpp"
+#include "../headers/read_and_write_data.hpp"
 
 
 
@@ -68,7 +68,7 @@ void read_dataH(std::array<double,HOSP_NB_DAY> &hosp)
             
         }
         myfile.close();
-        std::cout << i << std::endl;
+        
     }   
     else 
     {

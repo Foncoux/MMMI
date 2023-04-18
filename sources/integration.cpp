@@ -1,23 +1,28 @@
 
-#include "../headers/integrator.hpp"
+#include "../headers/integration.hpp"
 #include "../headers/functions.hpp"
 #include "../config/config.hpp"
-
+#include <algorithm>
 
 
 void integrate(ODE &f,parametres p, double y[])
 {
-    
+    p.i=0;
+
     gsl_odeiv2_system sys = {f.m_function, f.m_jacobian, 5, &p};
     gsl_odeiv2_driver * d = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkf45, 1e-6, 1e-6, 0.0);
-
+    
     
 
     double t = T_DEBUT;
 
+   
 
     for (int i = 1; i < T_FINAL; i++)
     {
+        if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), i) != TAB_DATE_CONFINEMENT.end()){
+            p.i++;
+        }
         double ti = i * (double)T_FINAL / (double)T_FINAL;
         int status = gsl_odeiv2_driver_apply (d, &t, ti, y);
         //printf ("%.5e %.5e %.5e %.5e %.5e %.5e\n", t, y[0], y[1], y[2], y[3], y[4]);

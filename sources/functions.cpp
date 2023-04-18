@@ -1,6 +1,7 @@
 #include "../headers/functions.hpp"
 #include "../config/config.hpp"
 
+#include <array>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>
@@ -52,8 +53,8 @@ int SIRQD(double t, const double y[], double f[],void *params)
 
         parametres *p = reinterpret_cast<parametres *>(params);
         
-        f[S_COMP] = -p->beta*y[S_COMP]*y[I_COMP];
-        f[I_COMP] = p->beta*y[S_COMP]*y[I_COMP] - (p->delta+p->gamma)*y[I_COMP];
+        f[S_COMP] = -p->beta[p->i]*y[S_COMP]*y[I_COMP];
+        f[I_COMP] = p->beta[p->i]*y[S_COMP]*y[I_COMP] - (p->delta+p->gamma)*y[I_COMP];
         f[R_COMP] = p->gamma*y[I_COMP] + p->eps*y[Q_COMP];
         f[Q_COMP] = p->delta*y[I_COMP] - (p->eps + p->r)*y[Q_COMP];
         f[D_COMP] = p->r*y[Q_COMP];
@@ -73,14 +74,14 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
     gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, 5, 5);
     gsl_matrix * m = &dfdy_mat.matrix;
     //première ligne de la jacobienne
-    gsl_matrix_set (m, 0, 0, -p->beta*y[I_COMP]); //valeur de l'élément (0,0) de la jacobienne
-    gsl_matrix_set (m, 0, 1, -p->beta*y[S_COMP]); 
+    gsl_matrix_set (m, 0, 0, -p->beta[p->i]*y[I_COMP]); //valeur de l'élément (0,0) de la jacobienne
+    gsl_matrix_set (m, 0, 1, -p->beta[p->i]*y[S_COMP]); 
     gsl_matrix_set (m, 0, 2, 0.0); 
     gsl_matrix_set (m, 0, 3, 0.0); 
     gsl_matrix_set (m, 0, 4, 0.0); 
     // ligne 2 de la jacobienne 
-    gsl_matrix_set (m, 1, 0, p->beta*y[I_COMP]); 
-    gsl_matrix_set (m, 1, 1, p->beta*y[S_COMP] - (p->delta+p->gamma)); 
+    gsl_matrix_set (m, 1, 0, p->beta[p->i]*y[I_COMP]); 
+    gsl_matrix_set (m, 1, 1, p->beta[p->i]*y[S_COMP] - (p->delta+p->gamma)); 
     gsl_matrix_set (m, 1, 2, 0.0); 
     gsl_matrix_set (m, 1, 3, 0.0); 
     gsl_matrix_set (m, 1, 4, 0.0); 

@@ -20,9 +20,11 @@ endif (UNIX)
 enable_testing()
 
 include_directories(headers)
+
 # On inclut notre bibliothèque dans le processus de CMake
 add_subdirectory(sources)
 add_subdirectory(test)
+add_subdirectory(config)
 
 
 
@@ -34,7 +36,7 @@ set(MAIN
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
 add_executable(main ${MAIN})
 
-target_link_libraries(main sources GSL::gsl GSL::gslcblas)
+target_link_libraries(main sources config_projet GSL::gsl GSL::gslcblas)
 
 
 

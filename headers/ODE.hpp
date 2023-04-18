@@ -19,11 +19,10 @@ class ODE
 
         //std::array<std::vector<double>> m_result_integration;
 
-        
-
         std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> m_result_integration;
 
-        ODE(int fct_choice,double y[]);
+        ODE(int fct_choice);
+        void set_condition_initiale(double y[]);
         /*
         void writeData(int taille,int compartiment);
         void evaluate(std::vector<double>& x);

@@ -1,14 +1,90 @@
 #include "../headers/blackbox.hpp"
 
-parametres set_parametres(gsl_rng* r,parametres p_opt){
-    
-    parametres p;
+
+#include <iostream>
+#include <array>
+#include "../headers/integration.hpp"
+#include "../headers/blackbox.hpp"
+
+#include "../headers/functions.hpp"
+
+#include "../config/config.hpp"
+#include "../headers/ODE.hpp"
+
+#include "../headers/read_and_write_data.hpp"
+#include "../headers/fonction_obj.hpp"
+
+#include <algorithm>
+
+
+parametres blackbox(gsl_rng* random_ptr,ODE &f)
+{
+
     
 
+    double radius = 0.1;
+    double y[COMPARTIMENT];
+
+    parametres param_opti = set_parametres_random(random_ptr);      
+    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+
+    f.set_condition_initiale(y);
+
+
+    std::array<double,DEATH_NB_DAY> death;
+    read_dataD(death);
+    std::array<double,HOSP_NB_DAY> hosp;
+    read_dataH(hosp);
+
+    
+
+    integrate(f,param_opti,y);
+
+    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
+
+    
+
+    parametres p = set_parametres_radius(random_ptr,param_opti,radius);
+    
+    
+
+    for (size_t i = 0; i < 200000; i++)
+    {   
+                
+        parametres p = set_parametres_radius(random_ptr,param_opti,radius);
+        std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
+        f.set_condition_initiale(y);
+
+        integrate(f,p,y);
+
+        std::cout << i << "   " << "\n";
+
+        if(minimisation(fct_obj, death, hosp, f.m_result_integration))
+        {
+            param_opti = p;
+        }
+    }
+
+    std::cout << fct_obj << std::endl;
+
+    return param_opti;
+  
+
+}
+
+
+parametres set_parametres_random(gsl_rng* r)
+{
+    parametres p;
+    
     do
     {
-        /*
-        p.beta = gsl_rng_uniform(r)*5;
+        for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+        {
+            p.beta[i] = gsl_rng_uniform(r)*5;
+        }
+        
+        
         if(gsl_rng_uniform(r) < 0.5){
             p.delta = gsl_rng_uniform(r); // Générer un nombre aléatoire compris entre 0 et 1
             p.gamma = gsl_rng_uniform(r)*(1-p.delta);
@@ -25,15 +101,34 @@ parametres set_parametres(gsl_rng* r,parametres p_opt){
             p.eps = gsl_rng_uniform(r)*(1-p.r);
             
         }
-        */
 
+        p.x0[I_COMP] = gsl_rng_uniform(r)*(100/POP_TOT);
+        p.x0[S_COMP] = 1-p.x0[I_COMP];
+        
+    } while (! validation_parametres(p));
+    
+    return p;
+}
 
-        p.beta = p_opt.beta + ((gsl_rng_uniform(r)*5*2)-5)*0.1;
-        p.delta = p_opt.delta + (gsl_rng_uniform(r)*2-1)*0.1; // Générer un nombre aléatoire compris entre 0 et 1
-        p.eps = p_opt.eps + (gsl_rng_uniform(r)*2-1)*0.1;
-        p.gamma = p_opt.gamma + (gsl_rng_uniform(r)*2-1)*0.1;
-        p.r = p_opt.r + (gsl_rng_uniform(r)*2-1)*0.1;
+parametres set_parametres_radius(gsl_rng* r,parametres p_opt,double radius){
+    
+    parametres p;
+    
 
+    do
+    {
+        for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+        {
+            p.beta[i] = p_opt.beta[i] + ((gsl_rng_uniform(r)*5*2)-5)*radius;
+        }
+
+        p.delta = p_opt.delta + (gsl_rng_uniform(r)*2-1)*radius; // Générer un nombre aléatoire compris entre 0 et 1
+        p.eps = p_opt.eps + (gsl_rng_uniform(r)*2-1)*radius;
+        p.gamma = p_opt.gamma + (gsl_rng_uniform(r)*2-1)*radius;
+        p.r = p_opt.r + (gsl_rng_uniform(r)*2-1)*radius;
+
+        p.x0[I_COMP] = (gsl_rng_uniform(r)*(100/POP_TOT)*2-(100/POP_TOT))*radius;
+        p.x0[S_COMP] = 1-p.x0[I_COMP];
         
     } while (! validation_parametres(p));
 
@@ -47,12 +142,17 @@ bool validation_parametres(const parametres p){
     
     bool ok=true;
     
-    if(p.beta >5 || p.beta<0){
+    for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+    {
+        if(p.beta[i] >5 || p.beta[i]<0){
         ok=false;  
     }
-    //if(x0[1]>0.00001 || x0[1]<0.0000001){
-    //   ok=false;    
-    //} 
+    }
+    
+    
+    if(p.x0[1]< 1/POP_TOT || p.x0[1] > 100/POP_TOT){
+       ok=false;    
+    } 
     if(p.delta>1 || p.delta<0){
         ok=false;   
     }

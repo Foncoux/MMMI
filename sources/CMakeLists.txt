@@ -3,14 +3,11 @@ set(SOURCES
     
     ODE.cpp
     functions.cpp
-    integrator.cpp
-    read_data.cpp
+    integration.cpp
     blackbox.cpp
     fonction_obj.cpp
-    read_data.cpp
-    
+    read_and_write_data.cpp
+
     )
 
 add_library(sources ${SOURCES})
-
-

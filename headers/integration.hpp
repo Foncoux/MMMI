@@ -1,5 +1,5 @@
-#ifndef INTEGRATOR_HPP
-#define INTEGRATOR_HPP
+#ifndef INTEGRATION_HPP
+#define INTEGRATION_HPP
 
 #include <vector>
 #include "../headers/ODE.hpp"

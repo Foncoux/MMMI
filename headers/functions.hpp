@@ -1,16 +1,20 @@
 #ifndef FONCTION_HPP
 #define FONCTION_HPP
 
-#include <vector>
+#include <array>
+#include "../config/config.hpp"
 
 
 struct parametres
-{
-    double beta;
+{   
+    std::array<double, NB_CONFINEMENT+1> beta;
+
     double delta;
     double gamma;
     double eps;
     double r;
+    double x0[COMPARTIMENT]; 
+    int i;
 };
 
 
