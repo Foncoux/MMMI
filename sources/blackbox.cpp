@@ -16,7 +16,92 @@
 
 #include <algorithm>
 
+void bb(ODE &f, parametres p, double y[])
+{
+    integrate(f,p,y);
+}
 
+parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
+{
+    double y[COMPARTIMENT];
+
+    parametres param_opti = set_parametres_random(random_ptr);      
+    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+
+    f.set_condition_initiale(y);
+    bb(f,param_opti,y);
+
+    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
+
+    parametres p = set_parametres_random(random_ptr);
+    
+    
+
+    for (size_t i = 0; i < 10000; i++)
+    {   
+                
+        parametres p = set_parametres_random(random_ptr);
+        std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
+        f.set_condition_initiale(y);
+
+        bb(f,p,y);
+
+        std::cout << i << "   " << "\n";
+
+        if(minimisation(fct_obj, death, hosp, f.m_result_integration))
+        {
+            param_opti = p;
+        }
+    }
+
+    std::cout << fct_obj << std::endl;
+
+    return param_opti;
+  
+}
+
+parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
+{
+    double radius = 0.1;
+    double y[COMPARTIMENT];
+
+    parametres param_opti = set_parametres_random(random_ptr);      
+    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+
+    f.set_condition_initiale(y); 
+
+    bb(f,param_opti,y);
+
+    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
+
+    parametres p = set_parametres_radius(random_ptr,param_opti,radius);
+    
+    
+
+    for (size_t i = 0; i < 300000; i++)
+    {   
+                
+        parametres p = set_parametres_radius(random_ptr,param_opti,radius);
+        std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
+        f.set_condition_initiale(y);
+
+        bb(f,p,y);
+
+        std::cout << i << "   " << "\n";
+
+        if(minimisation(fct_obj, death, hosp, f.m_result_integration))
+        {
+            param_opti = p;
+        }
+    }
+
+    std::cout << fct_obj << std::endl;
+
+    return param_opti;
+  
+
+}
+/*
 parametres blackbox(gsl_rng* random_ptr,ODE &f)
 {
 
@@ -71,7 +156,7 @@ parametres blackbox(gsl_rng* random_ptr,ODE &f)
   
 
 }
-
+*/
 
 parametres set_parametres_random(gsl_rng* r)
 {

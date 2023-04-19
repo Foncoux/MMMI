@@ -12,8 +12,11 @@ double min_log_likelyhood_death(std::array<double,DEATH_NB_DAY> observed_data, s
         somme = somme + (observed_data[i] - output_data[D_COMP][i])*(observed_data[i] - output_data[D_COMP][i])*POP_TOT;
 
         //std::cout << observed_data[i]*POP_TOT << " ";
-
-        //somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
+        //if(output_data[D_COMP][i] < ){
+        //    somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
+        //}
+            
+        
     }
     //std::cout << "\n";
     return somme;
@@ -27,10 +30,12 @@ double min_log_likelyhood_hosp(std::array<double,HOSP_NB_DAY> observed_data, std
     for(int i=DEATH_NB_DAY - HOSP_NB_DAY - 1;i< DEATH_NB_DAY; i++)
     {
         somme = somme + (observed_data[j] - output_data[Q_COMP][i])*(observed_data[j] - output_data[Q_COMP][i])*4;
-        j++;
+        
         //std::cout << output_data[D_COMP][153] << std::endl;
-
-        //somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
+        //if(output_data[D_COMP][i]){
+        //    somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
+        //}
+        j++;
     }
     
     return somme;

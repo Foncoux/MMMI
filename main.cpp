@@ -13,8 +13,13 @@ int main (void)
 
     ODE f(2);
 
+    std::array<double,DEATH_NB_DAY> death;
+    read_dataD(death);
+    std::array<double,HOSP_NB_DAY> hosp;
+    read_dataH(hosp);
 
-    parametres param_opti = blackbox(random_ptr,f);
+    //parametres param_opti = blackbox(random_ptr,f);
+    parametres param_opti = random_search_radius(random_ptr,f,death,hosp);
 
     double y[COMPARTIMENT];
     std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
@@ -25,6 +30,8 @@ int main (void)
     write_data(f.m_result_integration); 
 
     gsl_rng_free(random_ptr);
+
+    
 
     return 0;
 
