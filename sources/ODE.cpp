@@ -19,6 +19,8 @@ ODE::ODE(int fct_choice)
         m_jacobian = jacobian_SIRQD; 
 
         break;
+    case 3:
+        m_function_discret = SIRQD_discret;
     
     default:
         break;

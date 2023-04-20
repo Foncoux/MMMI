@@ -3,30 +3,40 @@
 #include "headers/read_and_write_data.hpp"
 #include "headers/functions.hpp"
 #include "headers/integration.hpp"
+#include "headers/fonction_discret.hpp"
+
 
 int main (void)
 {   
+    
     time_t seed = time(NULL);
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr, seed);
 
 
-    ODE f(2);
+    ODE f(3);
 
     std::array<double,DEATH_NB_DAY> death;
     read_dataD(death);
     std::array<double,HOSP_NB_DAY> hosp;
     read_dataH(hosp);
 
-    //parametres param_opti = blackbox(random_ptr,f);
+    
     parametres param_opti = random_search_radius(random_ptr,f,death,hosp);
 
-    double y[COMPARTIMENT];
-    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
-    
-    f.set_condition_initiale(y);
+    if(DISCRET == 0){
+        double y[COMPARTIMENT];
+        std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+        
+        f.set_condition_initiale(y);
 
-    integrate(f,param_opti,y);
+        integrate(f,param_opti,y);
+    }else if(DISCRET == 1)
+    {
+        f.set_condition_initiale(param_opti.x0);
+        bb_discret(f,param_opti);
+    }
+
     write_data(f.m_result_integration); 
 
     gsl_rng_free(random_ptr);

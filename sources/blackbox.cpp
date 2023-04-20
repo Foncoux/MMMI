@@ -13,12 +13,28 @@
 
 #include "../headers/read_and_write_data.hpp"
 #include "../headers/fonction_obj.hpp"
+#include "../headers/fonction_discret.hpp"
 
 #include <algorithm>
 
 void bb(ODE &f, parametres p, double y[])
 {
     integrate(f,p,y);
+}
+void bb_discret(ODE &f,parametres p)
+{
+    p.i=0;
+    
+    
+    for (int n = 0; n < T_FINAL-1; n++)
+    {
+        if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), n) != TAB_DATE_CONFINEMENT.end()){
+            p.i++;
+        }
+        
+        f.m_function_discret(f.m_result_integration,p,n);
+    }
+    
 }
 
 parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
@@ -62,85 +78,42 @@ parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_D
 
 parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
 {
-    double radius = 0.1;
+    double radius = 0.2;
     double y[COMPARTIMENT];
 
-    parametres param_opti = set_parametres_random(random_ptr);      
-    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
-
-    f.set_condition_initiale(y); 
-
-    bb(f,param_opti,y);
-
-    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
-
-    parametres p = set_parametres_radius(random_ptr,param_opti,radius);
+    parametres param_opti = set_parametres_random(random_ptr);
     
+    if(DISCRET == 0)
+    {      
+        std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+        f.set_condition_initiale(y); 
+        bb(f,param_opti,y);
+    }else if(DISCRET == 1)
+    {
     
-
-    for (size_t i = 0; i < 300000; i++)
-    {   
-                
-        parametres p = set_parametres_radius(random_ptr,param_opti,radius);
-        std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
-        f.set_condition_initiale(y);
-
-        bb(f,p,y);
-
-        std::cout << i << "   " << "\n";
-
-        if(minimisation(fct_obj, death, hosp, f.m_result_integration))
-        {
-            param_opti = p;
-        }
+        f.set_condition_initiale(param_opti.x0);
+        bb_discret(f,param_opti);
     }
 
-    std::cout << fct_obj << std::endl;
-
-    return param_opti;
-  
-
-}
-/*
-parametres blackbox(gsl_rng* random_ptr,ODE &f)
-{
-
     
-
-    double radius = 0.1;
-    double y[COMPARTIMENT];
-
-    parametres param_opti = set_parametres_random(random_ptr);      
-    std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
-
-    f.set_condition_initiale(y);
-
-
-    std::array<double,DEATH_NB_DAY> death;
-    read_dataD(death);
-    std::array<double,HOSP_NB_DAY> hosp;
-    read_dataH(hosp);
-
-    
-
-    integrate(f,param_opti,y);
 
     double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
-
     
-
-    parametres p = set_parametres_radius(random_ptr,param_opti,radius);
-    
-    
-
     for (size_t i = 0; i < 200000; i++)
     {   
                 
         parametres p = set_parametres_radius(random_ptr,param_opti,radius);
-        std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
-        f.set_condition_initiale(y);
-
-        integrate(f,p,y);
+        if(DISCRET == 0)
+        {
+            std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
+            f.set_condition_initiale(y);
+            bb(f,p,y);
+        }else if(DISCRET == 1)
+        {
+            f.set_condition_initiale(p.x0);
+            bb_discret(f,p);
+        }
+        
 
         std::cout << i << "   " << "\n";
 
@@ -156,7 +129,6 @@ parametres blackbox(gsl_rng* random_ptr,ODE &f)
   
 
 }
-*/
 
 parametres set_parametres_random(gsl_rng* r)
 {

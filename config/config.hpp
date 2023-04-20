@@ -20,6 +20,8 @@
 
 #define NB_CONFINEMENT 4
 
+#define DISCRET 1
+
 extern std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT;
 
 

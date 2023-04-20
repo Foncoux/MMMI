@@ -11,7 +11,7 @@ double min_log_likelyhood_death(std::array<double,DEATH_NB_DAY> observed_data, s
     {
         somme = somme + (observed_data[i] - output_data[D_COMP][i])*(observed_data[i] - output_data[D_COMP][i])*POP_TOT;
 
-        //std::cout << observed_data[i]*POP_TOT << " ";
+        
         //if(output_data[D_COMP][i] < ){
         //    somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
         //}
@@ -54,6 +54,7 @@ bool minimisation(double &fct_obj, std::array<double,DEATH_NB_DAY> observed_deat
     double fct_obj_temp = fonction_obj(observed_death, observed_hosp, output_data);
     
     std::cout << fct_obj << " " << fct_obj_temp << std::endl;
+
     if(fct_obj_temp < fct_obj)
     {
         fct_obj = fct_obj_temp;

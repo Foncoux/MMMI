@@ -6,6 +6,7 @@
 #include <fstream>
 #include "../headers/functions.hpp"
 #include "../config/config.hpp"
+#include "../headers/fonction_discret.hpp"
 
 class ODE
 {
@@ -16,8 +17,7 @@ class ODE
     public :
         int (*m_function)(double, const double [], double [],void*);
         int (*m_jacobian)(double, const double [], double *, double [], void *);
-
-        //std::array<std::vector<double>> m_result_integration;
+        void (*m_function_discret)(std::array<std::array<double, T_FINAL+1> , COMPARTIMENT> &,parametres,int);
 
         std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> m_result_integration;
 

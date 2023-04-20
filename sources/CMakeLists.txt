@@ -6,6 +6,7 @@ set(SOURCES
     integration.cpp
     blackbox.cpp
     fonction_obj.cpp
+    fonction_discret.cpp
     read_and_write_data.cpp
 
     )

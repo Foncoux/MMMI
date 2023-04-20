@@ -14,6 +14,7 @@ parametres set_parametres_radius(gsl_rng* r,parametres p_opt,double radius);
 parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp);
 parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp);
 void bb(ODE &f, parametres p, double y[]);
+void bb_discret(ODE &f,parametres p);
 
 bool validation_parametres(const parametres p);
 
