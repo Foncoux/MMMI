@@ -17,9 +17,9 @@ class ODE
     public :
         int (*m_function)(double, const double [], double [],void*);
         int (*m_jacobian)(double, const double [], double *, double [], void *);
-        void (*m_function_discret)(std::array<std::array<double, T_FINAL+1> , COMPARTIMENT> &,parametres,int);
+        void (*m_function_discret)(std::array<std::array<double, T_FINAL> , COMPARTIMENT> &,parametres,int);
 
-        std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> m_result_integration;
+        std::array<std::array<double, T_FINAL>, COMPARTIMENT> m_result_integration;
 
         ODE(int fct_choice);
         void set_condition_initiale(double y[]);

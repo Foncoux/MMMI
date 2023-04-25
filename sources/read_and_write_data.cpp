@@ -80,7 +80,7 @@ void read_dataH(std::array<double,HOSP_NB_DAY> &hosp)
 }
 
 
-void write_data(std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> output_data){
+void write_data(std::array<std::array<double, T_FINAL>, COMPARTIMENT> output_data){
     
 
   std::ofstream myfile ("../data/integration.txt");
@@ -92,6 +92,7 @@ void write_data(std::array<std::array<double, T_FINAL+1>, COMPARTIMENT> output_d
             for (int i = 0; i < T_FINAL; i++)
             {
                 myfile << std::setprecision(16) << output_data[j][i]*POP_TOT << " ";
+                //std::cout << i << "   ";
                 //fprintf(fpdata,"%.15lf ",);
             }
             //fprintf(fpdata,"\n");

@@ -115,7 +115,7 @@ parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEA
         }
         
 
-        std::cout << i << "   " << "\n";
+        std::cout << i << "   ";
 
         if(minimisation(fct_obj, death, hosp, f.m_result_integration))
         {
@@ -138,7 +138,7 @@ parametres set_parametres_random(gsl_rng* r)
     {
         for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
         {
-            p.beta[i] = gsl_rng_uniform(r)*5;
+            p.beta[i] = gsl_rng_uniform(r)*3;
         }
         
         
@@ -201,7 +201,7 @@ bool validation_parametres(const parametres p){
     
     for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
     {
-        if(p.beta[i] >5 || p.beta[i]<0){
+        if(p.beta[i] >3 || p.beta[i]<0){
         ok=false;  
     }
     }
