@@ -99,7 +99,7 @@ parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEA
 
     double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
     
-    for (size_t i = 0; i < 200000; i++)
+    for (size_t i = 0; i < 20000; i++)
     {   
                 
         parametres p = set_parametres_radius(random_ptr,param_opti,radius);
@@ -138,7 +138,7 @@ parametres set_parametres_random(gsl_rng* r)
     {
         for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
         {
-            p.beta[i] = gsl_rng_uniform(r)*3;
+            p.beta[i] = gsl_rng_uniform(r);
         }
         
         
@@ -176,7 +176,7 @@ parametres set_parametres_radius(gsl_rng* r,parametres p_opt,double radius){
     {
         for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
         {
-            p.beta[i] = p_opt.beta[i] + ((gsl_rng_uniform(r)*5*2)-5)*radius;
+            p.beta[i] = p_opt.beta[i] + ((gsl_rng_uniform(r)*2)-1)*radius;
         }
 
         p.delta = p_opt.delta + (gsl_rng_uniform(r)*2-1)*radius; // Générer un nombre aléatoire compris entre 0 et 1
@@ -201,7 +201,7 @@ bool validation_parametres(const parametres p){
     
     for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
     {
-        if(p.beta[i] >3 || p.beta[i]<0){
+        if(p.beta[i] >1 || p.beta[i]<0){
         ok=false;  
     }
     }

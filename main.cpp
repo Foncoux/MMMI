@@ -17,7 +17,7 @@ int main (void)
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr, seed);
 
-/*
+
 
     ODE f(3);
 
@@ -43,7 +43,7 @@ int main (void)
     }
 
     write_data(f.m_result_integration); 
-*/
+
     /*
     for (size_t i = 0; i < T_FINAL; i++)
     {

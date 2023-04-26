@@ -9,12 +9,12 @@ double min_log_likelyhood_death(std::array<double,DEATH_NB_DAY> observed_data, s
 
     for(int i=0;i< DEATH_NB_DAY; i++)
     {
-        somme = somme + (observed_data[i] - output_data[D_COMP][i])*(observed_data[i] - output_data[D_COMP][i])*POP_TOT;
-        /*
-        if(output_data[D_COMP][i] > 0.000000000000001){
-            somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i]);
+        //somme = somme + (observed_data[i] - output_data[D_COMP][i])*(observed_data[i] - output_data[D_COMP][i])*POP_TOT;
+        
+        if(output_data[D_COMP][i] > 0.0000000000000001){
+            somme = somme + ( -observed_data[i]*gsl_sf_log(output_data[D_COMP][i]) + output_data[D_COMP][i])*POP_TOT;
         }
-          */  
+        
         
     }
     //std::cout << "\n";

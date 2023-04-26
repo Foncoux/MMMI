@@ -22,6 +22,8 @@
 
 #define DISCRET 1
 
+#define NB_CLASSE_AGE 1
+
 extern std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT;
 
 
