@@ -20,7 +20,9 @@ ODE::ODE(int fct_choice=3)
         break;
     case 3:
         m_function_discret = SIRQD_discret;
-    
+
+        break;
+            
     default:
         break;
     }
