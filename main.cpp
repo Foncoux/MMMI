@@ -4,7 +4,7 @@
 #include "headers/functions.hpp"
 #include "headers/integration.hpp"
 #include "headers/fonction_discret.hpp"
-
+#include <array>
 
 #include <gsl/gsl_sf_log.h>
 
@@ -18,32 +18,43 @@ int main (void)
     gsl_rng_set(random_ptr, seed);
 
 
+    std::array<std::array<std::array<double, T_FINAL>, COMPARTIMENT>, NB_CLASSE_AGE> model_result;
 
-    ODE f(3);
 
+    ODE f[NB_CLASSE_AGE] = {3};
+    
+    
     std::array<double,DEATH_NB_DAY> death;
     read_dataD(death);
     std::array<double,HOSP_NB_DAY> hosp;
     read_dataH(hosp);
 
     
-    parametres param_opti = random_search_radius(random_ptr,f,death,hosp);
 
+    
+    parametres param_opti = random_search_radius(random_ptr,f,death,hosp,model_result);
+
+    
     if(DISCRET == 0){
-        double y[COMPARTIMENT];
+    /*  double y[COMPARTIMENT];
         std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
         
         f.set_condition_initiale(y);
 
         integrate(f,param_opti,y);
+    */
     }else if(DISCRET == 1)
     {
-        f.set_condition_initiale(param_opti.x0);
+        for (size_t i = 0; i < NB_CLASSE_AGE; i++)
+        {
+            f[i].set_condition_initiale(param_opti.x0);
+        }
+
         bb_discret(f,param_opti);
     }
 
-    write_data(f.m_result_integration); 
-
+    write_data(f[0].m_result_integration); 
+    
     /*
     for (size_t i = 0; i < T_FINAL; i++)
     {

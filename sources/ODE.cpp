@@ -2,8 +2,7 @@
 
 
 
-
-ODE::ODE(int fct_choice)
+ODE::ODE(int fct_choice=3)
 {   
     switch (fct_choice)
     {

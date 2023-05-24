@@ -21,22 +21,31 @@ void bb(ODE &f, parametres p, double y[])
 {
     integrate(f,p,y);
 }
-void bb_discret(ODE &f,parametres p)
+
+void bb_discret(ODE f[],parametres p)
 {
+    std::cout << "test bb_discret   "  << std::endl; 
     p.i=0;
     
     
     for (int n = 0; n < T_FINAL-1; n++)
-    {
+    {   
+        
+        
         if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), n) != TAB_DATE_CONFINEMENT.end()){
             p.i++;
         }
-        
-        f.m_function_discret(f.m_result_integration,p,n);
+
+        for (size_t i = 0; i < NB_CLASSE_AGE; i++)
+        {
+            f[i].m_function_discret(f[i].m_result_integration,p,n);////    
+        }
+        std::cout << "test bb_discret after    "  << std::endl ;
     }
     
 }
 
+/*
 parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
 {
     double y[COMPARTIMENT];
@@ -47,7 +56,7 @@ parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_D
     f.set_condition_initiale(y);
     bb(f,param_opti,y);
 
-    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
+    double fct_obj = fonction_obj(death, hosp, f);
 
     parametres p = set_parametres_random(random_ptr);
     
@@ -75,29 +84,38 @@ parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_D
     return param_opti;
   
 }
+*/
 
-parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp)
+parametres random_search_radius(gsl_rng* random_ptr,ODE f[],std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp, std::array<std::array<std::array<double, T_FINAL>, COMPARTIMENT>, NB_CLASSE_AGE> &model_result)
 {
     double radius = 0.2;
     double y[COMPARTIMENT];
 
     parametres param_opti = set_parametres_random(random_ptr);
     
+    
+
     if(DISCRET == 0)
     {      
+    /*
         std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
         f.set_condition_initiale(y); 
         bb(f,param_opti,y);
+    */
     }else if(DISCRET == 1)
     {
-    
-        f.set_condition_initiale(param_opti.x0);
+        for (size_t i = 0; i < NB_CLASSE_AGE; i++)
+        {
+            f[i].set_condition_initiale(param_opti.x0);
+        }
+        
+        std::cout << "test random radius   "  << std::endl ; 
         bb_discret(f,param_opti);
+        
     }
 
     
-
-    double fct_obj = fonction_obj(death, hosp, f.m_result_integration);
+    double fct_obj = fonction_obj(death, hosp, f); ///////
     
     for (size_t i = 0; i < 20000; i++)
     {   
@@ -105,19 +123,25 @@ parametres random_search_radius(gsl_rng* random_ptr,ODE &f,std::array<double,DEA
         parametres p = set_parametres_radius(random_ptr,param_opti,radius);
         if(DISCRET == 0)
         {
+            /*
             std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
             f.set_condition_initiale(y);
             bb(f,p,y);
+            */
         }else if(DISCRET == 1)
         {
-            f.set_condition_initiale(p.x0);
+            for (size_t i = 0; i < NB_CLASSE_AGE; i++)
+            {
+                f[i].set_condition_initiale(p.x0);
+            }
+            
             bb_discret(f,p);
         }
         
 
         std::cout << i << "   ";
 
-        if(minimisation(fct_obj, death, hosp, f.m_result_integration))
+        if(minimisation(fct_obj, death, hosp, f))
         {
             param_opti = p;
         }
