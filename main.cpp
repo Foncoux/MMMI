@@ -12,7 +12,11 @@
 
 int main (void)
 {   
-   
+    std::array<std::array<double, NB_CLASSE_AGE>, NB_CLASSE_AGE> matrix;
+
+    set_social_contact_matrix(matrix);
+
+    /*
     time_t seed = time(NULL);
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr, seed);
@@ -36,13 +40,7 @@ int main (void)
 
     
     if(DISCRET == 0){
-    /*  double y[COMPARTIMENT];
-        std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
-        
-        f.set_condition_initiale(y);
 
-        integrate(f,param_opti,y);
-    */
     }else if(DISCRET == 1)
     {
         for (size_t i = 0; i < NB_CLASSE_AGE; i++)
@@ -55,18 +53,15 @@ int main (void)
 
     write_data(f[0].m_result_integration); 
     
-    /*
-    for (size_t i = 0; i < T_FINAL; i++)
-    {
-        std::cout << f.m_result_integration[0][i] * POP_TOT << " ";
-    }
-    */
+    
+  
+    
     
 
     gsl_rng_free(random_ptr);
 
     
-
+*/
     return 0;
 
 }
