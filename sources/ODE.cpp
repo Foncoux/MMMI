@@ -6,6 +6,7 @@ ODE::ODE(int fct_choice=3)
 {   
     switch (fct_choice)
     {
+/* 
     case 1:
 
         m_function = oscillateur_harm; 
@@ -18,6 +19,7 @@ ODE::ODE(int fct_choice=3)
         m_jacobian = jacobian_SIRQD; 
 
         break;
+*/
     case 3:
         m_function_discret = SIRQD_discret;
 
@@ -29,13 +31,16 @@ ODE::ODE(int fct_choice=3)
 
 }
 
-void ODE::set_condition_initiale(double y[])
+void set_condition_initiale(ODE f[],std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> &cond_init)
 {
-    m_result_integration[0][0] = y[0];
-    m_result_integration[1][0] = y[1];
-    m_result_integration[2][0] = y[2];
-    m_result_integration[3][0] = y[3];
-    m_result_integration[4][0] = y[4];
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        f[classe].m_result_integration[S_COMP][0] = cond_init[classe][S_COMP];
+        f[classe].m_result_integration[I_COMP][0] = cond_init[classe][I_COMP];
+        f[classe].m_result_integration[R_COMP][0] = cond_init[classe][R_COMP];
+        f[classe].m_result_integration[Q_COMP][0] = cond_init[classe][Q_COMP];
+        f[classe].m_result_integration[D_COMP][0] = cond_init[classe][D_COMP];
+    }
+    
 }
 
-/* write data envisageable dans la classe*/

@@ -13,7 +13,8 @@ struct parametres
     double gamma;
     double eps;
     double r;
-    double x0[COMPARTIMENT]; 
+
+    std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> x0;
     int i;
 };
 

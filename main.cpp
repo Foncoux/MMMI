@@ -5,6 +5,7 @@
 #include "headers/integration.hpp"
 #include "headers/fonction_discret.hpp"
 #include <array>
+#include <iostream>
 
 #include <gsl/gsl_sf_log.h>
 
@@ -12,56 +13,61 @@
 
 int main (void)
 {   
-    std::array<std::array<double, NB_CLASSE_AGE>, NB_CLASSE_AGE> matrix;
+    Data data;
 
-    set_social_contact_matrix(matrix);
+    set_social_contact_matrix(data.social_constact_matrix);
 
-    /*
+    read_data_day("../data/day_data.csv", data.day_all);
+
+    read_data_week_age("../data/hosp_week_age.csv",data.week_hosp_ages);   
+
+    read_data_month_age("../data/death_month_age.csv",data.month_death_ages);
+
+
+    for (size_t i = 0; i < NB_DATA_DAY; i++)
+    {
+        for (size_t j = 0; j < NB_DAY; j++)
+        {
+            std::cout << data.day_all[i][j] << " ";
+        }
+        std::cout << std::endl;
+        
+    }
+
+
+    
     time_t seed = time(NULL);
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr, seed);
 
 
-    std::array<std::array<std::array<double, T_FINAL>, COMPARTIMENT>, NB_CLASSE_AGE> model_result;
+    
 
 
     ODE f[NB_CLASSE_AGE] = {3};
-    
-    
-    std::array<double,DEATH_NB_DAY> death;
-    read_dataD(death);
-    std::array<double,HOSP_NB_DAY> hosp;
-    read_dataH(hosp);
+  
 
     
+    parametres param_opti = random_search_radius(random_ptr,f,data);
+    //parametres param_opti = random_search(random_ptr,f,data);
 
-    
-    parametres param_opti = random_search_radius(random_ptr,f,death,hosp,model_result);
 
     
     if(DISCRET == 0){
 
     }else if(DISCRET == 1)
     {
-        for (size_t i = 0; i < NB_CLASSE_AGE; i++)
-        {
-            f[i].set_condition_initiale(param_opti.x0);
-        }
-
+        set_condition_initiale(f,param_opti.x0);
         bb_discret(f,param_opti);
     }
-
+    
+    
     write_data(f[0].m_result_integration); 
     
-    
-  
-    
-    
-
     gsl_rng_free(random_ptr);
 
     
-*/
+
     return 0;
 
 }

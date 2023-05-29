@@ -16,19 +16,19 @@
 #include "../headers/fonction_discret.hpp"
 
 #include <algorithm>
-
+/*
 void bb(ODE &f, parametres p, double y[])
 {
     integrate(f,p,y);
 }
-
+*/
 void bb_discret(ODE f[],parametres p)
 {
-    std::cout << "test bb_discret   "  << std::endl; 
+   
     p.i=0;
     
     
-    for (int n = 0; n < T_FINAL-1; n++)
+    for (int n = 0; n < NB_DAY-1; n++)
     {   
         
         
@@ -40,7 +40,7 @@ void bb_discret(ODE f[],parametres p)
         {
             f[i].m_function_discret(f[i].m_result_integration,p,n);////    
         }
-        std::cout << "test bb_discret after    "  << std::endl ;
+
     }
     
 }
@@ -86,7 +86,73 @@ parametres random_search(gsl_rng* random_ptr,ODE &f,std::array<double,DEATH_NB_D
 }
 */
 
-parametres random_search_radius(gsl_rng* random_ptr,ODE f[],std::array<double,DEATH_NB_DAY> death,std::array<double,HOSP_NB_DAY> hosp, std::array<std::array<std::array<double, T_FINAL>, COMPARTIMENT>, NB_CLASSE_AGE> &model_result)
+parametres random_search(gsl_rng* random_ptr,ODE f[],const Data &data)
+{
+    
+    double y[COMPARTIMENT];
+
+    parametres param_opti = set_parametres_random(random_ptr);
+    
+    
+
+    if(DISCRET == 0)
+    {      
+    /*
+        std::copy(std::begin(param_opti.x0), std::end(param_opti.x0), std::begin(y));
+        f.set_condition_initiale(y); 
+        bb(f,param_opti,y);
+    */
+    }else if(DISCRET == 1)
+    {
+        
+        
+        set_condition_initiale(f,param_opti.x0);
+        
+        
+        bb_discret(f,param_opti);
+        
+    }
+
+    
+    double fct_obj = fonction_obj(data,f); ///////
+    
+    for (size_t i = 0; i < 300000; i++)
+    {   
+                
+        parametres p = set_parametres_random(random_ptr);
+        if(DISCRET == 0)
+        {
+            /*
+            std::copy(std::begin(p.x0), std::end(p.x0), std::begin(y));
+            f.set_condition_initiale(y);
+            bb(f,p,y);
+            */
+        }else if(DISCRET == 1)
+        {
+            set_condition_initiale(f,p.x0);
+            
+            bb_discret(f,p);
+        }
+        
+
+        std::cout << i << "   ";
+
+        if(minimisation(fct_obj, data, f))
+        {
+            param_opti = p;
+        }
+    }
+
+    std::cout << fct_obj << std::endl;
+
+    return param_opti;
+  
+
+}
+
+
+
+parametres random_search_radius(gsl_rng* random_ptr,ODE f[],const Data &data)
 {
     double radius = 0.2;
     double y[COMPARTIMENT];
@@ -104,20 +170,16 @@ parametres random_search_radius(gsl_rng* random_ptr,ODE f[],std::array<double,DE
     */
     }else if(DISCRET == 1)
     {
-        for (size_t i = 0; i < NB_CLASSE_AGE; i++)
-        {
-            f[i].set_condition_initiale(param_opti.x0);
-        }
+        set_condition_initiale(f,param_opti.x0);
         
-        std::cout << "test random radius   "  << std::endl ; 
         bb_discret(f,param_opti);
         
     }
 
     
-    double fct_obj = fonction_obj(death, hosp, f); ///////
+    double fct_obj = fonction_obj(data,f); ///////
     
-    for (size_t i = 0; i < 20000; i++)
+    for (size_t i = 0; i < 100000; i++)
     {   
                 
         parametres p = set_parametres_radius(random_ptr,param_opti,radius);
@@ -130,18 +192,14 @@ parametres random_search_radius(gsl_rng* random_ptr,ODE f[],std::array<double,DE
             */
         }else if(DISCRET == 1)
         {
-            for (size_t i = 0; i < NB_CLASSE_AGE; i++)
-            {
-                f[i].set_condition_initiale(p.x0);
-            }
-            
+            set_condition_initiale(f,p.x0);
             bb_discret(f,p);
         }
         
 
         std::cout << i << "   ";
 
-        if(minimisation(fct_obj, death, hosp, f))
+        if(minimisation(fct_obj, data, f))
         {
             param_opti = p;
         }
@@ -183,8 +241,16 @@ parametres set_parametres_random(gsl_rng* r)
             
         }
 
-        p.x0[I_COMP] = gsl_rng_uniform(r)*(100/POP_TOT);
-        p.x0[S_COMP] = 1-p.x0[I_COMP];
+        //p.x0[I_COMP] = gsl_rng_uniform(r)*(5000/POP_TOT);
+
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        {
+            p.x0[classe][I_COMP] = gsl_rng_uniform(r)*(4478/POP_TOT);
+            p.x0[classe][S_COMP] = 1-p.x0[classe][I_COMP];
+            p.x0[classe][R_COMP] = 0;
+            p.x0[classe][Q_COMP] = 0;
+            p.x0[classe][D_COMP] = 0;
+        }
         
     } while (! validation_parametres(p));
     
@@ -208,8 +274,15 @@ parametres set_parametres_radius(gsl_rng* r,parametres p_opt,double radius){
         p.gamma = p_opt.gamma + (gsl_rng_uniform(r)*2-1)*radius;
         p.r = p_opt.r + (gsl_rng_uniform(r)*2-1)*radius;
 
-        p.x0[I_COMP] = (gsl_rng_uniform(r)*(100/POP_TOT)*2-(100/POP_TOT))*radius;
-        p.x0[S_COMP] = 1-p.x0[I_COMP];
+        //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        {
+            p.x0[classe][I_COMP] = gsl_rng_uniform(r)*(4478/POP_TOT);
+            p.x0[classe][S_COMP] = 1-p.x0[classe][I_COMP];
+            p.x0[classe][R_COMP] = 0;
+            p.x0[classe][Q_COMP] = 0;
+            p.x0[classe][D_COMP] = 0;
+        }
         
     } while (! validation_parametres(p));
 
@@ -230,10 +303,11 @@ bool validation_parametres(const parametres p){
     }
     }
     
-    
-    if(p.x0[1]< 1/POP_TOT || p.x0[1] > 100/POP_TOT){
+    /*
+    if(p.x0[1]< 1/POP_TOT || p.x0[1] > 5000/POP_TOT){
        ok=false;    
     } 
+    */
     if(p.delta>1 || p.delta<0){
         ok=false;   
     }

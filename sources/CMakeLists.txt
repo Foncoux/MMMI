@@ -2,8 +2,8 @@
 set(SOURCES
     
     ODE.cpp
-    functions.cpp
-    integration.cpp
+    #functions.cpp
+    #integration.cpp
     blackbox.cpp
     fonction_obj.cpp
     fonction_discret.cpp
