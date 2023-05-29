@@ -19,3 +19,4 @@ void bb_discret(ODE f[],parametres p);
 bool validation_parametres(const parametres p);
 
 #endif
+
