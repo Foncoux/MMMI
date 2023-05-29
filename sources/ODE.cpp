@@ -31,6 +31,7 @@ ODE::ODE(int fct_choice=3)
 
 }
 
+
 void set_condition_initiale(ODE f[],std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> &cond_init)
 {
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
