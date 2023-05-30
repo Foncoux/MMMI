@@ -6,20 +6,7 @@ ODE::ODE(int fct_choice=3)
 {   
     switch (fct_choice)
     {
-/* 
-    case 1:
 
-        m_function = oscillateur_harm; 
-        m_jacobian = jacobian_osc; 
-
-        break;
-    case 2:
-
-        m_function = SIRQD; 
-        m_jacobian = jacobian_SIRQD; 
-
-        break;
-*/
     case 3:
         m_function_discret = SIRQD_discret;
 

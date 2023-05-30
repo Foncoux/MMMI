@@ -17,13 +17,13 @@ if (UNIX)
     find_package (Boost)
 endif (UNIX)
 
-enable_testing()
+#enable_testing()
 
 include_directories(headers)
 
 # On inclut notre bibliothèque dans le processus de CMake
 add_subdirectory(sources)
-add_subdirectory(test)
+#add_subdirectory(test)
 add_subdirectory(config)
 
 

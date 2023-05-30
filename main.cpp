@@ -2,7 +2,7 @@
 #include "headers/blackbox.hpp"
 #include "headers/read_and_write_data.hpp"
 #include "headers/functions.hpp"
-#include "headers/integration.hpp"
+
 #include "headers/fonction_discret.hpp"
 #include <array>
 #include <iostream>

@@ -17,8 +17,9 @@ void SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,para
     }
 
 }
-
+/*
 void SIRQD_discret_age(std::array<ODE,NB_CLASSE_AGE> &tab_fct,parametres p,int n)
 {
     tab_fct[0].m_function_discret(tab_fct[0].m_result_integration,p,n);
 }
+*/
