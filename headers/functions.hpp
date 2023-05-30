@@ -19,6 +19,4 @@ struct parametres
 };
 
 
-
-
 #endif
