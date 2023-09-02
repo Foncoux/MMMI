@@ -13,13 +13,16 @@ set(CMAKE_BUILD_TYPE Debug)
 set (Boost_USE_STATIC_LIBS ON)
 find_package(GSL REQUIRED)
 
-if (UNIX)
-    find_package (Boost)
-endif (UNIX)
+
+find_package(Boost 1.83 REQUIRED COMPONENTS json)
+
+option(BUILD_TESTING "Are we building for testing?" OFF)
+
 
 #enable_testing()
 
 include_directories(headers)
+
 
 # On inclut notre bibliothèque dans le processus de CMake
 add_subdirectory(sources)
@@ -36,7 +39,7 @@ set(MAIN
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
 add_executable(main ${MAIN})
 
-target_link_libraries(main sources config_projet GSL::gsl GSL::gslcblas)
+target_link_libraries(main sources config_projet GSL::gsl GSL::gslcblas Boost::json)
 
 
 
@@ -45,6 +48,6 @@ target_link_libraries(main sources config_projet GSL::gsl GSL::gslcblas)
 # Et pour que l'exécutable fonctionne, il faut lui indiquer les bibliothèques dont il dépend
 #target_link_libraries(main sources1)
 
-target_compile_options(main PUBLIC -g -Wall -Wextra -pedantic)
+target_compile_options(main PUBLIC -g -Wall -Wextra -pedantic )
 
 

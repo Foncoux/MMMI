@@ -1,19 +1,22 @@
 #ifndef FONCTION_OBJ_HPP
 #define FONCTION_OBJ_HPP
 
-#include <array>
-#include <gsl/gsl_sf_log.h>
-#include <iostream>
+double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double fonction_obj(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int loglikelyhood);
+double min_log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_death_month(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_death_month2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_recovered_ages(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 
-#include "../config/config.hpp"
-#include "../headers/ODE.hpp"
-#include "../headers/read_and_write_data.hpp"
 
-
-double min_log_likelyhood_death(const Data &data, ODE output_data[]);
-double min_log_likelyhood_hosp(const Data &data, ODE output_data[]);
-double fonction_obj(const Data &data, ODE output_data[]);
-
-bool minimisation(double &fct_obj,const Data &data, ODE output_data[]);
+double min_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_square_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_square_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double min_square_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 
 #endif

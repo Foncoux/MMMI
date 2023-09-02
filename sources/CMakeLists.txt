@@ -2,12 +2,13 @@
 set(SOURCES
     
     ODE.cpp
-    functions.cpp
-
-    blackbox.cpp
+    MCMC.cpp
+    optimisation_algo.cpp
     fonction_obj.cpp
     fonction_discret.cpp
     read_and_write_data.cpp
+    Parametres.cpp
+    fonction_continuous.cpp
 
     )
 
