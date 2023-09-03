@@ -35,9 +35,9 @@ int model_SIRQD(double t, const double y[], double f[],void *params){
         f[classe*NB_CLASSE_AGE + D_COMP] = (*p)[classe].r*y[classe*NB_CLASSE_AGE + Q_COMP];
     
         
-        return GSL_SUCCESS;
+        
     }
-    
+    return GSL_SUCCESS;
 
 }
 
@@ -164,6 +164,14 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
     (void)(t);
     std::array<parametres, NB_CLASSE_AGE> *p = reinterpret_cast<std::array<parametres, NB_CLASSE_AGE> *>(params);
 
+
+    
+    gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, NB_CLASSE_AGE*COMPARTIMENT, NB_CLASSE_AGE*COMPARTIMENT);
+    gsl_matrix * m = &dfdy_mat.matrix;
+
+    gsl_matrix_set_zero(m);
+
+    
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
 
@@ -172,60 +180,77 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
             lambda = lambda + (*p)[classe].social_contact_matrix[classe][j]*y[classe*NB_CLASSE_AGE + I_COMP] /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
         }
 
-        f[classe*NB_CLASSE_AGE + S_COMP] = -(*p)[classe].beta[(*p)[classe].i]*lambda*y[classe*NB_CLASSE_AGE + S_COMP];
-        f[classe*NB_CLASSE_AGE + I_COMP] = (*p)[classe].beta[(*p)[classe].i]*lambda*y[classe*NB_CLASSE_AGE + S_COMP] - ((*p)[classe].delta+(*p)[classe].gamma)*y[classe*NB_CLASSE_AGE + I_COMP];
-        f[classe*NB_CLASSE_AGE + R_COMP] = (*p)[classe].gamma*y[classe*NB_CLASSE_AGE + I_COMP] + (*p)[classe].eps*y[classe*NB_CLASSE_AGE + Q_COMP];
-        f[classe*NB_CLASSE_AGE + Q_COMP] = (*p)[classe].delta*y[classe*NB_CLASSE_AGE + I_COMP] - ((*p)[classe].eps + (*p)[classe].r)*y[classe*NB_CLASSE_AGE + Q_COMP];
-        f[classe*NB_CLASSE_AGE + D_COMP] = (*p)[classe].r*y[classe*NB_CLASSE_AGE + Q_COMP];
-    
+
+        //colonne 0 de la jacobienne
+        gsl_matrix_set (m,classe*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + S_COMP,-(*p)[classe].beta[(*p)[classe].i]*lambda); 
+        gsl_matrix_set (m,classe*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + S_COMP, (*p)[classe].beta[(*p)[classe].i]*lambda);
+
+        //colonne 1 de la jacobienne
+        gsl_matrix_set (m,classe*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * (*p)[classe].social_contact_matrix[classe][classe]); 
+        gsl_matrix_set (m,classe*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * ((*p)[classe].social_contact_matrix[classe][classe]) - ( (*p)[classe].delta + (*p)[classe].gamma ));
+        gsl_matrix_set (m,classe*COMPARTIMENT + R_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].gamma);
+        gsl_matrix_set (m,classe*COMPARTIMENT + Q_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].delta);
+
+        // colonne 2 de la jacobienne
+        // colonne de 0 (aucune dérivation par rapport à R) 
+
+        //colonne 3 de la jacobienne
+        gsl_matrix_set (m,classe*COMPARTIMENT + R_COMP,classe*COMPARTIMENT + Q_COMP,(*p)[classe].eps);
+        gsl_matrix_set (m,classe*COMPARTIMENT + Q_COMP,classe*COMPARTIMENT + Q_COMP,-((*p)[classe].eps + (*p)[classe].r) );
+        gsl_matrix_set (m,classe*COMPARTIMENT + D_COMP,classe*COMPARTIMENT + Q_COMP,(*p)[classe].r);
+
+        // colonne 4 de la jacobienne
+        // colonne de 0 (aucune dérivation par rapport à R)
+
+        for (size_t classe2 = 0; classe2 < NB_CLASSE_AGE; classe2++)
+        {
+            if (classe2 != classe)
+            {
+                gsl_matrix_set (m,classe2*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * (*p)[classe2].social_contact_matrix[classe2][classe]); 
+                gsl_matrix_set (m,classe2*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * ((*p)[classe2].social_contact_matrix[classe2][classe]) - ( (*p)[classe2].delta + (*p)[classe2].gamma ));
+            }
+            
+        }
         
-        return GSL_SUCCESS;
+
     }
-
-
-    (void)(y);
-    gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, NB_CLASSE_AGE, NB_CLASSE_AGE);
-    gsl_matrix * m = &dfdy_mat.matrix;
-    //première ligne de la jacobienne
-    gsl_matrix_set (m, 0, 0, -p->beta[p->i]*y[I_COMP]); //valeur de l'élément (0,0) de la jacobienne
-    gsl_matrix_set (m, 0, 1, -p->beta[p->i]*y[S_COMP]); 
-    gsl_matrix_set (m, 0, 2, 0.0); 
-    gsl_matrix_set (m, 0, 3, 0.0); 
-    gsl_matrix_set (m, 0, 4, 0.0); 
-    // ligne 2 de la jacobienne 
-    gsl_matrix_set (m, 1, 0, p->beta[p->i]*y[I_COMP]); 
-    gsl_matrix_set (m, 1, 1, p->beta[p->i]*y[S_COMP] - (p->delta+p->gamma)); 
-    gsl_matrix_set (m, 1, 2, 0.0); 
-    gsl_matrix_set (m, 1, 3, 0.0); 
-    gsl_matrix_set (m, 1, 4, 0.0); 
-    //ligne 3 
-    gsl_matrix_set (m, 2, 0, 0.0); 
-    gsl_matrix_set (m, 2, 1, p->gamma); 
-    gsl_matrix_set (m, 2, 2, 0.0); 
-    gsl_matrix_set (m, 2, 3, p->eps); 
-    gsl_matrix_set (m, 2, 4, 0.0); 
-    //ligne 4
-    gsl_matrix_set (m, 3, 0, 0.0); 
-    gsl_matrix_set (m, 3, 1, p->delta);
-    gsl_matrix_set (m, 3, 2, 0.0);
-    gsl_matrix_set (m, 3, 3, -p->eps - p->r);
-    gsl_matrix_set (m, 3, 4, 0.0);
-
-    gsl_matrix_set (m, 4, 0, 0.0); 
-    gsl_matrix_set (m, 4, 1, 0.0); 
-    gsl_matrix_set (m, 4, 2, 0.0); 
-    gsl_matrix_set (m, 4, 3, p->r); 
-    gsl_matrix_set (m, 4, 4, 0.0); 
     
-
-    dfdt[0] = 0.0; // valeur de la dérivée de l'équation 1 par rapport à t
-    dfdt[1] = 0.0; // valeur de la dérivée de l'équation 2 par rapport à t
-    dfdt[2] = 0.0; // valeur de la dérivée de l'équation 3 par rapport à t
-    dfdt[3] = 0.0; // valeur de la dérivée de l'équation 4 par rapport à t
-    dfdt[4] = 0.0; // valeur de la dérivée de l'équation 5 par rapport à t
+    for (size_t i = 0; i < COMPARTIMENT*NB_CLASSE_AGE; i++)
+    {
+        dfdt[i] = 0.0; // valeur de la dérivée de l'équation i par rapport à t
+    }
+    
+    
+    
     
     return GSL_SUCCESS;
 }
+
+
+/*
+        //colonne 0 de la jacobienne
+        gsl_matrix_set (m,0,0,-(*p)[classe].beta[(*p)[classe].i]*lambda); 
+        gsl_matrix_set (m,1,0, (*p)[classe].beta[(*p)[classe].i]*lambda);
+
+        //colonne 1 de la jacobienne
+        gsl_matrix_set (m,0,1,-(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * (*p)[classe].social_contact_matrix[classe][classe]); 
+        gsl_matrix_set (m,1,1,(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * ((*p)[classe].social_contact_matrix[classe][classe]) - ( (*p)[classe].delta + (*p)[classe].gamma ));
+        gsl_matrix_set (m,2,1,(*p)[classe].gamma);
+        gsl_matrix_set (m,3,1,(*p)[classe].delta);
+
+        // colonne 2 de la jacobienne
+        // colonne de 0 (aucune dérivation par rapport à R) 
+
+        //colonne 3 de la jacobienne
+        gsl_matrix_set (m,2,3,(*p)[classe].eps);
+        gsl_matrix_set (m,3,3,-((*p)[classe].eps + (*p)[classe].r) );
+        gsl_matrix_set (m,4,3,(*p)[classe].r);
+
+        // colonne 4 de la jacobienne
+        // colonne de 0 (aucune dérivation par rapport à R)
+*/
+
+
 
 
 
