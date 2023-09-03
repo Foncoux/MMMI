@@ -17,7 +17,8 @@ struct parametres
     std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> x0;
     int i;
 
-    std::array<std::array<double, NB_CLASSE_SOCIAL_CONTACT_MATRIX>, NB_CLASSE_SOCIAL_CONTACT_MATRIX> social_contact_matrix;
+    
+    
 };
 
 std::array<parametres,NB_CLASSE_AGE> set_parametres_random(gsl_rng* r);

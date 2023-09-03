@@ -1,4 +1,5 @@
 #include <array>
+#include <vector>
 #include <iostream>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_rng.h>
@@ -11,6 +12,7 @@
 #include "headers/optimisation_algo.hpp"
 #include "headers/MCMC.hpp"
 #include "headers/fonction_discret.hpp"
+#include "headers/fonction_continuous.hpp"
 
 int main (void)
 {   
@@ -27,7 +29,7 @@ int main (void)
 
     p.delta = 0.2;
     p.eps = 0.3;
-    p.gamma = 0.2;
+    p.gamma = 0.2#include <vector>;
     p.r = 0.1;
     
     p.x0[0][I_COMP] = 3250/POP_TOT;
@@ -41,7 +43,11 @@ int main (void)
        
     write_data(f[0].m_result_integration); 
 */
+
+    config_table_extern();
     int fct_obj_choice = FCT_OBJ_CHOICE;
+
+    
 
     Data data;
 
@@ -50,9 +56,14 @@ int main (void)
     gsl_rng_set(random_ptr, seed);
 
 
-    std::string filename = SOCIAL_CONTACT_MATRIX;
+    std::array<parametres,NB_CLASSE_AGE> cond_init;
+    std::array<parametres,NB_CLASSE_AGE> param_opti;
+
+    std::array<ODE,NB_CLASSE_AGE> f;
+
+
+    std::string filename = SOCIAL_CONTACT_MATRIX_filename;
     set_social_contact_matrix(data.social_contact_matrix,filename);
-    
 
     read_data_day(DAY_DATA_filename, data.day_all);
 
@@ -66,15 +77,6 @@ int main (void)
     read_data_month_age(DEATH_MONTH_AGE_DATA_filename,data.month_death_ages);
 
     read_data_day(DAY_DEATH_AGE_DATA_filename, data.day_death_age);
- 
-
-
-
-    std::array<parametres,NB_CLASSE_AGE> cond_init;
-    std::array<parametres,NB_CLASSE_AGE> param_opti;
-
-    std::array<ODE,NB_CLASSE_AGE> f;
-
     
 
     if (READ_SAVE_PARAM)
@@ -116,7 +118,12 @@ int main (void)
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
 
-    bb_discret(f,param_opti,data);
+    //bb_discret(f,param_opti,data);
+    double y[COMPARTIMENT*NB_CLASSE_AGE];
+        
+    write_result_conversion_ODE_to_vector(f, y, 0);
+
+    integrate(f,param_opti,y);
 
     //std::cout << f[0].m_result_integration[0][0] << std::endl;
     if (WRITE_SAVE_PARAM == true)

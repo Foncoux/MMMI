@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <array>
+#include <vector>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>
@@ -25,7 +26,7 @@ int model_SIRQD(double t, const double y[], double f[],void *params){
 
         double lambda=0;
         for (size_t j = 0; j < NB_CLASSE_AGE; j++){
-            lambda = lambda + (*p)[classe].social_contact_matrix[classe][j]*y[classe*NB_CLASSE_AGE + I_COMP] /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
+            lambda = lambda + SOCIAL_CONTACT_MATRIX[classe][j]*y[classe*NB_CLASSE_AGE + I_COMP] /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
         }
 
         f[classe*NB_CLASSE_AGE + S_COMP] = -(*p)[classe].beta[(*p)[classe].i]*lambda*y[classe*NB_CLASSE_AGE + S_COMP];
@@ -41,32 +42,34 @@ int model_SIRQD(double t, const double y[], double f[],void *params){
 
 }
 
-void integrate(ODE &f,parametres p, double y[])
+void integrate(std::array<ODE,NB_CLASSE_AGE>& f,std::array<parametres,NB_CLASSE_AGE>  p, double y[])
 {
     
-    p.i=0;
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        p[classe].i=0;
+    }
 
-    gsl_odeiv2_system sys = {f.m_function, f.m_jacobian, COMPARTIMENT, &p};
+    
+
+    gsl_odeiv2_system sys = {f[0].m_function, f[0].m_jacobian, COMPARTIMENT, &p};
     gsl_odeiv2_driver * d = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkf45, 1e-6, 1e-6, 0.0);
-    
-    
 
     double t = T_DEBUT;
-
-   
 
     for (int i = 1; i < T_FINAL; i++)
     {
         if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), i) != TAB_DATE_CONFINEMENT.end()){
-            p.i++;
+            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+            {
+                p[classe].i++;
+            }
         }
         
         double ti = i * (double)T_FINAL / (double)T_FINAL;
         
         int status = gsl_odeiv2_driver_apply (d, &t, ti, y);
         //printf ("%.5e %.5e %.5e %.5e %.5e %.5e\n", t, y[0], y[1], y[2], y[3], y[4]);
-
-        
 
         if (status != GSL_SUCCESS)
         {
@@ -75,9 +78,10 @@ void integrate(ODE &f,parametres p, double y[])
         }
 
         
+        write_result_conversion_vector_to_ODE(f, y, i);
 
-        f.m_result_integration[0][i] = y[0];
-        f.m_result_integration[1][i] = y[1];
+//        f.m_result_integration[0][i] = y[0];
+//        f.m_result_integration[1][i] = y[1];
 
 //        f.m_result_integration[2][i] = y[2];
 //        f.m_result_integration[3][i] = y[3];
@@ -86,13 +90,41 @@ void integrate(ODE &f,parametres p, double y[])
        
 
     }
-    
-    //std::cout << f.m_result_integration[0][127] << std::endl;
-    //printf ("%.5e %.5e %.5e %.5e %.5e %.5e\n", t, y[0], y[1], y[2], y[3], y[4]);
-    //std::cout << f.m_result_integration[1][153] << std::endl;
+
+
 
     gsl_odeiv2_driver_free (d);
 }
+
+
+void write_result_conversion_ODE_to_vector(std::array<ODE,NB_CLASSE_AGE>& f, double y[],int jour)
+{
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        for (size_t compartiment = 0; compartiment < COMPARTIMENT; compartiment++)
+        {
+            y[classe*COMPARTIMENT + compartiment] = f[classe].m_result_integration[compartiment][jour];
+        }
+        
+    }
+    
+}
+
+
+
+void write_result_conversion_vector_to_ODE(std::array<ODE,NB_CLASSE_AGE>& f, double y[],int jour)
+{
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        for (size_t compartiment = 0; compartiment < COMPARTIMENT; compartiment++)
+        {
+            f[classe].m_result_integration[compartiment][jour] = y[classe*COMPARTIMENT + compartiment];
+        }
+        
+    }
+    
+}
+
 
 
 
@@ -177,7 +209,7 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
 
         double lambda=0;
         for (size_t j = 0; j < NB_CLASSE_AGE; j++){
-            lambda = lambda + (*p)[classe].social_contact_matrix[classe][j]*y[classe*NB_CLASSE_AGE + I_COMP] /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
+            lambda = lambda + SOCIAL_CONTACT_MATRIX[classe][j]*y[classe*NB_CLASSE_AGE + I_COMP] /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
         }
 
 
@@ -186,8 +218,8 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
         gsl_matrix_set (m,classe*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + S_COMP, (*p)[classe].beta[(*p)[classe].i]*lambda);
 
         //colonne 1 de la jacobienne
-        gsl_matrix_set (m,classe*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * (*p)[classe].social_contact_matrix[classe][classe]); 
-        gsl_matrix_set (m,classe*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * ((*p)[classe].social_contact_matrix[classe][classe]) - ( (*p)[classe].delta + (*p)[classe].gamma ));
+        gsl_matrix_set (m,classe*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * SOCIAL_CONTACT_MATRIX[classe][classe]); 
+        gsl_matrix_set (m,classe*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].beta[(*p)[classe].i]* y[classe*NB_CLASSE_AGE + S_COMP] * (SOCIAL_CONTACT_MATRIX[classe][classe]) - ( (*p)[classe].delta + (*p)[classe].gamma ));
         gsl_matrix_set (m,classe*COMPARTIMENT + R_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].gamma);
         gsl_matrix_set (m,classe*COMPARTIMENT + Q_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe].delta);
 
@@ -206,8 +238,8 @@ int jacobian_SIRQD(double t, const double y[], double *dfdy, double dfdt[], void
         {
             if (classe2 != classe)
             {
-                gsl_matrix_set (m,classe2*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * (*p)[classe2].social_contact_matrix[classe2][classe]); 
-                gsl_matrix_set (m,classe2*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * ((*p)[classe2].social_contact_matrix[classe2][classe]) - ( (*p)[classe2].delta + (*p)[classe2].gamma ));
+                gsl_matrix_set (m,classe2*COMPARTIMENT + S_COMP,classe*COMPARTIMENT + I_COMP,-(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * SOCIAL_CONTACT_MATRIX[classe2][classe]); 
+                gsl_matrix_set (m,classe2*COMPARTIMENT + I_COMP,classe*COMPARTIMENT + I_COMP,(*p)[classe2].beta[(*p)[classe2].i]* y[classe2*NB_CLASSE_AGE + S_COMP] * (SOCIAL_CONTACT_MATRIX[classe2][classe]) - ( (*p)[classe2].delta + (*p)[classe2].gamma ));
             }
             
         }

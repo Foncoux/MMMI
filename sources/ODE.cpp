@@ -10,6 +10,7 @@
  */
 
 #include <array>
+#include <vector>
 #include <iostream>
 #include <string>
 #include <gsl/gsl_rng.h>

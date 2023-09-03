@@ -69,7 +69,7 @@ num_data1 <- lapply(data1, as.numeric)
 
 data_classe1 <- as.data.frame(num_data0)
 data_classe2 <- as.data.frame(num_data1)
-data_all <- data_classe1 + data_classe2
+data_all <- data_classe1# + data_classe2
 
 
 death = read.table('day_data.csv',header = FALSE, sep = ",")

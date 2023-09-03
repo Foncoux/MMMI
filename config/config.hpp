@@ -2,6 +2,8 @@
 #define CONFIG_HPP1
 
 #include "setup.hpp"
+void config_table_extern();
+void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::string filename);
 
 #define T_FINAL 295
 #define T_DEBUT 0
@@ -39,9 +41,10 @@
     #define COMPARTIMENT 5
     #define FCT_OBJ_CHOICE 1
 
-    extern std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT;
-    extern std::array<double, NB_CLASSE_AGE> PROP_PAR_CLASSE;
-    extern std::array<std::string, COMPARTIMENT> NAMES_COMPARTIMENT;
+    extern std::vector<int> TAB_DATE_CONFINEMENT;
+    extern std::vector<double> PROP_PAR_CLASSE;
+    extern std::vector<std::string> NAMES_COMPARTIMENT;
+    extern std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
 
     #if NB_CLASSE_AGE == 1
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 1
@@ -50,7 +53,7 @@
         #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
         #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week_age.csv"
         #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
-        #define SOCIAL_CONTACT_MATRIX "../data/social_contact_matrix_1.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/social_contact_matrix_1.csv"
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_1classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_1classe" //4
@@ -63,7 +66,7 @@
     #define DATA_MCMC_WRITE "../data/MCMC_result/data_MCMC"
 
     #define NB_ITE_BLACKBOX 20000
-    #define STOP_ALGO 0.000005
+    #define STOP_ALGO 0.0001
 
     #define BURNIN_STEP 10000
     #define ITE_RECUP_MCMC 10000
@@ -73,7 +76,7 @@
     
     #define SIGMA 0.7
 
-    #define MODEL 1
+    #define MODEL 3
 
 #endif
 

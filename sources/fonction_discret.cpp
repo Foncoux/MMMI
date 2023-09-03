@@ -1,4 +1,5 @@
 #include <array>
+#include <vector>
 #include <iostream>
 #include <gsl/gsl_rng.h>
 

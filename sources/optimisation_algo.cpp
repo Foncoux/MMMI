@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <vector>
 #include <algorithm>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
@@ -15,6 +16,7 @@
 #include "../headers/fonction_obj.hpp"
 #include "../headers/fonction_discret.hpp"
 #include "../headers/optimisation_algo.hpp"
+#include "../headers/fonction_continuous.hpp"
 
 /**
  * @brief effectue l'algorithme de recherche aléatoire
@@ -39,16 +41,30 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
 
-    while (bb_discret(f,param_opti,data) !=0)
+    if (DISCRET == 1)
     {
-        param_opti = set_parametres_random(random_ptr);
-        
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+
+        while (bb_discret(f,param_opti,data) !=0)
         {
-            set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+            param_opti = set_parametres_random(random_ptr);
+            
+            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+            {
+                set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+            }
         }
+    }else{
+
+        double y[COMPARTIMENT*NB_CLASSE_AGE];
+        
+        write_result_conversion_ODE_to_vector(f, y, 0);
+
+        integrate(f,param_opti,y);
+
     }
-   
+    
+
+    
     double fct_obj = fonction_obj(data,f,fct_obj_choice); ///////
     
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
@@ -63,12 +79,25 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
         
         std::cout << i << "   ";
 
-        if (bb_discret(f,p,data) == 0)
-        {
+        if (DISCRET == 1)
+        {       
+            if (bb_discret(f,p,data) == 0)
+            {
+                if(minimisation(fct_obj, data, f,fct_obj_choice))
+                {
+                    param_opti = p;
+                }
+            }
+        }else{
+  
+            write_result_conversion_ODE_to_vector(f, y, 0);
+            integrate(f,p,y);
+            
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
                 param_opti = p;
             }
+
         }
         
         std::cout << std::endl;
@@ -199,14 +228,28 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
     
-    while (bb_discret(f,param_opti,data) !=0)
+
+
+    if (DISCRET == 1)
     {
-        param_opti = set_parametres_random(random_ptr);
-        
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+
+        while (bb_discret(f,param_opti,data) !=0)
         {
-            set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+            param_opti = set_parametres_random(random_ptr);
+            
+            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+            {
+                set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+            }
         }
+    }else{
+
+        double y[COMPARTIMENT*NB_CLASSE_AGE];
+        
+        write_result_conversion_ODE_to_vector(f, y, 0);
+
+        integrate(f,param_opti,y);
+
     }
 
 
@@ -271,15 +314,32 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
         
         std::cout << i << "   " << sigma << "   ";
 
-        if (bb_discret(f,p,data) == 0)
-        {
+        if (DISCRET == 1)
+        {       
+            if (bb_discret(f,p,data) == 0)
+            {
+                if(minimisation(fct_obj, data, f,fct_obj_choice))
+                {
+                    i=0;
+                    accept_ite++;
+                    param_opti = p;
+                }
+            }else{i--;}
+        }else{
+  
+            write_result_conversion_ODE_to_vector(f, y, 0);
+            integrate(f,p,y);
+            
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
                 i=0;
                 accept_ite++;
                 param_opti = p;
             }
-        }else{i--;}
+
+        }
+
+
 
         std::cout << std::endl;    
         

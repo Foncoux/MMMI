@@ -9,7 +9,7 @@
 
 
 #define NB_CONFINEMENT 4
-#define DISCRET 1
+#define DISCRET 0
 #define NB_CLASSE_AGE 1
 
 #define ALGO 4

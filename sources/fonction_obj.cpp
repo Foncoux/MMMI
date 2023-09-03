@@ -1,5 +1,6 @@
 
 #include <array>
+#include <vector>
 #include <iostream>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_rng.h>

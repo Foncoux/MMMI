@@ -14,6 +14,7 @@
 #include <fstream>
 #include <string>
 #include <array>
+#include <vector>
 #include <iomanip> 
 #include <array>
 #include <gsl/gsl_rng.h>
@@ -253,6 +254,9 @@ void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CO
     file.close();    
 
 }
+
+
+
 
 
 

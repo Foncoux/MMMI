@@ -1,6 +1,8 @@
 #include <iostream>
 #include <array>
+#include <vector>
 #include <algorithm>
+#include <string>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_math.h>
@@ -15,6 +17,8 @@
 #include "../headers/fonction_obj.hpp"
 #include "../headers/fonction_discret.hpp"
 #include "../headers/optimisation_algo.hpp"
+
+
 
 
 
@@ -119,6 +123,7 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
             
         } 
     }while (! validation_parametres(p));
+
 
     return p;
 }
