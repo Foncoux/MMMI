@@ -18,7 +18,7 @@ class ODE
         
 };
 
-void set_condition_initiale(ODE& f,std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> &cond_init,int classe);
+void set_condition_initiale(ODE& f,std::array<double , COMPARTIMENT> &cond_init,int classe);
 
 
 #endif

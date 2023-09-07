@@ -339,7 +339,7 @@ void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
         
         for (size_t i = 0; i < COMPARTIMENT; i++)
         {
-            std::cout << "x0[" << i << "] : " << p[classe].x0[classe][i] << std::endl;
+            std::cout << "x0[" << i << "] : " << p[classe].x0[i] << std::endl;
         }
         std::cout << "\n" << std::endl;
     }  
@@ -404,7 +404,7 @@ void write_save_parameters(const std::array<parametres, NB_CLASSE_AGE>& p, const
         boost::property_tree::ptree x0_tree;
         for (size_t i = 0; i < COMPARTIMENT; i++) {
             boost::property_tree::ptree x0_item;
-            x0_item.put_value(p[classe].x0[classe][i]);
+            x0_item.put_value(p[classe].x0[i]);
             x0_tree.push_back(std::make_pair("", x0_item));
         }
         classe_tree.add_child("x0", x0_tree);
@@ -507,7 +507,7 @@ std::array<parametres, NB_CLASSE_AGE> read_save_parameters(const std::string& sa
         const auto& x0_tree = classe_tree.get_child("x0");
         int x0_index = 0;
         for (const auto& x0_item : x0_tree) {
-            p[classe].x0[classe][x0_index] = x0_item.second.get_value<double>();
+            p[classe].x0[x0_index] = x0_item.second.get_value<double>();
             x0_index++;
         }
 

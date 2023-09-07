@@ -50,13 +50,13 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,dou
             //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
 
 
-            p[classe].x0[classe][I_COMP] = p_opt[classe].x0[classe][I_COMP] + gsl_ran_gaussian(r, sigma/10000);
+            p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + gsl_ran_gaussian(r, sigma/10000);
 //            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
 //            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
-            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP];
-            p[classe].x0[classe][R_COMP] = 0;
-            p[classe].x0[classe][Q_COMP] = 0;
-            p[classe].x0[classe][D_COMP] = 0;
+            p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
+            p[classe].x0[R_COMP] = 0;
+            p[classe].x0[Q_COMP] = 0;
+            p[classe].x0[D_COMP] = 0;
             
             
         }
@@ -110,14 +110,14 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
 
             
             
-                
-            p[classe].x0[classe][I_COMP] = gsl_rng_uniform(r)*(4478/POP_TOT);
-//            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
-//            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
-            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP];
-            p[classe].x0[classe][R_COMP] = 0;
-            p[classe].x0[classe][Q_COMP] = 0;
-            p[classe].x0[classe][D_COMP] = 0;
+                         
+                p[classe].x0[I_COMP] = gsl_rng_uniform(r)*(4478/POP_TOT);
+    //            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
+    //            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
+                p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
+                p[classe].x0[R_COMP] = 0;
+                p[classe].x0[Q_COMP] = 0;
+                p[classe].x0[D_COMP] = 0;
                 
             
             
@@ -159,11 +159,11 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_radius(gsl_rng* r,std::array
             //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
             for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
             {
-                p[classe].x0[classe][I_COMP] = p_opt[classe].x0[classe][I_COMP] + ((gsl_rng_uniform(r)*(4478/POP_TOT)*2)-(4478/POP_TOT))*radius;
-                p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP];
-                p[classe].x0[classe][R_COMP] = 0;
-                p[classe].x0[classe][Q_COMP] = 0;
-                p[classe].x0[classe][D_COMP] = 0;
+                p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + ((gsl_rng_uniform(r)*(4478/POP_TOT)*2)-(4478/POP_TOT))*radius;
+                p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
+                p[classe].x0[R_COMP] = 0;
+                p[classe].x0[Q_COMP] = 0;
+                p[classe].x0[D_COMP] = 0;
             }
         }
     } while (! validation_parametres(p));
@@ -216,16 +216,16 @@ bool validation_parametres(const std::array<parametres,NB_CLASSE_AGE> p){
             ok=false;
         }
 
-        if(p[classe].x0[classe][I_COMP] < 0 || p[classe].x0[classe][I_COMP] > 4478/POP_TOT){
+        if(p[classe].x0[I_COMP] < 0 || p[classe].x0[I_COMP] > 4478/POP_TOT){
             ok=false;
         } 
 
         for (size_t compart = 0; compart < COMPARTIMENT; compart++)
         {         
-            somme = somme + p[classe].x0[classe][compart];
+            somme = somme + p[classe].x0[compart];
         }
 
-        somme1 = somme1 + p[classe].x0[classe][I_COMP];
+        somme1 = somme1 + p[classe].x0[I_COMP];
 
 
     }

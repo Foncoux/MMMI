@@ -34,6 +34,9 @@ ODE::ODE()
 
     case 1:
         m_function_discret = SIRQD_discret;
+        for(auto& subArray : m_result_integration) {
+            subArray.fill(0.0);
+        }
 
         break;
             
@@ -44,7 +47,8 @@ ODE::ODE()
     
     case 3:
         m_function = model_SIRQD; 
-        m_jacobian = jacobian_SIRQD; 
+        m_jacobian = jacobian_SIRQD;
+        break; 
 
     default:
         break;
@@ -57,14 +61,14 @@ ODE::ODE()
 }
 
 
-void set_condition_initiale(ODE &f,std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> &cond_init,int classe)
+void set_condition_initiale(ODE &f,std::array<double, COMPARTIMENT> &cond_init,int classe)
 {
    
-    f.m_result_integration[S_COMP][0] = cond_init[classe][S_COMP];
-    f.m_result_integration[I_COMP][0] = cond_init[classe][I_COMP];
-    f.m_result_integration[R_COMP][0] = cond_init[classe][R_COMP];
-    f.m_result_integration[Q_COMP][0] = cond_init[classe][Q_COMP];
-    f.m_result_integration[D_COMP][0] = cond_init[classe][D_COMP];
+    f.m_result_integration[S_COMP][0] = cond_init[S_COMP];
+    f.m_result_integration[I_COMP][0] = cond_init[I_COMP];
+    f.m_result_integration[R_COMP][0] = cond_init[R_COMP];
+    f.m_result_integration[Q_COMP][0] = cond_init[Q_COMP];
+    f.m_result_integration[D_COMP][0] = cond_init[D_COMP];
     
     
 }

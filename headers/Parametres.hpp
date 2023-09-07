@@ -14,7 +14,7 @@ struct parametres
     double r;
     double sigma;
 
-    std::array<std::array<double, COMPARTIMENT> , NB_CLASSE_AGE> x0;
+    std::array<double, COMPARTIMENT> x0;
     int i;
 
     

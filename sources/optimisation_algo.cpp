@@ -31,7 +31,7 @@
 std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<parametres,NB_CLASSE_AGE> cond_init)
 {
     
-    double y[COMPARTIMENT];
+    double y[COMPARTIMENT*NB_CLASSE_AGE];
     std::array<parametres,NB_CLASSE_AGE> p;
     int output_model_return;
     std::array<parametres,NB_CLASSE_AGE> param_opti = cond_init;
@@ -54,8 +54,6 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
             }
         }
     }else{
-
-        double y[COMPARTIMENT*NB_CLASSE_AGE];
         
         write_result_conversion_ODE_to_vector(f, y, 0);
 
@@ -217,7 +215,7 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
 {
     double sigma=SIGMA;
     
-    double y[COMPARTIMENT];
+    double y[COMPARTIMENT*NB_CLASSE_AGE];
 
     std::array<parametres,NB_CLASSE_AGE> param_opti = cond_init;
     std::array<parametres,NB_CLASSE_AGE> p;
@@ -244,7 +242,7 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
         }
     }else{
 
-        double y[COMPARTIMENT*NB_CLASSE_AGE];
+        
         
         write_result_conversion_ODE_to_vector(f, y, 0);
 
@@ -266,30 +264,6 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
 
             sigma = sigma/2;
 
-        }
-        if (sigma < 0.0001 && save_intermediaire == 0)
-        {   
-            save_intermediaire = 1;
-            if (WRITE_SAVE_PARAM == true)
-            {
-                write_save_parameters(param_opti,SAVE_TO_WRITE); 
-            }
-        }
-        if (sigma < 0.00001 && save_intermediaire == 1)
-        {   
-            save_intermediaire = 2;
-            if (WRITE_SAVE_PARAM == true)
-            {
-                write_save_parameters(param_opti,SAVE_TO_WRITE); 
-            }
-        }
-        if (sigma < 0.000001 && save_intermediaire == 2)
-        {   
-            save_intermediaire = 3;
-            if (WRITE_SAVE_PARAM == true)
-            {
-                write_save_parameters(param_opti,SAVE_TO_WRITE); 
-            }
         }
 
         if(sigma < STOP_ALGO)

@@ -27,11 +27,12 @@ double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
     double total_output_new,total_output_old,total_diff;
 
     total_output_old = 0;
+    int compteur = 0;
 
     for(size_t i=0;i< NB_DAY; i++)
     {
         total_output_new = 0;
-        
+        compteur++;
 
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {               
@@ -42,22 +43,25 @@ double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
         total_diff = total_output_new - total_output_old;
         total_output_old = total_output_new;
 
-        if( total_diff > 1.0e-10){
+        if( total_diff > 1.0e-15){
             somme = somme + (data.day_all[DEATH_DAY][i]*gsl_sf_log(total_diff) - total_diff);
             
+            
         }else{
+            /*
             if (data.day_all[DEATH_DAY][i] != 0)
             {
-                somme = somme + (data.day_all[DEATH_DAY][i]*gsl_sf_log(0.000000000001) - 0.000000000001)*10000000;    
+                somme = somme + (data.day_all[DEATH_DAY][i]*gsl_sf_log(1.0e-15) - 1.0e-15)*10000000;    
             }
-            
+            */
 
             
         }
         
     }
-
-    return somme;
+    
+    
+    return somme/compteur;
 }
 
 
@@ -72,11 +76,12 @@ double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& 
 {
     double somme = 0;
     double total_output;
-
+    int compteur = 0;
     
 
     for(size_t i=HOSP_DEBUT;i< NB_DAY; i++)
     {
+        compteur++;
         total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {                           
@@ -84,14 +89,19 @@ double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& 
         }   
         
 
-        if( total_output > 1.0e-10){
+        if( total_output > 1.0e-15){
             somme = somme + ( data.day_all[HOSP_DAY][i]*gsl_sf_log(total_output) - total_output);
             
+            
+        }if (data.day_all[DEATH_DAY][i] != 0)
+        {
+            somme = somme + (data.day_all[HOSP_DAY][i]*gsl_sf_log(1.0e-15) - 1.0e-15);    
         }
         
     }
+
     
-    return somme;
+    return somme/compteur;
 }
 
 /**
@@ -155,7 +165,7 @@ double min_log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_A
         total_output = total_output + output_data[classe].m_result_integration[R_COMP][38];
     }   
     
-    if( total_output > 1.0e-10){
+    if( total_output > 1.0e-15){
 
         if (total_output < (2.1/100) || total_output > (3.7/100))
         {   
@@ -179,12 +189,13 @@ double min_log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_A
 double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;   
-
+    int compteur = 0;
     std::array<double,NB_CLASSE_AGE> total_output = {0};
 
     for (size_t week = 0; week < NB_WEEK; week++)
     {
         total_output = {0};
+        compteur++;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
             for (size_t day = 0; day < 7; day++)
@@ -193,15 +204,14 @@ double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_A
             }
             
 
-            if( total_output[classe] > 1.0e-10)
+            if( total_output[classe] > 1.0e-15)
             { 
                 somme = somme + ( data.week_hosp_ages[classe][week]*gsl_sf_log(total_output[classe]) - total_output[classe]);
-
             }
         }
     }
 
-    return somme;
+    return somme/compteur;
 }
 
 
@@ -367,7 +377,7 @@ double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CL
     double classe2 = output_data[1].m_result_integration[R_COMP][38];
 
 
-    if( classe1 > 1.0e-10){
+    if( classe1 > 1.0e-15){
 
         if (classe1 < (0.6/100) || classe1 > (7.5/100))
         {   
@@ -376,7 +386,7 @@ double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CL
         }
     }
 
-    if( classe2 > 1.0e-10){
+    if( classe2 > 1.0e-15){
 
         if (classe2< (1.2/100) || classe2 > (5.1/100))
         {   
@@ -399,39 +409,70 @@ double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CL
 double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
-    double total_output;
+    double total_output1=0;
+    double total_output2=0;
+    double total_output=0;
 
-    
+    int compteur = 0;
 
-    for(size_t i=0;i< NB_DAY; i++)
+    for(size_t i=1;i< NB_DAY; i++)
     {
+        total_output1 = output_data[0].m_result_integration[D_COMP][i] - output_data[0].m_result_integration[D_COMP][i-1];
+        total_output2 = output_data[1].m_result_integration[D_COMP][i] - output_data[1].m_result_integration[D_COMP][i-1];
         if (data.day_death_age[0][i] < 0 || data.day_death_age[1][i] < 0)
         {   
-            total_output = (output_data[0].m_result_integration[D_COMP][i] + output_data[1].m_result_integration[D_COMP][i]);
-            if (total_output > 1.0e-10)
+            compteur++;
+            total_output = total_output1 + total_output2;
+            if ( total_output > 1.0e-15)
             {
                 somme = somme + ( data.day_death_age[2][i]*gsl_sf_log(total_output) - total_output);
+               
+            }else{
+                /*
+                if (data.day_death_age[2][i] != 0)
+                {
+                    somme = somme + (data.day_death_age[2][i]*gsl_sf_log(1.0e-15) - 1.0e-15);    
+                }
+                */
             }
             
             
         }else
         {
-            if (output_data[0].m_result_integration[D_COMP][i] > 1.0e-10 )
+             compteur = compteur +2;
+            if (total_output1 > 1.0e-15 )
             {
-                somme = somme + ( data.day_death_age[0][i]*gsl_sf_log(output_data[0].m_result_integration[D_COMP][i]) - output_data[0].m_result_integration[D_COMP][i]);
+                somme = somme + ( data.day_death_age[0][i]*gsl_sf_log(total_output1) - total_output1);
+                
+            }else{
+                /*
+                if (data.day_death_age[0][i] != 0)
+                {
+                    somme = somme + (data.day_death_age[0][i]*gsl_sf_log(1.0e-15) - 1.0e-15);    
+                }
+                */
             }
             
-            if (output_data[1].m_result_integration[D_COMP][i] > 1.0e-10 )
+            if (total_output2 > 1.0e-15 )
             {
-                somme = somme + ( data.day_death_age[1][i]*gsl_sf_log(output_data[1].m_result_integration[D_COMP][i]) - output_data[1].m_result_integration[D_COMP][i]);
+                somme = somme + ( data.day_death_age[1][i]*gsl_sf_log(total_output2) - total_output2);
+                
+            }else{
+                /*
+                if (data.day_death_age[1][i] != 0)
+                {
+                    somme = somme + (data.day_death_age[1][i]*gsl_sf_log(1.0e-15) - 1.0e-15);    
+                }
+                */
             }
         
         }
         
-        
     }
 
-    return somme;
+
+
+    return somme/compteur;
 }
 
 
@@ -451,11 +492,11 @@ double fonction_obj(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data
         {
             //result1 = min_log_likelyhood_death(data,output_data)/295;
             result2 = min_log_likelyhood_recovered(data,output_data);
-            result3 = min_log_likelyhood_hosp(data,output_data)/58;
+            result3 = min_log_likelyhood_hosp(data,output_data);
             //result4 = min_log_likelyhood_death_month2(data,output_data)/9;
-            result5 = (min_log_likelyhood_hosp_week(data,output_data)/42);
+            result5 = (min_log_likelyhood_hosp_week(data,output_data));
             result6 = min_log_likelyhood_recovered_ages2(data,output_data);
-            result8 = min_log_likelyhood_death_par_day_per_age(data,output_data)/330;
+            result8 = min_log_likelyhood_death_par_day_per_age(data,output_data);
             //result9 = min_log_likelyhood_infect(data,output_data)/295;
             result = result8 + result2 + result3 /*+ result4*/ + result5 + result6;// + result9;
             //

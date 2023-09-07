@@ -29,25 +29,25 @@ df_temp1 <- as.data.frame(num_data1)
 df0 =df_temp0
 df1 = df_temp1
 
-for (i in 1:999) {
+for (i in 1:99) {
   
   filename <- paste0("MCMC_param/save_MCMC", i, ".json")
   data <- fromJSON(filename)
   
   data0 = data$classe_0
-  data1 = data$classe_1
+#  data1 = data$classe_1
   
   num_data0 <- lapply(data0, as.numeric)  
-  num_data1 <- lapply(data1, as.numeric) 
+#  num_data1 <- lapply(data1, as.numeric) 
   
   num_data0$x0 = num_data0$x0[2]*17282163
-  num_data1$x0 = num_data1$x0[2]*17282163
+#  num_data1$x0 = num_data1$x0[2]*17282163
   
   df_temp0 <- as.data.frame(num_data0)
-  df_temp1 <- as.data.frame(num_data1)
+#  df_temp1 <- as.data.frame(num_data1)
   
   df0 = rbind(df0, df_temp0)
-  df1 = rbind(df1, df_temp1)
+#  df1 = rbind(df1, df_temp1)
 }
 
 intervals0 <- apply(df0, 2, function(column) quantile(column, c(0.025, 0.975)))
@@ -69,7 +69,7 @@ num_data1 <- lapply(data1, as.numeric)
 
 data_classe1 <- as.data.frame(num_data0)
 data_classe2 <- as.data.frame(num_data1)
-data_all <- data_classe1# + data_classe2
+data_all <- data_classe1 + data_classe2
 
 
 death = read.table('day_data.csv',header = FALSE, sep = ",")
@@ -95,7 +95,7 @@ par(new = TRUE)
 plot(x = 1:295, data_all$D, xlim = c(1, 295), ylim=range(c(0,10000)))
 
 
-plot(x = 237:295, death[2,237:295], xlim = c(237, 295), ylim=range(c(0,2000)))
+plot(x = 237:295, death[2,237:295], xlim = c(237, 295), ylim=range(c(0,10000)))
 par(new = TRUE)
 
 plot(x = 1:295, data_all$Q, xlim = c(237, 295), ylim=range(c(0,2000)))

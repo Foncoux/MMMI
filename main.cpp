@@ -66,7 +66,7 @@ int main (void)
     set_social_contact_matrix(data.social_contact_matrix,filename);
 
     read_data_day(DAY_DATA_filename, data.day_all);
-
+    
     if (NB_CLASSE_AGE != 1)
     {
         read_data_week_age(HOSP_WEEK_AGE_DATA_filename,data.week_hosp_ages);  
@@ -118,12 +118,19 @@ int main (void)
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
 
-    //bb_discret(f,param_opti,data);
+    
     double y[COMPARTIMENT*NB_CLASSE_AGE];
-        
-    write_result_conversion_ODE_to_vector(f, y, 0);
+    if (DISCRET == 1)
+    {
+        bb_discret(f,param_opti,data);
+    }else{
+        write_result_conversion_ODE_to_vector(f, y, 0);
+        integrate(f,param_opti,y);
+    }
+    
 
-    integrate(f,param_opti,y);
+    
+
 
     //std::cout << f[0].m_result_integration[0][0] << std::endl;
     if (WRITE_SAVE_PARAM == true)

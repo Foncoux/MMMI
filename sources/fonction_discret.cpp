@@ -110,7 +110,7 @@ int SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,param
     //std::cout << y[S_COMP][n+1] << " " << y[I_COMP][n+1] << " " << y[R_COMP][n+1] << " " << y[Q_COMP][n+1] << " " << y[D_COMP][n+1] << std::endl;
     
 
-    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0 || y[E_COMP][n+1] < 0 )
+    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0 /* || y[E_COMP][n+1] < 0*/ )
     {
         std::cout << "\n output negatifs \n" << std::endl;
         //return -2;

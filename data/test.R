@@ -1,59 +1,59 @@
 MCMC_data <- fromJSON("MCMC_result/data_MCMC0.json")
 
 MCMC_data0 = MCMC_data$Classe1
-MCMC_data1 = MCMC_data$Classe2
+#MCMC_data1 = MCMC_data$Classe2
 
 num_MCMC_data0 <- lapply(MCMC_data0, as.numeric)  
-num_MCMC_data1 <- lapply(MCMC_data1, as.numeric) 
+#num_MCMC_data1 <- lapply(MCMC_data1, as.numeric) 
 
 df_temp0 <- as.data.frame(num_MCMC_data0)
-df_temp1 <- as.data.frame(num_MCMC_data1)
+#df_temp1 <- as.data.frame(num_MCMC_data1)
 
 dfMCMC0 =df_temp0
-dfMCMC1 = df_temp1
+#dfMCMC1 = df_temp1
 
 Classe1_list = list()
 Classe1_list[[length(Classe1_list) + 1]] <- dfMCMC0
-Classe2_list = list()
-Classe2_list[[length(Classe2_list) + 1]] <- dfMCMC1
+#Classe2_list = list()
+#Classe2_list[[length(Classe2_list) + 1]] <- dfMCMC1
 
 for (i in 1:99) {
   filename <- paste0("MCMC_result/data_MCMC", i, ".json")
   MCMC_data <- fromJSON(filename)
   
   MCMC_data0 = MCMC_data$Classe1
-  MCMC_data1 = MCMC_data$Classe2
+#  MCMC_data1 = MCMC_data$Classe2
   
   num_MCMC_data0 <- lapply(MCMC_data0, as.numeric)  
-  num_MCMC_data1 <- lapply(MCMC_data1, as.numeric) 
+#  num_MCMC_data1 <- lapply(MCMC_data1, as.numeric) 
   
   df_temp0 <- as.data.frame(num_MCMC_data0)
-  df_temp1 <- as.data.frame(num_MCMC_data1)
+#  df_temp1 <- as.data.frame(num_MCMC_data1)
   
   dfMCMC0 =df_temp0
-  dfMCMC1 = df_temp1
+#  dfMCMC1 = df_temp1
   
   Classe1_list[[length(Classe1_list) + 1]] <- dfMCMC0
-  Classe2_list[[length(Classe2_list) + 1]] <- dfMCMC1
+#  Classe2_list[[length(Classe2_list) + 1]] <- dfMCMC1
 }
 
-Compartiment = 1
+Compartiment = 5
 
 df1 <- data.frame(matrix(ncol = 295, nrow = 1000))
 colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 1000))
-colnames(df2) <- paste0("Jour_", 1:295)
+#df2 <- data.frame(matrix(ncol = 295, nrow = 1000))
+#colnames(df2) <- paste0("Jour_", 1:295)
 for (j in 1:295) {
   COMP1 = c()
-  COMP2 = c()
+  #COMP2 = c()
   for (i in 1:100) {
     COMP1 = c(COMP1,Classe1_list[[i]][j,Compartiment])
-    COMP2 = c(COMP2,Classe2_list[[i]][j,Compartiment])
+   # COMP2 = c(COMP2,Classe2_list[[i]][j,Compartiment])
     
     
   }
   df1[,j] = COMP1
-  df2[,j] = COMP2  
+  #df2[,j] = COMP2  
 }
 df_all = df1 + df2
 

@@ -50,10 +50,8 @@ void integrate(std::array<ODE,NB_CLASSE_AGE>& f,std::array<parametres,NB_CLASSE_
         p[classe].i=0;
     }
 
-    
-
-    gsl_odeiv2_system sys = {f[0].m_function, f[0].m_jacobian, COMPARTIMENT, &p};
-    gsl_odeiv2_driver * d = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkf45, 1e-6, 1e-6, 0.0);
+    gsl_odeiv2_system sys = {f[0].m_function, f[0].m_jacobian, COMPARTIMENT*NB_CLASSE_AGE, &p};
+    gsl_odeiv2_driver * d = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkf45, 1e-2, 1e-6, 1e-4);
 
     double t = T_DEBUT;
 
@@ -66,7 +64,7 @@ void integrate(std::array<ODE,NB_CLASSE_AGE>& f,std::array<parametres,NB_CLASSE_
             }
         }
         
-        double ti = i * (double)T_FINAL / (double)T_FINAL;
+        double ti = (double)i;
         
         int status = gsl_odeiv2_driver_apply (d, &t, ti, y);
         //printf ("%.5e %.5e %.5e %.5e %.5e %.5e\n", t, y[0], y[1], y[2], y[3], y[4]);

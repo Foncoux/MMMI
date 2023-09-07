@@ -9,8 +9,9 @@
 
 
 #define NB_CONFINEMENT 4
-#define DISCRET 0
-#define NB_CLASSE_AGE 1
+#define DISCRET 1
+#define NB_CLASSE_AGE 2
+#define MODEL 1
 
 #define ALGO 4
 #define READ_SAVE_PARAM true
