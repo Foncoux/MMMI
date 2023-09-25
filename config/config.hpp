@@ -2,6 +2,7 @@
 #define CONFIG_HPP1
 
 #include "setup.hpp"
+
 void config_table_extern();
 void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::string filename);
 
@@ -36,6 +37,17 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
 
 #if SETUP == SIRQD
+
+    #define NB_PARAM 5
+    #define PARAM_ID_DELTA 0
+    #define PARAM_ID_GAMMA 1
+    #define PARAM_ID_EPS 2
+    #define PARAM_ID_R 3
+
+    #define PARAM_ID_X0_infect 4
+
+    #define NB_PARAM_TOT NB_PARAM + NB_CONFINEMENT + 1
+
 
     #define COMPARTIMENT 5
     #define FCT_OBJ_CHOICE 1

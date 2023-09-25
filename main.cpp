@@ -6,6 +6,7 @@
 #include <string>
 
 #include "config/config.hpp"
+#include "headers/Data.hpp"
 #include "headers/Parametres.hpp"
 #include "headers/ODE.hpp"
 #include "headers/read_and_write_data.hpp"
@@ -13,6 +14,8 @@
 #include "headers/MCMC.hpp"
 #include "headers/fonction_discret.hpp"
 #include "headers/fonction_continuous.hpp"
+
+
 
 int main (void)
 {   
@@ -46,39 +49,16 @@ int main (void)
 
     config_table_extern();
     int fct_obj_choice = FCT_OBJ_CHOICE;
-
-    
-
     Data data;
 
     time_t seed = time(NULL);
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr, seed);
 
-
-    std::array<parametres,NB_CLASSE_AGE> cond_init;
+    std::array<ODE,NB_CLASSE_AGE> f;
     std::array<parametres,NB_CLASSE_AGE> param_opti;
 
-    std::array<ODE,NB_CLASSE_AGE> f;
-
-
-    std::string filename = SOCIAL_CONTACT_MATRIX_filename;
-    set_social_contact_matrix(data.social_contact_matrix,filename);
-
-    read_data_day(DAY_DATA_filename, data.day_all);
-    
-    if (NB_CLASSE_AGE != 1)
-    {
-        read_data_week_age(HOSP_WEEK_AGE_DATA_filename,data.week_hosp_ages);  
-    }
-    
-     
-
-    read_data_month_age(DEATH_MONTH_AGE_DATA_filename,data.month_death_ages);
-
-    read_data_day(DAY_DEATH_AGE_DATA_filename, data.day_death_age);
-    
-
+    std::array<parametres,NB_CLASSE_AGE> cond_init;
     if (READ_SAVE_PARAM)
     {
         cond_init = read_save_parameters(SAVE_TO_READ);
@@ -88,27 +68,9 @@ int main (void)
     }
     
 
+    param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, cond_init);
 
-    switch (ALGO)
-    {
-    case 1:
-        param_opti = random_search(random_ptr,f,data,fct_obj_choice,cond_init);
-        break;
 
-    case 2:
-        param_opti = random_search_radius(random_ptr,f,data,fct_obj_choice,cond_init);
-        break;  
-    case 3:
-        param_opti = MCMC(cond_init,random_ptr,f,data);
-        break; 
-    case 4:
-        param_opti = random_search_normal(random_ptr,f,data,fct_obj_choice,cond_init);
-        break;
-    default:
-        std::cout << "mauvais choix d'algo" <<   std::endl;
-        return 0;
-        break;
-    }
 
     //std::cout << param_opti[0].x0[0][0] << std::endl;
     

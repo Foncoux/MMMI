@@ -1,3 +1,14 @@
 /build
-/data/MCMC_param
-/data/MCMC_result
+/data/MCMC_param/*
+/data/MCMC_result/*
+/1-memoire-document/autre/*
+/1-memoire-document/latex/main.aux
+/1-memoire-document/latex/main.bbl
+/1-memoire-document/latex/main.blg
+/1-memoire-document/latex/main.fdb_latexmk
+/1-memoire-document/latex/main.fls
+/1-memoire-document/latex/main.log
+/1-memoire-document/latex/main.out
+/1-memoire-document/latex/main.synctex.gz
+/1-memoire-document/latex/main.toc
+

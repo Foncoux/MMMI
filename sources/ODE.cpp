@@ -17,6 +17,7 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"
@@ -50,6 +51,11 @@ ODE::ODE()
         m_jacobian = jacobian_SIRQD;
         break; 
 
+    case 4:
+        m_function_discret_new = SIRQD_discret_new;
+        for(auto& subArray : m_result_integration) {
+            subArray.fill(0.0);
+        }
     default:
         break;
     }

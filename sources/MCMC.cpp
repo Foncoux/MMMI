@@ -21,6 +21,7 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"

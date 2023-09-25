@@ -7,6 +7,7 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"
@@ -21,18 +22,17 @@
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative au mort totales
  */
-double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
     double total_output_new,total_output_old,total_diff;
 
     total_output_old = 0;
-    int compteur = 0;
 
     for(size_t i=0;i< NB_DAY; i++)
     {
         total_output_new = 0;
-        compteur++;
+        
 
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {               
@@ -61,7 +61,7 @@ double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
     }
     
     
-    return somme/compteur;
+    return somme;
 }
 
 
@@ -72,16 +72,16 @@ double min_log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux hospitalisations totales
  */
-double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
     double total_output;
-    int compteur = 0;
+    
     
 
     for(size_t i=HOSP_DEBUT;i< NB_DAY; i++)
     {
-        compteur++;
+        
         total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {                           
@@ -90,18 +90,18 @@ double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& 
         
 
         if( total_output > 1.0e-15){
-            somme = somme + ( data.day_all[HOSP_DAY][i]*gsl_sf_log(total_output) - total_output);
-            
-            
-        }if (data.day_all[DEATH_DAY][i] != 0)
+            somme = somme + ( data.day_all[HOSP_DAY][i]*gsl_sf_log(total_output) - total_output);  
+        }
+        /*
+        if (data.day_all[DEATH_DAY][i] != 0)
         {
             somme = somme + (data.day_all[HOSP_DAY][i]*gsl_sf_log(1.0e-15) - 1.0e-15);    
         }
-        
+        */
     }
 
     
-    return somme/compteur;
+    return somme;
 }
 
 /**
@@ -111,7 +111,7 @@ double min_log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& 
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux infections totales
  */
-double min_log_likelyhood_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
     double total_output;
@@ -154,7 +154,7 @@ double min_log_likelyhood_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux rétabils totaux
  */
-double min_log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
     double total_output;    
@@ -186,16 +186,16 @@ double min_log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_A
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux hosp par classes d'age
  */
-double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;   
-    int compteur = 0;
+    
     std::array<double,NB_CLASSE_AGE> total_output = {0};
 
     for (size_t week = 0; week < NB_WEEK; week++)
     {
         total_output = {0};
-        compteur++;
+        
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
             for (size_t day = 0; day < 7; day++)
@@ -211,7 +211,7 @@ double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_A
         }
     }
 
-    return somme/compteur;
+    return somme;
 }
 
 
@@ -222,7 +222,7 @@ double min_log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_A
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux morts par classes d'age par mois 
  */
-double min_log_likelyhood_death_month(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_death_month(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;   
 
@@ -272,7 +272,7 @@ double min_log_likelyhood_death_month(const Data &data, std::array<ODE,NB_CLASSE
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux morts par classes d'age par mois 
  */
-double min_log_likelyhood_death_month2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_death_month2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;   
 
@@ -306,7 +306,7 @@ double min_log_likelyhood_death_month2(const Data &data, std::array<ODE,NB_CLASS
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux retablis par classes d'age 
  */
-double min_log_likelyhood_recovered_ages(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_recovered_ages(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
       
@@ -369,7 +369,7 @@ double min_log_likelyhood_recovered_ages(const Data &data, std::array<ODE,NB_CLA
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux retablis par classes d'age 
  */
-double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
       
@@ -406,14 +406,14 @@ double min_log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CL
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative au mort totales
  */
-double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
 {
     double somme = 0;
     double total_output1=0;
     double total_output2=0;
     double total_output=0;
 
-    int compteur = 0;
+    
 
     for(size_t i=1;i< NB_DAY; i++)
     {
@@ -421,7 +421,7 @@ double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE
         total_output2 = output_data[1].m_result_integration[D_COMP][i] - output_data[1].m_result_integration[D_COMP][i-1];
         if (data.day_death_age[0][i] < 0 || data.day_death_age[1][i] < 0)
         {   
-            compteur++;
+            
             total_output = total_output1 + total_output2;
             if ( total_output > 1.0e-15)
             {
@@ -439,7 +439,7 @@ double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE
             
         }else
         {
-             compteur = compteur +2;
+             
             if (total_output1 > 1.0e-15 )
             {
                 somme = somme + ( data.day_death_age[0][i]*gsl_sf_log(total_output1) - total_output1);
@@ -472,7 +472,7 @@ double min_log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE
 
 
 
-    return somme/compteur;
+    return somme;
 }
 
 
@@ -490,21 +490,21 @@ double fonction_obj(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data
     if(loglikelyhood == 1){
         if (NB_CLASSE_AGE == 2)
         {
-            //result1 = min_log_likelyhood_death(data,output_data)/295;
-            result2 = min_log_likelyhood_recovered(data,output_data);
-            result3 = min_log_likelyhood_hosp(data,output_data);
-            //result4 = min_log_likelyhood_death_month2(data,output_data)/9;
-            result5 = (min_log_likelyhood_hosp_week(data,output_data));
-            result6 = min_log_likelyhood_recovered_ages2(data,output_data);
-            result8 = min_log_likelyhood_death_par_day_per_age(data,output_data);
-            //result9 = min_log_likelyhood_infect(data,output_data)/295;
+            //result1 = log_likelyhood_death(data,output_data)/295;
+            result2 = log_likelyhood_recovered(data,output_data);
+            result3 = log_likelyhood_hosp(data,output_data);
+            //result4 = log_likelyhood_death_month2(data,output_data)/9;
+            result5 = (log_likelyhood_hosp_week(data,output_data));
+            result6 = log_likelyhood_recovered_ages2(data,output_data);
+            result8 = log_likelyhood_death_par_day_per_age(data,output_data)/330;
+            //result9 = log_likelyhood_infect(data,output_data)/295;
             result = result8 + result2 + result3 /*+ result4*/ + result5 + result6;// + result9;
             //
             result7 = 1000; 
             //std::cout << min_log_likelyhood_death(data,output_data)/295 << "  " << min_log_likelyhood_recovered(data,output_data) << "  " << min_log_likelyhood_hosp(data,output_data)/58 << "   " << min_log_likelyhood_death_month2(data,output_data)/9 << "  " << min_log_likelyhood_hosp_week(data,output_data)/42 << "  " << min_log_likelyhood_recovered_ages2(data,output_data) << "  " ;
         }else
         {
-            result = min_log_likelyhood_death(data,output_data)/295 + min_log_likelyhood_recovered(data,output_data) + min_log_likelyhood_hosp(data,output_data)/58; //+ min_log_likelyhood_infect(data,output_data)/10000;// 
+            result = log_likelyhood_death(data,output_data)/295 + log_likelyhood_recovered(data,output_data) + log_likelyhood_hosp(data,output_data)/58; //+ min_log_likelyhood_infect(data,output_data)/10000;// 
 
         }
         

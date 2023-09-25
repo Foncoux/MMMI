@@ -1,6 +1,7 @@
 # Crée des variables avec les fichiers à compiler
 set(SOURCES
     
+    Data.cpp
     ODE.cpp
     MCMC.cpp
     optimisation_algo.cpp

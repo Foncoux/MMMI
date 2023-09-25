@@ -11,16 +11,13 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"
 #include "../headers/fonction_obj.hpp"
 #include "../headers/fonction_discret.hpp"
 #include "../headers/optimisation_algo.hpp"
-
-
-
-
 
 
 /**
@@ -173,6 +170,27 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_radius(gsl_rng* r,std::array
     return p;
 
 }
+
+void conversion(const std::array<parametres,NB_CLASSE_AGE>& p_struct,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p_tab)
+{
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        p_tab[NB_PARAM_TOT*classe + PARAM_ID_DELTA] = p_struct[classe].delta;
+        p_tab[NB_PARAM_TOT*classe + PARAM_ID_GAMMA] = p_struct[classe].gamma;
+        p_tab[NB_PARAM_TOT*classe + PARAM_ID_EPS] = p_struct[classe].eps;
+        p_tab[NB_PARAM_TOT*classe + PARAM_ID_R] = p_struct[classe].r;
+
+        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 0] = p_struct[classe].beta[0];
+        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 1] = p_struct[classe].beta[1];
+        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 2] = p_struct[classe].beta[2];
+        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 3] = p_struct[classe].beta[3];
+        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 4] = p_struct[classe].beta[4];
+    }
+    
+}
+
+
+
 
 /**
  * @brief valide ou non les parametres contenu dans le tableau de parametres p

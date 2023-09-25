@@ -10,13 +10,43 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"
 #include "../headers/fonction_obj.hpp"
 #include "../headers/fonction_discret.hpp"
 #include "../headers/optimisation_algo.hpp"
+#include "../headers/MCMC.hpp"
 #include "../headers/fonction_continuous.hpp"
+
+
+std::array<parametres,NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,Data data,int fct_obj_choice,std::array<parametres,NB_CLASSE_AGE> cond_init)
+{   
+    std::array<parametres,NB_CLASSE_AGE> param_opti;
+    switch (ALGO)
+    {
+    case 1:
+        param_opti = random_search(random_ptr,f,data,fct_obj_choice,cond_init);
+        break;
+
+    case 2:
+        param_opti = random_search_radius(random_ptr,f,data,fct_obj_choice,cond_init);
+        break;  
+    case 3:
+        param_opti = MCMC(cond_init,random_ptr,f,data);
+        break; 
+    case 4:
+        param_opti = random_search_normal(random_ptr,f,data,fct_obj_choice,cond_init);
+        break;
+    default:
+        std::cout << "mauvais choix d'algo" <<   std::endl;
+        exit(0);
+        break;
+    }
+    return param_opti;
+}
+
 
 /**
  * @brief effectue l'algorithme de recherche aléatoire
