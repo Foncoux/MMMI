@@ -47,7 +47,7 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,dou
             //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
 
 
-            p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + gsl_ran_gaussian(r, sigma/10000);
+            p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + gsl_ran_gaussian(r, sigma/100);
 //            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
 //            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
             p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
