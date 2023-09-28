@@ -92,13 +92,13 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #define NB_ITE_BLACKBOX 20000
     #define STOP_ALGO 0.0001
 
-    #define BURNIN_STEP 10000
+    #define BURNIN_STEP 1000000
     #define ITE_RECUP_MCMC 1000
     #define NB_POST_DIST 100
 
     #define RADIUS_INIT 0.05
     
-    #define SIGMA 0.1
+    #define SIGMA 0.02
 
 #endif
 

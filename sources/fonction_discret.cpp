@@ -10,6 +10,22 @@
 #include "../headers/ODE.hpp"
 #include "../headers/read_and_write_data.hpp"
 #include "../headers/fonction_discret.hpp"
+#include "../headers/fonction_continuous.hpp"
+
+
+int model_choice(std::array<ODE,NB_CLASSE_AGE> f,std::array<parametres,NB_CLASSE_AGE> param_opti,Data data)
+{
+    double y[COMPARTIMENT*NB_CLASSE_AGE];
+    if (DISCRET == 1)
+    {
+        bb_discret(f,param_opti,data);
+    }else{
+        write_result_conversion_ODE_to_vector(f, y, 0);
+        integrate(f,param_opti,y);
+    }
+    return 0;
+}
+
 
 /**
  * @brief permet d'appliquer la blackbox avec le modèle en temps discret pour plusieurs classe d'age

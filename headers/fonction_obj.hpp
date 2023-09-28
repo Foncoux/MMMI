@@ -14,7 +14,7 @@ double log_likelyhood_recovered_ages2(const Data &data, std::array<ODE,NB_CLASSE
 double log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 
 
-double min_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
+double mean_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 double min_square_infect(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 double min_square_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);
 double min_square_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data);

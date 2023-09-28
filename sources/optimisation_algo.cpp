@@ -93,7 +93,7 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
     
 
     
-    double fct_obj = fonction_obj(data,f,fct_obj_choice); ///////
+    double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
     
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
     {   
@@ -174,7 +174,7 @@ std::array<parametres,NB_CLASSE_AGE> random_search_radius(gsl_rng* random_ptr,st
     }
 
 
-    double fct_obj = fonction_obj(data,f,fct_obj_choice); ///////
+    double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
     
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
     {   
@@ -281,7 +281,7 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
     }
 
 
-    double fct_obj = fonction_obj(data,f,fct_obj_choice); ///////
+    double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
     int save_intermediaire = 0;
     double accept_ite = 0;
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
@@ -370,11 +370,11 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
  */
 bool minimisation(double &fct_obj, const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int fct_obj_choice)
 {
-    double fct_obj_temp = fonction_obj(data, output_data,fct_obj_choice);
+    double fct_obj_temp = -fonction_obj(data, output_data,fct_obj_choice);
     
     std::cout << fct_obj << "  |  " << fct_obj_temp;
 
-    if(fct_obj_temp > fct_obj)
+    if(fct_obj_temp < fct_obj)
     {
         fct_obj = fct_obj_temp;
         

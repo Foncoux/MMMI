@@ -71,9 +71,8 @@ int main (void)
     param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, cond_init);
 
 
-
-    //std::cout << param_opti[0].x0[0][0] << std::endl;
     
+
     
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
@@ -81,6 +80,7 @@ int main (void)
     }
 
     
+
     double y[COMPARTIMENT*NB_CLASSE_AGE];
     if (DISCRET == 1)
     {
