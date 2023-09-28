@@ -71,26 +71,16 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
 
-    if (DISCRET == 1)
+    while (bb_discret(f,param_opti,data) !=0)
     {
-
-        while (bb_discret(f,param_opti,data) !=0)
-        {
-            param_opti = set_parametres_random(random_ptr);
-            
-            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-            {
-                set_condition_initiale(f[classe],param_opti[classe].x0,classe);
-            }
-        }
-    }else{
+        param_opti = set_parametres_random(random_ptr);
         
-        write_result_conversion_ODE_to_vector(f, y, 0);
-
-        integrate(f,param_opti,y);
-
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        {
+            set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+        }
     }
-    
+
 
     
     double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
@@ -107,26 +97,15 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
         
         std::cout << i << "   ";
 
-        if (DISCRET == 1)
-        {       
-            if (bb_discret(f,p,data) == 0)
-            {
-                if(minimisation(fct_obj, data, f,fct_obj_choice))
-                {
-                    param_opti = p;
-                }
-            }
-        }else{
-  
-            write_result_conversion_ODE_to_vector(f, y, 0);
-            integrate(f,p,y);
             
+        if (bb_discret(f,p,data) == 0)
+        {
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
                 param_opti = p;
             }
-
         }
+    
         
         std::cout << std::endl;
     }
@@ -258,27 +237,18 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
     
 
 
-    if (DISCRET == 1)
+
+
+    while (bb_discret(f,param_opti,data) !=0)
     {
-
-        while (bb_discret(f,param_opti,data) !=0)
+        param_opti = set_parametres_random(random_ptr);
+        
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
-            param_opti = set_parametres_random(random_ptr);
-            
-            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-            {
-                set_condition_initiale(f[classe],param_opti[classe].x0,classe);
-            }
+            set_condition_initiale(f[classe],param_opti[classe].x0,classe);
         }
-    }else{
-
-        
-        
-        write_result_conversion_ODE_to_vector(f, y, 0);
-
-        integrate(f,param_opti,y);
-
     }
+
 
 
     double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
@@ -318,30 +288,17 @@ std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,st
         
         std::cout << i << "   " << sigma << "   ";
 
-        if (DISCRET == 1)
-        {       
-            if (bb_discret(f,p,data) == 0)
-            {
-                if(minimisation(fct_obj, data, f,fct_obj_choice))
-                {
-                    i=0;
-                    accept_ite++;
-                    param_opti = p;
-                }
-            }else{i--;}
-        }else{
-  
-            write_result_conversion_ODE_to_vector(f, y, 0);
-            integrate(f,p,y);
-            
+    
+        if (bb_discret(f,p,data) == 0)
+        {
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
                 i=0;
                 accept_ite++;
                 param_opti = p;
             }
+        }else{i--;}
 
-        }
 
 
 

@@ -78,17 +78,8 @@ int main (void)
     {
         set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
-
+    bb_discret(f,param_opti,data);
     
-
-    double y[COMPARTIMENT*NB_CLASSE_AGE];
-    if (DISCRET == 1)
-    {
-        bb_discret(f,param_opti,data);
-    }else{
-        write_result_conversion_ODE_to_vector(f, y, 0);
-        integrate(f,param_opti,y);
-    }
     
 
     

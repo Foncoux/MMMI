@@ -13,7 +13,7 @@
 #define NB_CLASSE_AGE 1
 #define MODEL 1
 
-#define ALGO 4
+#define ALGO 3
 #define READ_SAVE_PARAM false
 #define WRITE_SAVE_PARAM true
 

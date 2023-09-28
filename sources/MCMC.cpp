@@ -60,26 +60,19 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
     }
 
 
-    if (DISCRET == 1)
+   
+
+    while (bb_discret(f,cond_init,data) !=0)
     {
-
-        while (bb_discret(f,cond_init,data) !=0)
-        {
-            std::cout << "param_out" << std::endl;
-            cond_init = set_parametres_random(r);
-            
-            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-            {
-                set_condition_initiale(f[classe],cond_init[classe].x0,classe);
-            }
-        }
-    }else{
+        std::cout << "param_out" << std::endl;
+        cond_init = set_parametres_random(r);
         
-        write_result_conversion_ODE_to_vector(f, y, 0);
-
-        integrate(f,cond_init,y);
-
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        {
+            set_condition_initiale(f[classe],cond_init[classe].x0,classe);
+        }
     }
+    
 
 
     
@@ -102,62 +95,9 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
         }        
 
 
-        if (DISCRET == 1)
+
+        if (bb_discret(f,p_new,data) == 0)
         {
-            if (bb_discret(f,p_new,data) == 0)
-            {
-                L_new = fonction_obj(data,f,1);
-
-                alpha = gsl_rng_uniform(r);
-
-                if (gsl_sf_log(alpha) < L_new - L_old)
-                {   
-                    
-                    p_old = p_new;
-                    L_old = L_new;
-
-                    if( i > BURNIN_STEP ){
-                        nombre_acceptation++;
-                    }
-
-                }
-
-                if( i > BURNIN_STEP )
-                {
-                    taux_acceptation = nombre_acceptation/(i-BURNIN_STEP+1);
-                    if (iter_select > ITE_RECUP_MCMC)
-                    {
-                        iter_select=0;
-                        savename = SAVE_MCMC_WRITE + std::to_string(j); 
-                        write_save_parameters(p_old,savename);
-                        bb_discret(f,p_old,data);
-                        savename = DATA_MCMC_WRITE + std::to_string(j);
-                        write_data(f,savename);
-
-                        j++;
-                        if (j >= NB_POST_DIST)
-                        {
-                            stop = true;
-                            
-                        }
-                        std::cout << i << "  " << j << "  " << taux_acceptation << "  " << L_old << std::endl;
-                    }
-                    
-                }else
-                {
-                    std::cout << i << "  " << j << "  " << taux_acceptation << "  " << L_old << std::endl;
-                }
-                iter_select++;
-            }else
-            {
-                i--;
-            }     
-        }else{
-
-            write_result_conversion_ODE_to_vector(f, y, 0);
-
-            integrate(f,p_new,y);
-
             L_new = fonction_obj(data,f,1);
 
             alpha = gsl_rng_uniform(r);
@@ -182,21 +122,7 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
                     iter_select=0;
                     savename = SAVE_MCMC_WRITE + std::to_string(j); 
                     write_save_parameters(p_old,savename);
-
-                    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-                    {
-                        set_condition_initiale(f[classe],p_old[classe].x0,classe);
-                    }
-
-                    if (DISCRET == 1)
-                    {
-                        bb_discret(f,p_old,data);
-                    }else{
-                        write_result_conversion_ODE_to_vector(f, y, 0);
-                        integrate(f,p_new,y);
-                    }
-                    
-                    
+                    bb_discret(f,p_old,data);
                     savename = DATA_MCMC_WRITE + std::to_string(j);
                     write_data(f,savename);
 
@@ -214,8 +140,11 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
                 std::cout << i << "  " << j << "  " << taux_acceptation << "  " << L_old << std::endl;
             }
             iter_select++;
-
-        }
+        }else
+        {
+            i--;
+        }     
+    
         
         i++;
     }
