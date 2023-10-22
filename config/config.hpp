@@ -21,13 +21,14 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define NB_DAY 295
 #define HOSP_DEBUT 237
 
-#define NB_DATA_DAY 5
+#define NB_DATA_DAY 6
 #define NB_DATA_DEATH_AGE_DAY 3
 #define DEATH_DAY 0
 #define HOSP_DAY 1
 #define PREV_LOW_DAY 2
 #define PREV_MEDIUM_DAY 3
 #define PREV_HIGH_DAY 4
+#define HOSP_WEEK_DAY 4
 
 #define NB_CLASSE_WEEK 2
 #define NB_WEEK 42
@@ -90,15 +91,15 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #define DATA_MCMC_WRITE "../data/MCMC_result/data_MCMC"
 
     #define NB_ITE_BLACKBOX 20000
-    #define STOP_ALGO 0.0001
+    #define STOP_ALGO 0.00001
 
     #define BURNIN_STEP 1000000
     #define ITE_RECUP_MCMC 1000
-    #define NB_POST_DIST 100
+    #define NB_POST_DIST 1000
 
     #define RADIUS_INIT 0.05
     
-    #define SIGMA 0.02
+    
 
 #endif
 

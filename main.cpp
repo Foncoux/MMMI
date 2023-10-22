@@ -19,46 +19,14 @@
 
 int main (void)
 {   
- 
-/*
-    Data data;
-    set_social_contact_matrix(data.social_constact_matrix);
-
-    ODE f[1] = {3};
-    parametres p;
-    p.beta[0] = 0.8;
-    p.beta[1] = 0.5;
-    p.beta[2] = 0.7;
-
-    p.delta = 0.2;
-    p.eps = 0.3;
-    p.gamma = 0.2#include <vector>;
-    p.r = 0.1;
-    
-    p.x0[0][I_COMP] = 3250/POP_TOT;
-    p.x0[0][S_COMP] = 1-p.x0[0][I_COMP];
-    p.x0[0][R_COMP] = 0;
-    p.x0[0][Q_COMP] = 0;
-    p.x0[0][D_COMP] = 0;
-
-    set_condition_initiale(f,p.x0);
-    bb_discret(f,p,data);
-       
-    write_data(f[0].m_result_integration); 
-*/
-
     config_table_extern();
     int fct_obj_choice = FCT_OBJ_CHOICE;
     Data data;
-
-    time_t seed = time(NULL);
-    gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
-    gsl_rng_set(random_ptr, seed);
-
     std::array<ODE,NB_CLASSE_AGE> f;
     std::array<parametres,NB_CLASSE_AGE> param_opti;
-
     std::array<parametres,NB_CLASSE_AGE> cond_init;
+    gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
+
     if (READ_SAVE_PARAM)
     {
         cond_init = read_save_parameters(SAVE_TO_READ);
@@ -67,25 +35,10 @@ int main (void)
         cond_init = set_parametres_random(random_ptr);
     }
     
-
     param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, cond_init);
 
-
+    model(f,param_opti,data);
     
-
-    
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-    {
-        set_condition_initiale(f[classe],param_opti[classe].x0,classe);
-    }
-    bb_discret(f,param_opti,data);
-    
-    
-
-    
-
-
-    //std::cout << f[0].m_result_integration[0][0] << std::endl;
     if (WRITE_SAVE_PARAM == true)
     {
         write_save_parameters(param_opti,SAVE_TO_WRITE); 
@@ -93,7 +46,6 @@ int main (void)
     
     write_data(f,DATA_TO_WRITE); 
     
-
     print_parameter(param_opti);
 
     gsl_rng_free(random_ptr);

@@ -12,12 +12,15 @@
 #include <vector>
 
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_sf_log.h>
+#include <gsl/gsl_sf_exp.h>
+
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
@@ -36,15 +39,15 @@ std::array<parametres,NB_CLASSE_AGE> MCMC(std::array<parametres,NB_CLASSE_AGE> c
 {
     std::array<parametres,NB_CLASSE_AGE> p = cond_init;
     
-    return metropolis_hastings(p,f,data,random_ptr);
+    return metropolis(p,f,data,random_ptr);
 
 }
 
-std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
+std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
 {
     double sigma=SIGMA;
-    double L_old;
-    double L_new;
+    double L_old, LL_old;
+    double L_new, LL_new;
     double alpha;
     std::array<parametres,NB_CLASSE_AGE> p_old;
     std::array<parametres,NB_CLASSE_AGE> p_new;
@@ -52,67 +55,50 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
     double taux_acceptation = 0;
     std::string savename;
 
-    double y[COMPARTIMENT*NB_CLASSE_AGE];
-
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    while (model(f,cond_init,data) !=0)
     {
-        set_condition_initiale(f[classe],cond_init[classe].x0,classe);
-    }
-
-
-   
-
-    while (bb_discret(f,cond_init,data) !=0)
-    {
-        std::cout << "param_out" << std::endl;
         cond_init = set_parametres_random(r);
-        
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-        {
-            set_condition_initiale(f[classe],cond_init[classe].x0,classe);
-        }
     }
-    
-
-
     
     p_old = cond_init;
-    L_old = fonction_obj(data,f,1);
+    LL_old = fonction_obj(data,f,1);
     
     int j=0;
     int iter_select = 0;
     int i=0;
     bool stop = false; 
+    //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
+    
+    std::cout << std::left  << std::setw(10) << "ite_tot"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "Nb_post_dist"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "taux_accept"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "LL_old"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "LL_new - LL_old"
+                            << "\r" << std::endl;
+
     while(stop == false)
     {
-        
-        //std::cout << i << std::endl;
+      
         p_new = set_parametres_random_normal(r,sigma,p_old);
-        
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+
+        if (model(f,p_new,data) == 0)
         {
-            set_condition_initiale(f[classe],p_new[classe].x0,classe);
-        }        
-
-
-
-        if (bb_discret(f,p_new,data) == 0)
-        {
-            L_new = fonction_obj(data,f,1);
-
+            LL_new = fonction_obj(data,f,1);
             alpha = gsl_rng_uniform(r);
 
-            if (gsl_sf_log(alpha) < L_new - L_old)
+            if (gsl_sf_log(alpha) < LL_new - LL_old)
             {   
-                
                 p_old = p_new;
-                L_old = L_new;
-
+                LL_old = LL_new;
                 if( i > BURNIN_STEP ){
                     nombre_acceptation++;
                 }
-
             }
+
 
             if( i > BURNIN_STEP )
             {
@@ -120,9 +106,9 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
                 if (iter_select > ITE_RECUP_MCMC)
                 {
                     iter_select=0;
-                    savename = SAVE_MCMC_WRITE + std::to_string(j); 
+                    savename = SAVE_MCMC_WRITE + std::to_string(j);
                     write_save_parameters(p_old,savename);
-                    bb_discret(f,p_old,data);
+                    model(f,p_old,data);
                     savename = DATA_MCMC_WRITE + std::to_string(j);
                     write_data(f,savename);
 
@@ -132,13 +118,26 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
                         stop = true;
                         
                     }
-                    std::cout << i << "  " << j << "  " << taux_acceptation << "  " << L_old << std::endl;
+                    
                 }
                 
-            }else
-            {
-                std::cout << i << "  " << j << "  " << taux_acceptation << "  " << L_old << std::endl;
             }
+            
+
+            std::cout << std::left  << std::setw(10) << i
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << j
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << std::setprecision(10)<< taux_acceptation
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << std::fixed << std::setprecision(2) << LL_old
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << LL_new - LL_old
+                                    << "\r" << std::flush;
+
+
+            //std::cout << i << "\t| " << j << "\t\t| " << taux_acceptation << "\t\t\t| " << LL_old << "\t\t| "<< LL_new - LL_old <<" \t\r" << std::flush;
+
             iter_select++;
         }else
         {
@@ -149,6 +148,7 @@ std::array<parametres,NB_CLASSE_AGE> metropolis_hastings(std::array<parametres,N
         i++;
     }
     
+    std::cout << std::setprecision(16) << std::endl;
     return p_old;
 
 }

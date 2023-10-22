@@ -15,10 +15,8 @@ Data::Data()
     read_data<NB_DATA_DEATH_AGE_DAY, NB_DAY>(DAY_DEATH_AGE_DATA_filename, day_death_age);
     read_data<NB_CLASSE_MONTH, NB_MONTH>(DEATH_MONTH_AGE_DATA_filename, month_death_ages);
 
-    if (NB_CLASSE_AGE != 1)
-    {
-        read_data<NB_CLASSE_WEEK, NB_WEEK>(HOSP_WEEK_AGE_DATA_filename, week_hosp_ages); 
-    }
+    //read_data<NB_CLASSE_WEEK, NB_WEEK>(HOSP_WEEK_AGE_DATA_filename, week_hosp_ages);
+
     
 }
 
@@ -43,7 +41,7 @@ void Data::read_data(std::string filename, std::array<std::array<double, Y>, X>&
         while (std::getline(iss, value, ',')) {
             if (skip_first_value == 0) {
                 if (std::stod(value) != -1) {
-                    data_matrix[i][j] = std::stod(value) / POP_TOT;
+                    data_matrix[i][j] = std::stod(value);
                     j++;
                 } else {
                     data_matrix[i][j] = -1;

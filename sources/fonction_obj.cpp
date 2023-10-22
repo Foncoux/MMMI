@@ -26,31 +26,28 @@ double log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& out
 {
     double somme = 0;
     double total_output_new,total_output_old,total_diff;
-
+    double log;
     total_output_old = 0;
+    double inter;
 
     for(size_t i=0;i< NB_DAY; i++)
     {
         total_output_new = 0;
         
-
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {               
-                total_output_new = total_output_new + (output_data[classe].m_result_integration[D_COMP][i]);
-                        
+                total_output_new = total_output_new + (output_data[classe].m_result_integration[D_COMP][i])*POP_TOT;
         }   
 
         total_diff = total_output_new - total_output_old;
-        total_output_old = total_output_new;
 
         if( total_diff > 0){
-            somme = somme + (data.day_all[DEATH_DAY][i]*gsl_sf_log(total_diff) - total_diff);
-            
-            
+            log = gsl_sf_log(total_diff);
+            inter = (data.day_all[DEATH_DAY][i]*gsl_sf_log(total_diff) - total_diff);
+            somme = somme + (((data.day_all[DEATH_DAY][i]))*gsl_sf_log(total_diff) - total_diff);
         }
-        
-    }
-    
+        total_output_old = total_output_new;
+    }    
     
     return somme;
 }
@@ -76,12 +73,44 @@ double log_likelyhood_hosp(const Data &data, std::array<ODE,NB_CLASSE_AGE>& outp
         total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {                           
-            total_output = total_output + output_data[classe].m_result_integration[Q_COMP][i];
+            total_output = total_output + output_data[classe].m_result_integration[Q_COMP][i]*POP_TOT;
         }   
-        
+        total_output = total_output*POP_TOT;
 
         if( total_output > 0){
-            somme = somme + ( data.day_all[HOSP_DAY][i]*gsl_sf_log(total_output) - total_output);  
+            somme = somme + (( data.day_all[HOSP_DAY][i])*gsl_sf_log(total_output) - total_output);  
+        }
+
+    }
+
+    
+    return somme;
+}
+
+/**
+ * @brief Calcule -log likelyhood relative aux hospitalisations totales
+ * 
+ * @param data données rélles pour la calibration
+ * @param output_data tableau de itérations du modèle
+ * @return double -log likelyhood relative aux hospitalisations totales
+ */
+double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+{
+    double somme = 0;
+    double total_output;
+    
+    for(size_t i=0;i< NB_DAY; i++)
+    {
+        
+        total_output = 0;
+        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        {                           
+            total_output = total_output + output_data[classe].m_result_integration[Q_COMP][i]*POP_TOT;
+        }   
+        total_output = total_output;
+
+        if( total_output > 0){
+            somme = somme + ( ((data.day_all[HOSP_WEEK_DAY][i]))*gsl_sf_log(total_output) - total_output);  
         }
 
     }
@@ -155,7 +184,7 @@ double log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
 
         if (total_output < (2.1/100) || total_output > (3.7/100))
         {   
-            somme = somme + ( (2.8/100)*gsl_sf_log(total_output) - total_output)*10000000;
+            somme = somme + ( (2.8/100)*gsl_sf_log(total_output) - total_output)*1000000000;
             
         }
     }
@@ -441,14 +470,18 @@ double log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_
 }
 
 
+
+
+
 double fonction_obj_classe_1(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int loglikelyhood)
 {
-    double result1,result2,result3;
+    double result1,result2,result3,result4;
     result1 = log_likelyhood_death(data,output_data);
     result2 = - mean_square_recovered(data,output_data);
-    result3 = log_likelyhood_hosp(data,output_data);
+    //result3 = log_likelyhood_hosp(data,output_data);
+    result4 = log_likelyhood_hosp_week_day(data, output_data);
 
-    return result1 + result2 + result3;
+    return result1 + result2 + result4;
 }
 
 /**
@@ -508,11 +541,11 @@ double mean_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& ou
         total_output = total_output + output_data[classe].m_result_integration[R_COMP][38];
     }   
     
-    
+    total_output = total_output;
 
     if (total_output < (2.1/100) || total_output > (3.7/100))
     {   
-        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*1000000;
+        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*10000000000;
         
     }
 

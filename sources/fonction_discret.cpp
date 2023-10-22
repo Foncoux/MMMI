@@ -13,17 +13,14 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-int model_choice(std::array<ODE,NB_CLASSE_AGE> f,std::array<parametres,NB_CLASSE_AGE> param_opti,Data data)
+int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<parametres,NB_CLASSE_AGE> &param_opti,const Data &data)
 {
-    double y[COMPARTIMENT*NB_CLASSE_AGE];
-    if (DISCRET == 1)
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
-        bb_discret(f,param_opti,data);
-    }else{
-        write_result_conversion_ODE_to_vector(f, y, 0);
-        integrate(f,param_opti,y);
+        set_condition_initiale(f[classe],param_opti[classe].x0,classe);
     }
-    return 0;
+    
+    return bb_discret(f,param_opti,data);
 }
 
 

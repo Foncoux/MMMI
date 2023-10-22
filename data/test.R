@@ -1,3 +1,53 @@
+rm(list = ls())
+
+library(jsonlite)
+
+data <- fromJSON("MCMC_param/save_MCMC0.json")
+
+data0 = data$classe_0
+data1 = data$classe_1
+
+num_data0 <- lapply(data0, as.numeric)  
+num_data1 <- lapply(data1, as.numeric) 
+
+num_data0$x0 = num_data0$x0[2]*17282163
+num_data1$x0 = num_data1$x0[2]*17282163
+
+df_temp0 <- as.data.frame(num_data0)
+df_temp1 <- as.data.frame(num_data1)
+
+df0 =df_temp0
+df1 = df_temp1
+
+for (i in 1:99) {
+  
+  filename <- paste0("MCMC_param/save_MCMC", i, ".json")
+  data <- fromJSON(filename)
+  
+  data0 = data$classe_0
+  #  data1 = data$classe_1
+  
+  num_data0 <- lapply(data0, as.numeric)  
+  #  num_data1 <- lapply(data1, as.numeric) 
+  
+  num_data0$x0 = num_data0$x0[2]*17282163
+  #  num_data1$x0 = num_data1$x0[2]*17282163
+  
+  df_temp0 <- as.data.frame(num_data0)
+  #  df_temp1 <- as.data.frame(num_data1)
+  
+  df0 = rbind(df0, df_temp0)
+  #  df1 = rbind(df1, df_temp1)
+}
+
+intervals0 <- apply(df0, 2, function(column) quantile(column, c(0.025, 0.975)))
+intervals1 <- apply(df1, 2, function(column) quantile(column, c(0.025, 0.975)))
+
+intervals0
+intervals1
+
+
+
 MCMC_data <- fromJSON("MCMC_result/data_MCMC0.json")
 
 MCMC_data0 = MCMC_data$Classe1
@@ -80,12 +130,20 @@ for (j in 1:295) {
 
 library(ggplot2)
 days = 1:295
+death[1,]
 
 ggplot(df_stat1, aes(x=days)) +
   geom_line(aes(y=median), color="blue") +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
   labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
   theme_minimal()
+
+ggplot(death[1,], aes(x=days)) +
+  geom_line(aes(y=median), color="blue") +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
+  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  theme_minimal()
+
 
 
 

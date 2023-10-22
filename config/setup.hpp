@@ -13,8 +13,12 @@
 #define NB_CLASSE_AGE 1
 #define MODEL 1
 
+
+#define SIGMA 0.0000025
+//#define SIGMA 0.000037
+#define SIGMA_INIT 0.005
 #define ALGO 3
-#define READ_SAVE_PARAM false
+#define READ_SAVE_PARAM true
 #define WRITE_SAVE_PARAM true
 
 #define SETUP SIRQD
