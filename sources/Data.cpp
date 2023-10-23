@@ -56,3 +56,39 @@ void Data::read_data(std::string filename, std::array<std::array<double, Y>, X>&
 
     file.close();
 }
+
+
+
+/*
+void Data::read_data_csv(std::string filename, std::array<std::array<double, Y>, X>& data_matrix)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Impossible d'ouvrir le fichier." << std::endl;
+        return;
+    }
+
+    std::string line;
+    std::getline(file,line);
+
+    int row = 0;
+    while (std::getline(file, line) && row < X) {
+        std::istringstream iss(line);
+        std::string value;
+        int col = 0;
+
+        while (std::getline(iss, value, ',') && col < Y ) {
+            if (std::stod(value) != -1) {
+                data_matrix[row][col] = std::stod(value);
+            } else {
+                data_matrix[row][col] = -1;
+            }
+            col++;
+        }
+        row++;
+    }
+
+    file.close();
+}
+
+*/
