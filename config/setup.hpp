@@ -16,7 +16,7 @@
 
 #define SIGMA 0.0000025
 //#define SIGMA 0.000037
-#define SIGMA_INIT 0.005
+#define SIGMA_INIT_BURNING 0.005
 #define ALGO 3
 #define READ_SAVE_PARAM true
 #define WRITE_SAVE_PARAM true

@@ -39,9 +39,110 @@ std::array<parametres,NB_CLASSE_AGE> MCMC(std::array<parametres,NB_CLASSE_AGE> c
 {
     std::array<parametres,NB_CLASSE_AGE> p = cond_init;
     
-    return metropolis(p,f,data,random_ptr);
+    return burning_phase(p,f,data,random_ptr);
+    //return metropolis(p,f,data,random_ptr);
 
 }
+
+std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
+{
+    double sigma=SIGMA_INIT_BURNING;
+    double LL_old;
+    double LL_new;
+    double alpha;
+    std::array<parametres,NB_CLASSE_AGE> p_old;
+    std::array<parametres,NB_CLASSE_AGE> p_new;
+    double nombre_acceptation = 0;
+    double taux_acceptation = 0;
+    int compteur_acceptation=0;
+    std::string savename;
+    double gamma = 0.1;
+
+    while (model(f,cond_init,data) !=0)
+    {
+        cond_init = set_parametres_random(r);
+    }
+    
+    p_old = cond_init;
+    LL_old = fonction_obj(data,f,1);
+    
+    int j=0;
+    int iter_select = 0;
+    int i=0;
+    bool stop = false; 
+    //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
+    
+    std::cout << std::left  << std::setw(10) << "ite_tot"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "Nb_post_dist"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "taux_accept"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "LL_old"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "LL_new - LL_old"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "sigma"
+                            << "\r" << std::endl;
+    int I;
+    while(stop == false)
+    {
+        I=0;
+        p_new = set_parametres_random_normal(r,sigma,p_old);
+
+        if (model(f,p_new,data) == 0)
+        {
+            LL_new = fonction_obj(data,f,1);
+            alpha = gsl_rng_uniform(r);
+
+            if (gsl_sf_log(alpha) < LL_new - LL_old)
+            {   
+                p_old = p_new;
+                LL_old = LL_new;
+                
+                nombre_acceptation++;
+                
+            }
+            
+
+            std::cout << std::left  << std::setw(10) << i
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << j
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << std::setprecision(10)<< taux_acceptation
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << std::fixed << std::setprecision(2) << LL_old
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << LL_new - LL_old
+                                    << std::setw(4) << "|"
+                                    << std::setw(15)<< std::setprecision(10) << sigma
+                                    << "\r" << std::flush;
+
+
+            //std::cout << i << "\t| " << j << "\t\t| " << taux_acceptation << "\t\t\t| " << LL_old << "\t\t| "<< LL_new - LL_old <<" \t\r" << std::flush;
+            taux_acceptation = nombre_acceptation/(i+1);
+            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
+            
+
+           
+            
+        }else
+        {
+            i--;
+        }     
+        if(i>BURNIN_STEP)
+        {
+            stop=true;
+        }
+        
+        i++;
+    }
+    
+    std::cout << std::setprecision(16) << std::endl;
+    return p_old;
+
+}
+
 
 std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
 {
