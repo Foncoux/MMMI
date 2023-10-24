@@ -46,7 +46,7 @@ int main (void)
     
     write_data(f,DATA_TO_WRITE); 
     
-    print_parameter(param_opti);
+    //print_parameter(param_opti);
 
     gsl_rng_free(random_ptr);
 

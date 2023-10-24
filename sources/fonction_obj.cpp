@@ -107,7 +107,6 @@ double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_A
         {                           
             total_output = total_output + output_data[classe].m_result_integration[Q_COMP][i]*POP_TOT;
         }   
-        total_output = total_output;
 
         if( total_output > 0){
             somme = somme + ( ((data.day_all[HOSP_WEEK_DAY][i]))*gsl_sf_log(total_output) - total_output);  
@@ -205,23 +204,22 @@ double log_likelyhood_hosp_week(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
 {
     double somme = 0;   
     
-    std::array<double,NB_CLASSE_AGE> total_output = {0};
+    double total_output = 0;
 
     for (size_t week = 0; week < NB_WEEK; week++)
     {
-        total_output = {0};
-        
+        total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
             for (size_t day = 0; day < 7; day++)
             {
-                total_output[classe] = total_output[classe] + output_data[classe].m_result_integration[Q_COMP][week*7+day];
+                total_output = total_output + output_data[classe].m_result_integration[Q_COMP][week*7+day];
             }
             
 
-            if( total_output[classe] > 0)
+            if( total_output > 0)
             { 
-                somme = somme + ( data.week_hosp_ages[classe][week]*gsl_sf_log(total_output[classe]) - total_output[classe]);
+                somme = somme + ( data.week_hosp_ages[classe][week]*gsl_sf_log(total_output) - total_output);
             }
         }
     }
@@ -478,7 +476,7 @@ double fonction_obj_classe_1(const Data &data, std::array<ODE,NB_CLASSE_AGE>& ou
     double result1,result2,result3,result4;
     result1 = log_likelyhood_death(data,output_data);
     result2 = - mean_square_recovered(data,output_data);
-    //result3 = log_likelyhood_hosp(data,output_data);
+    //result3 = log_likelyhood_hosp_week(data,output_data);
     result4 = log_likelyhood_hosp_week_day(data, output_data);
 
     return result1 + result2 + result4;

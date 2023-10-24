@@ -67,7 +67,7 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
     double sommeLL;
     int compteur_moyenne=1;
     int compteur_suiteLL=0;
-    double moyenneLL_old=0,moyenneLL_new;
+    double moyenneLL_old=0,moyenneLL_new=0;
     std::string savename;
     double gamma = 0.1;
 
@@ -118,6 +118,30 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
             }
             
 
+
+
+            taux_acceptation = nombre_acceptation/(iter_total+1);
+            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
+            
+            /*
+            sommeLL = sommeLL + LL_old;
+            compteur_moyenne++;
+            if(compteur_moyenne > 1000 && iter_total > 10000)
+            {
+                
+                compteur_moyenne = 1;
+                moyenneLL_new = sommeLL/1000;
+                sommeLL=0;
+                if(std::abs(moyenneLL_old-moyenneLL_new) < 1)
+                {
+                    compteur_suiteLL++;
+                   
+                }else{compteur_suiteLL=0;}
+                
+                moyenneLL_old = moyenneLL_new;  
+            }
+*/
+
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -129,37 +153,16 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
                                     << std::setw(15) << LL_new - LL_old
                                     << std::setw(4) << "|"
                                     << std::setw(15)<< std::setprecision(10) << sigma
-                                    << std::setw(4) << "|"
-                                    << std::setw(15)<< std::setprecision(5) << std::abs(moyenneLL_old-moyenneLL_new)
+
                                     << "\r" << std::flush;
-
-
-            taux_acceptation = nombre_acceptation/(iter_total+1);
-            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
             
-            /*
-            sommeLL = sommeLL + LL_old;
-            compteur_moyenne++;
-            if(compteur_moyenne > 1000 && i > 10000)
-            {
-                compteur_moyenne = 1;
-                moyenneLL_new = sommeLL/1000;
-                sommeLL=0;
-                if(std::abs(moyenneLL_old-moyenneLL_new) < 0.01)
-                {
-                    compteur_suiteLL++;
-                    moyenneLL_old = moyenneLL_new;
-                }else{compteur_suiteLL=0;}
 
-
-            }
-            */
-            
+             
         }else
         {
             iter_total--;
         }     
-        if(iter_total>BURNIN_STEP || compteur_suiteLL == 3)
+        if(iter_total>BURNIN_STEP || compteur_suiteLL == 5)
         {
             stop=true;
         }

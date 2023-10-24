@@ -30,7 +30,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define PREV_HIGH_DAY 4
 #define HOSP_WEEK_DAY 4
 
-#define NB_CLASSE_WEEK 2
+#define NB_CLASSE_WEEK 1
 #define NB_WEEK 42
 
 #define NB_CLASSE_MONTH 2
@@ -63,7 +63,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
         #define DAY_DATA_filename "../data/day_data.csv"
         #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
-        #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week_age.csv"
+        #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week.csv"
         #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
         #define SOCIAL_CONTACT_MATRIX_filename "../data/social_contact_matrix_1.csv"
 
@@ -94,7 +94,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #define STOP_ALGO 0.00001
 
     #define ITE_RECUP_MCMC 1000
-    #define NB_POST_DIST 1000
+    #define NB_POST_DIST 100
 
     #define RADIUS_INIT 0.05
     
