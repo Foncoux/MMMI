@@ -10,6 +10,7 @@
  */
 #include <array>
 #include <vector>
+#include <cmath>
 
 #include <iostream>
 #include <iomanip>
@@ -39,14 +40,23 @@ std::array<parametres,NB_CLASSE_AGE> MCMC(std::array<parametres,NB_CLASSE_AGE> c
 {
     std::array<parametres,NB_CLASSE_AGE> p = cond_init;
     
-    return burning_phase(p,f,data,random_ptr);
-    //return metropolis(p,f,data,random_ptr);
+    double sigma = SIGMA;
+    if(BURNIN_PHASE == true)
+    {
+        p = burning_phase(p,f,data,random_ptr,sigma);
+    }
+    if(MCMC_PHASE == true)
+    {
+        p = metropolis(p,f,data,random_ptr,sigma);
+
+    }
+    
+    return p;
 
 }
 
-std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
+std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
 {
-    double sigma=SIGMA_INIT_BURNING;
     double LL_old;
     double LL_new;
     double alpha;
@@ -54,7 +64,10 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
     std::array<parametres,NB_CLASSE_AGE> p_new;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
-    int compteur_acceptation=0;
+    double sommeLL;
+    int compteur_moyenne=1;
+    int compteur_suiteLL=0;
+    double moyenneLL_old=0,moyenneLL_new;
     std::string savename;
     double gamma = 0.1;
 
@@ -68,7 +81,7 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
     
     int j=0;
     int iter_select = 0;
-    int i=0;
+    int iter_total=0;
     bool stop = false; 
     //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
     
@@ -84,10 +97,10 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
                             << std::setw(4) << "|"
                             << std::setw(15) << "sigma"
                             << "\r" << std::endl;
-    int I;
+    
     while(stop == false)
     {
-        I=0;
+    
         p_new = set_parametres_random_normal(r,sigma,p_old);
 
         if (model(f,p_new,data) == 0)
@@ -105,7 +118,7 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
             }
             
 
-            std::cout << std::left  << std::setw(10) << i
+            std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
                                     << std::setw(4) << "|"
@@ -116,26 +129,42 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
                                     << std::setw(15) << LL_new - LL_old
                                     << std::setw(4) << "|"
                                     << std::setw(15)<< std::setprecision(10) << sigma
+                                    << std::setw(4) << "|"
+                                    << std::setw(15)<< std::setprecision(5) << std::abs(moyenneLL_old-moyenneLL_new)
                                     << "\r" << std::flush;
 
 
-            //std::cout << i << "\t| " << j << "\t\t| " << taux_acceptation << "\t\t\t| " << LL_old << "\t\t| "<< LL_new - LL_old <<" \t\r" << std::flush;
-            taux_acceptation = nombre_acceptation/(i+1);
+            taux_acceptation = nombre_acceptation/(iter_total+1);
             sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
             
+            /*
+            sommeLL = sommeLL + LL_old;
+            compteur_moyenne++;
+            if(compteur_moyenne > 1000 && i > 10000)
+            {
+                compteur_moyenne = 1;
+                moyenneLL_new = sommeLL/1000;
+                sommeLL=0;
+                if(std::abs(moyenneLL_old-moyenneLL_new) < 0.01)
+                {
+                    compteur_suiteLL++;
+                    moyenneLL_old = moyenneLL_new;
+                }else{compteur_suiteLL=0;}
 
-           
+
+            }
+            */
             
         }else
         {
-            i--;
+            iter_total--;
         }     
-        if(i>BURNIN_STEP)
+        if(iter_total>BURNIN_STEP || compteur_suiteLL == 3)
         {
             stop=true;
         }
         
-        i++;
+        iter_total++;
     }
     
     std::cout << std::setprecision(16) << std::endl;
@@ -144,11 +173,9 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
 }
 
 
-std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r)
+std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
 {
-    double sigma=SIGMA;
-    double L_old, LL_old;
-    double L_new, LL_new;
+    double LL_old,LL_new;
     double alpha;
     std::array<parametres,NB_CLASSE_AGE> p_old;
     std::array<parametres,NB_CLASSE_AGE> p_new;
@@ -166,7 +193,7 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
     
     int j=0;
     int iter_select = 0;
-    int i=0;
+    int iter_total=0;
     bool stop = false; 
     //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
     
@@ -179,6 +206,8 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
                             << std::setw(15) << "LL_old"
                             << std::setw(4) << "|"
                             << std::setw(15) << "LL_new - LL_old"
+                            << std::setw(4) << "|"
+                            << std::setw(15) << "sigma"
                             << "\r" << std::endl;
 
     while(stop == false)
@@ -195,37 +224,36 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
             {   
                 p_old = p_new;
                 LL_old = LL_new;
-                if( i > BURNIN_STEP ){
-                    nombre_acceptation++;
-                }
+                
+                nombre_acceptation++;
+                
             }
 
 
-            if( i > BURNIN_STEP )
+                  
+            taux_acceptation = nombre_acceptation/(iter_total+1);
+            if (iter_select > ITE_RECUP_MCMC)
             {
-                taux_acceptation = nombre_acceptation/(i-BURNIN_STEP+1);
-                if (iter_select > ITE_RECUP_MCMC)
-                {
-                    iter_select=0;
-                    savename = SAVE_MCMC_WRITE + std::to_string(j);
-                    write_save_parameters(p_old,savename);
-                    model(f,p_old,data);
-                    savename = DATA_MCMC_WRITE + std::to_string(j);
-                    write_data(f,savename);
+                iter_select=0;
+                savename = SAVE_MCMC_WRITE + std::to_string(j);
+                write_save_parameters(p_old,savename);
+                model(f,p_old,data);
+                savename = DATA_MCMC_WRITE + std::to_string(j);
+                write_data(f,savename);
 
-                    j++;
-                    if (j >= NB_POST_DIST)
-                    {
-                        stop = true;
-                        
-                    }
+                j++;
+                if (j >= NB_POST_DIST)
+                {
+                    stop = true;
                     
                 }
                 
             }
             
+            
+            
 
-            std::cout << std::left  << std::setw(10) << i
+            std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
                                     << std::setw(4) << "|"
@@ -234,6 +262,8 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
                                     << std::setw(15) << std::fixed << std::setprecision(2) << LL_old
                                     << std::setw(4) << "|"
                                     << std::setw(15) << LL_new - LL_old
+                                    << std::setw(4) << "|"
+                                    << std::setw(15)<< std::setprecision(10) << sigma
                                     << "\r" << std::flush;
 
 
@@ -242,11 +272,11 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
             iter_select++;
         }else
         {
-            i--;
+            iter_total--;
         }     
     
         
-        i++;
+        iter_total++;
     }
     
     std::cout << std::setprecision(16) << std::endl;
