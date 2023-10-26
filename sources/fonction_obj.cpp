@@ -105,7 +105,7 @@ double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_A
         total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {                           
-            total_output = total_output + output_data[classe].m_result_integration[Q_COMP][i]*POP_TOT;
+            total_output = total_output + output_data[classe].m_result_integration[Q_ENTRY_COMP][i]*POP_TOT;
         }   
 
         if( total_output > 0){

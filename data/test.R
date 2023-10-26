@@ -1,3 +1,5 @@
+# poisson se fait sur données de comptage, pas un problème d'utiliser des données non entières ?
+# pour les ages, en population, on doit diviser chaque entrée de la Social contact matrix par la population dans cette classe, en proportion également (en proportion de pop du coup) ?
 rm(list = ls())
 
 library(jsonlite)
@@ -101,7 +103,7 @@ ggplot(df_stat2, aes(x=days)) +
 
 
 ### COMPARTIMENT Q ###
-Compartiment = 4
+Compartiment = 6
 df1 <- data.frame(matrix(ncol = 295, nrow = 100))
 colnames(df1) <- paste0("Jour_", 1:295)
 
@@ -112,6 +114,23 @@ for (j in 1:295) {
   }
   df1[,j] = COMP1
 }
+
+df_stat2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
+for (j in 1:295) {
+  df_stat2$median[j] = median(df1[,j])
+  df_stat2$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
+  df_stat2$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
+}
+
+death = read.table('day_data_csv.csv',header = TRUE, sep = ",")
+ggplot(df_stat2, aes(x=days)) +
+  geom_line(aes(y=median), color="blue") +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
+  geom_point(data=death, aes(y=Hosp_week_day), color="black",shape=8) + 
+  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  theme_minimal()
+
+plot(days,death$Hosp_week_day)
 
 df <- data.frame(matrix(ncol = 42, nrow = 100))
 colnames(df1) <- paste0("Jour_", 1:42)
@@ -140,11 +159,87 @@ ggplot(df_stat1, aes(x=weeks)) +
   geom_line(aes(y=median), color="blue") +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
   geom_point(data=week_hosp, aes(y=hosp), color="black",shape=8) + 
-  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  labs(title="weekly Simulations with 95% Credible Interval", y="Value") +
   theme_minimal()
 
 plot(weeks,week_hosp$hosp)
 
 
+### COMPARTIMENT R ###
+Compartiment = 3
+df1 <- data.frame(matrix(ncol = 295, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:295)
+
+for (j in 1:295) {
+  COMP1 = c()
+  for (i in 1:100) {
+    COMP1 = c(COMP1,Classe1_list[[i]][j,Compartiment])
+  }
+  df1[,j] = COMP1
+}
+
+df_stat2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
+for (j in 1:295) {
+  df_stat2$median[j] = median(df1[,j])
+  df_stat2$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
+  df_stat2$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
+}
+
+ggplot(df_stat2, aes(x=days)) +
+  geom_line(aes(y=median), color="blue") +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
+  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  theme_minimal()
 
 
+### COMPARTIMENT I ###
+Compartiment = 2
+df1 <- data.frame(matrix(ncol = 295, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:295)
+
+for (j in 1:295) {
+  COMP1 = c()
+  for (i in 1:100) {
+    COMP1 = c(COMP1,Classe1_list[[i]][j,Compartiment])
+  }
+  df1[,j] = COMP1
+}
+
+df_stat2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
+for (j in 1:295) {
+  df_stat2$median[j] = median(df1[,j])
+  df_stat2$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
+  df_stat2$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
+}
+
+ggplot(df_stat2, aes(x=days)) +
+  geom_line(aes(y=median), color="blue") +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
+  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  theme_minimal()
+
+### COMPARTIMENT S ###
+Compartiment = 1
+df1 <- data.frame(matrix(ncol = 295, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:295)
+
+for (j in 1:295) {
+  COMP1 = c()
+  for (i in 1:100) {
+    COMP1 = c(COMP1,Classe1_list[[i]][j,Compartiment])
+  }
+  df1[,j] = COMP1
+}
+
+df_stat2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
+for (j in 1:295) {
+  df_stat2$median[j] = median(df1[,j])
+  df_stat2$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
+  df_stat2$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
+}
+
+ggplot(df_stat2, aes(x=days)) +
+  geom_line(aes(y=median), color="blue") +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
+  labs(title="Daily Simulations with 95% Credible Interval", y="Value") +
+  theme_minimal()

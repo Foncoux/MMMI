@@ -75,17 +75,19 @@ int bb_discret(std::array<ODE,NB_CLASSE_AGE>& f,std::array<parametres,NB_CLASSE_
  * @param n entier n pour connaitre l'itération
  * @param lambda force d'infection
  */
-int SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,parametres p,int n,double lambda)
+int SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> &y,parametres p,int n,double lambda)
 {
 
     //std::cout << lambda << std::endl;
+    double beta_S_I = p.beta[p.i]*lambda*y[S_COMP][n];
+    double delta_I = p.delta*y[I_COMP][n];
 
-
-    y[S_COMP][n+1] = y[S_COMP][n] - p.beta[p.i]*lambda*y[S_COMP][n];
-    y[I_COMP][n+1] = y[I_COMP][n] + p.beta[p.i]*lambda*y[S_COMP][n] - (p.delta+p.gamma)*y[I_COMP][n];
+    y[S_COMP][n+1] = y[S_COMP][n] - beta_S_I;
+    y[I_COMP][n+1] = y[I_COMP][n] + beta_S_I - (p.delta+p.gamma)*y[I_COMP][n];
     y[R_COMP][n+1] = y[R_COMP][n] + p.gamma*y[I_COMP][n] + p.eps*y[Q_COMP][n];
-    y[Q_COMP][n+1] = y[Q_COMP][n] + p.delta*y[I_COMP][n] - (p.eps + p.r)*y[Q_COMP][n];
+    y[Q_COMP][n+1] = y[Q_COMP][n] + delta_I - (p.eps + p.r)*y[Q_COMP][n];
     y[D_COMP][n+1] = y[D_COMP][n] + p.r*y[Q_COMP][n];
+    y[Q_ENTRY_COMP][n+1] = delta_I;
 
 
     //https://academic.oup.com/cid/article/74/9/1678/6359063
@@ -171,7 +173,7 @@ double force_infection_classe(int jour,int classe_age,std::array<ODE,NB_CLASSE_A
  * @param p tableau de structure parametres pour la fonction f.
  * @param data données réelles pour la calibration.
  */
-
+/*
 int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const Data &data)
 {   
     //print_parameter(p);
@@ -197,7 +199,7 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
     }
     return 0;
 }
-
+*/
 
 
 /**
@@ -208,6 +210,7 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
  * @param n entier n pour connaitre l'itération
  * @param lambda force d'infection
  */
+/*
 int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int i)
 {
 
@@ -237,7 +240,8 @@ int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,s
     //std::cout << y[S_COMP][n+1] << " " << y[I_COMP][n+1] << " " << y[R_COMP][n+1] << " " << y[Q_COMP][n+1] << " " << y[D_COMP][n+1] << std::endl;
     
 
-    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0 /* || y[E_COMP][n+1] < 0*/ )
+    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0  || y[E_COMP][n+1] < 0 )
+
     {
         std::cout << "\n output negatifs \n" << std::endl;
         //return -2;
@@ -246,7 +250,7 @@ int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,s
 
     return 0;
 }
-
+*/
 
 
 

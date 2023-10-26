@@ -16,7 +16,8 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define R_COMP 2
 #define Q_COMP 3
 #define D_COMP 4
-#define E_COMP 5
+#define Q_ENTRY_COMP 5
+#define E_COMP 6
 
 #define NB_DAY 295
 #define HOSP_DEBUT 237
@@ -28,7 +29,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define PREV_LOW_DAY 2
 #define PREV_MEDIUM_DAY 3
 #define PREV_HIGH_DAY 4
-#define HOSP_WEEK_DAY 4
+#define HOSP_WEEK_DAY 5
 
 #define NB_CLASSE_WEEK 1
 #define NB_WEEK 42
@@ -49,8 +50,9 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
     #define NB_PARAM_TOT NB_PARAM + NB_CONFINEMENT + 1
 
-
+    #define PHANTOM_COMPART 1
     #define COMPARTIMENT 5
+    #define COMPARTIMENT_TOT PHANTOM_COMPART+COMPARTIMENT
     #define FCT_OBJ_CHOICE 1
 
     extern std::vector<int> TAB_DATE_CONFINEMENT;

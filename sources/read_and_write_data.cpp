@@ -63,7 +63,7 @@ void write_data(const std::array<ODE, NB_CLASSE_AGE>& f,const std::string& filen
     for (int k = 0; k < NB_CLASSE_AGE; k++) {
         boost::property_tree::ptree ode_tree;
 
-        for (int j = 0; j < COMPARTIMENT; j++) {
+        for (int j = 0; j < COMPARTIMENT_TOT; j++) {
             boost::property_tree::ptree child_tree;
             
             for (int i = 0; i < T_FINAL; i++) {

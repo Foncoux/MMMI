@@ -48,13 +48,13 @@ void config_table_extern(){
 
 
     
-    switch (COMPARTIMENT)
+    switch (COMPARTIMENT_TOT)
     {
-    case 5:
-        NAMES_COMPARTIMENT = {"S","I","R","Q","D"};
+    case 6:
+        NAMES_COMPARTIMENT = {"S","I","R","Q","D","Q_entry"};
         break;
     
-    case 6:
+    case 7:
         NAMES_COMPARTIMENT = {"S","I","R","Q","D","E"};
         break;
     
