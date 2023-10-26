@@ -93,7 +93,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 }
 
 
-
+//https://dub.uu.nl/en/depth/timeline-looking-back-whole-year-pandemic
 //https://grenzinfo.eu/nl/strengere-maatregelen-in-nederland-vanaf-14-oktober-2020/
 //https://www.rijksoverheid.nl/onderwerpen/coronavirus-tijdlijn/november-2020-verzwaring-en-verlenging-van-de-gedeeltelijke-lockdown
 //https://www.rijksoverheid.nl/onderwerpen/coronavirus-tijdlijn/maart-2020-maatregelen-tegen-verspreiding-coronavirus
