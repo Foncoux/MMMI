@@ -1,6 +1,7 @@
 /build
 /data/MCMC_param/*
 /data/MCMC_result/*
+/data/.Rhistory
 /1-memoire-document/autre/*
 /1-memoire-document/latex/main.aux
 /1-memoire-document/latex/main.bbl

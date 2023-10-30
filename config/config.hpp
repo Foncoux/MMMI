@@ -37,6 +37,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define NB_CLASSE_MONTH 2
 #define NB_MONTH 10
 
+#define NB_DATA_DAY_DEATH 1
 
 #if SETUP == SIRQD
 
@@ -67,7 +68,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
         #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
         #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week.csv"
         #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
-        #define SOCIAL_CONTACT_MATRIX_filename "../data/social_contact_matrix_1.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/All/social_contact_matrix_1.csv"
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_1classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_1classe" //4
