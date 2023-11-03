@@ -122,25 +122,7 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
 
             taux_acceptation = nombre_acceptation/(iter_total+1);
             sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
-            
-            /*
-            sommeLL = sommeLL + LL_old;
-            compteur_moyenne++;
-            if(compteur_moyenne > 1000 && iter_total > 10000)
-            {
-                
-                compteur_moyenne = 1;
-                moyenneLL_new = sommeLL/1000;
-                sommeLL=0;
-                if(std::abs(moyenneLL_old-moyenneLL_new) < 1)
-                {
-                    compteur_suiteLL++;
-                   
-                }else{compteur_suiteLL=0;}
-                
-                moyenneLL_old = moyenneLL_new;  
-            }
-*/
+            //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.50)/(1-0.50)));
 
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
@@ -253,9 +235,6 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
                 
             }
             
-            
-            
-
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -268,9 +247,6 @@ std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_
                                     << std::setw(4) << "|"
                                     << std::setw(15)<< std::setprecision(10) << sigma
                                     << "\r" << std::flush;
-
-
-            //std::cout << i << "\t| " << j << "\t\t| " << taux_acceptation << "\t\t\t| " << LL_old << "\t\t| "<< LL_new - LL_old <<" \t\r" << std::flush;
 
             iter_select++;
         }else

@@ -18,10 +18,13 @@ void config_table_extern(){
     {
     case 4:
         //std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT = {19,76,233,269};
-        //TAB_DATE_CONFINEMENT = {20,77,98,133,188,233};
         TAB_DATE_CONFINEMENT = {20,77,98,233};
         break;
         
+    case 6:
+        TAB_DATE_CONFINEMENT = {20,77,98,133,188,233};
+        break;
+
     default:
         break;
     }

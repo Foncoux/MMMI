@@ -23,44 +23,6 @@ Data::Data()
     
 }
 
-/*
-template <std::size_t X, std::size_t Y>
-void Data::read_data(std::string filename, std::array<std::array<double, Y>, X>& data_matrix)
-{
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cout << "Impossible d'ouvrir le fichier." << std::endl;
-        return;
-    }
-
-    std::string line;
-    int i = 0;
-    while (std::getline(file, line)) {
-        int j = 0;
-        std::istringstream iss(line);
-        std::string value;
-        int skip_first_value = 1;
-
-        while (std::getline(iss, value, ',')) {
-            if (skip_first_value == 0) {
-                if (std::stod(value) != -1) {
-                    data_matrix[i][j] = std::stod(value);
-                    j++;
-                } else {
-                    data_matrix[i][j] = -1;
-                    j++;
-                }
-            } else {
-                skip_first_value = 0;
-            }
-        }
-        i++;
-    }
-
-    file.close();
-}
-*/
-
 
 template <std::size_t X, std::size_t Y>
 void Data::read_data_csv(std::string filename, std::array<std::array<double, Y>, X>& data_matrix)

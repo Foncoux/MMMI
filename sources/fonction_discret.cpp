@@ -34,7 +34,6 @@ int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<parametres,NB_CLASSE_AGE> 
 
 int bb_discret(std::array<ODE,NB_CLASSE_AGE>& f,std::array<parametres,NB_CLASSE_AGE> p,const Data &data)
 {   
-    //print_parameter(p);
     int output_model;
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
@@ -120,11 +119,7 @@ int SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> &y,p
     {
         //std::cout <<  "!!! p.beta[i]*lambda > 1 !!!" << "  \n" << std::endl;
         return -1;
-    }
-    
-    
-    //std::cout << y[S_COMP][n+1] << " " << y[I_COMP][n+1] << " " << y[R_COMP][n+1] << " " << y[Q_COMP][n+1] << " " << y[D_COMP][n+1] << std::endl;
-    
+    }    
 
     if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0 /* || y[E_COMP][n+1] < 0*/ )
     {
@@ -151,15 +146,9 @@ double force_infection_classe(int jour,int classe_age,std::array<ODE,NB_CLASSE_A
 {
     
     double result=0;
-    //std::cout << "next ite" << std::endl;
     for (size_t j = 0; j < NB_CLASSE_AGE; j++){
         result = result + SOCIAL_CONTACT_MATRIX[classe_age][j]*(f[j].m_result_integration[I_COMP][jour]) /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
-        
-//        std::cout << "force : " << data.social_contact_matrix[classe_age][j] ;
-//        std::cout << "  " << f[j].m_result_integration[I_COMP][jour] ;
-//        std::cout << "  " << result << std::endl;
     }
-    //std::cout << data.social_constact_matrix[classe_age][0] << std::endl;
     
     return result;
 
