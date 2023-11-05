@@ -32,25 +32,6 @@ ODE::ODE()
 {   
     switch (MODEL)
     {
-
-    case 1:
-        m_function_discret = SIRQD_discret;
-        for(auto& subArray : m_result_integration) {
-            subArray.fill(0.0);
-        }
-
-        break;
-            
-    case 2:
-        m_function = oscillateur_harm; 
-        m_jacobian = jacobian_osc; 
-        break;
-    
-    case 3:
-        m_function = model_SIRQD; 
-        m_jacobian = jacobian_SIRQD;
-        break; 
-
     case 4:
         m_function_discret_new = SIRQD_discret_new;
         for(auto& subArray : m_result_integration) {
