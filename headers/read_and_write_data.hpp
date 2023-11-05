@@ -13,8 +13,8 @@ void read_dataH(std::array<double,NB_DAY> &hosp);
 void write_data(const std::array<ODE, NB_CLASSE_AGE>& f,const std::string& filename);
 
 void print_parameter(std::array<parametres,NB_CLASSE_AGE> p);
-std::array<parametres,NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr);
-void write_save_parameters(const std::array<parametres, NB_CLASSE_AGE>& p, const std::string& save_nbr);
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr);
+void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr);
 
 
 

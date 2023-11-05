@@ -116,7 +116,7 @@ void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
 }
 
 
-void write_save_parameters(const std::array<parametres, NB_CLASSE_AGE>& p, const std::string& save_nbr) {
+void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr) {
     boost::property_tree::ptree main_tree;
 
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++) {
@@ -124,27 +124,22 @@ void write_save_parameters(const std::array<parametres, NB_CLASSE_AGE>& p, const
 
         boost::property_tree::ptree beta_tree;
         for (size_t i = 0; i < NB_CONFINEMENT+1; i++) {
-            beta_tree.put_value(p[classe].beta[i]);
+            beta_tree.put_value(p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i]);
             classe_tree.add_child("beta" + std::to_string(i), beta_tree);
             beta_tree.clear();
         }
 
-        classe_tree.put("delta", p[classe].delta);
-        classe_tree.put("eps", p[classe].eps);
-        classe_tree.put("gamma", p[classe].gamma);
-        classe_tree.put("r", p[classe].r);
+        classe_tree.put("delta", p[NB_PARAM_TOT*classe + PARAM_ID_DELTA]);
+        classe_tree.put("eps", p[NB_PARAM_TOT*classe + PARAM_ID_EPS]);
+        classe_tree.put("gamma", p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA]);
+        classe_tree.put("r", p[NB_PARAM_TOT*classe + PARAM_ID_R]);
+        classe_tree.put("x0", p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect]);
 
         if(COMPARTIMENT == 6)
         {
-            classe_tree.put("sigma", p[classe].sigma);
+            //classe_tree.put("sigma", p[classe].sigma);
         }
-        boost::property_tree::ptree x0_tree;
-        for (size_t i = 0; i < COMPARTIMENT; i++) {
-            boost::property_tree::ptree x0_item;
-            x0_item.put_value(p[classe].x0[i]);
-            x0_tree.push_back(std::make_pair("", x0_item));
-        }
-        classe_tree.add_child("x0", x0_tree);
+        
 
         main_tree.add_child("classe_" + std::to_string(classe), classe_tree);
     }
@@ -160,8 +155,8 @@ void write_save_parameters(const std::array<parametres, NB_CLASSE_AGE>& p, const
 }
 
 
-std::array<parametres, NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr) {
-    std::array<parametres, NB_CLASSE_AGE> p;
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr) {
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
 
     std::string filename = save_nbr + ".json";
     boost::property_tree::ptree main_tree;
@@ -173,23 +168,17 @@ std::array<parametres, NB_CLASSE_AGE> read_save_parameters(const std::string& sa
         const auto& classe_tree = item.second;
 
         for (size_t i = 0; i < NB_CONFINEMENT+1; i++) {
-            p[classe].beta[i] = classe_tree.get<double>("beta" + std::to_string(i));
+            p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i] = classe_tree.get<double>("beta" + std::to_string(i));
         }
 
-        p[classe].delta = classe_tree.get<double>("delta");
-        p[classe].eps = classe_tree.get<double>("eps");
-        p[classe].gamma = classe_tree.get<double>("gamma");
-        p[classe].r = classe_tree.get<double>("r");
+        p[NB_PARAM_TOT*classe + PARAM_ID_DELTA] = classe_tree.get<double>("delta");
+        p[NB_PARAM_TOT*classe + PARAM_ID_EPS] = classe_tree.get<double>("eps");
+        p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA] = classe_tree.get<double>("gamma");
+        p[NB_PARAM_TOT*classe + PARAM_ID_R] = classe_tree.get<double>("r");
+        p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] = classe_tree.get<double>("x0");
         if(COMPARTIMENT == 6)
         {
-            p[classe].sigma = classe_tree.get<double>("sigma");
-        }
-
-        const auto& x0_tree = classe_tree.get_child("x0");
-        int x0_index = 0;
-        for (const auto& x0_item : x0_tree) {
-            p[classe].x0[x0_index] = x0_item.second.get_value<double>();
-            x0_index++;
+            //p[classe].sigma = classe_tree.get<double>("sigma");
         }
 
         classe++;

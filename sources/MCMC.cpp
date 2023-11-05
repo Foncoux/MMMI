@@ -36,9 +36,9 @@
 #include "../headers/MCMC.hpp"
 #include "../headers/fonction_continuous.hpp"
 
-std::array<parametres,NB_CLASSE_AGE> MCMC(std::array<parametres,NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data)
 {
-    std::array<parametres,NB_CLASSE_AGE> p = cond_init;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p = cond_init;
     
     double sigma = SIGMA;
     if(BURNIN_PHASE == true)
@@ -55,13 +55,13 @@ std::array<parametres,NB_CLASSE_AGE> MCMC(std::array<parametres,NB_CLASSE_AGE> c
 
 }
 
-std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
 {
     double LL_old;
     double LL_new;
     double alpha;
-    std::array<parametres,NB_CLASSE_AGE> p_old;
-    std::array<parametres,NB_CLASSE_AGE> p_new;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_old;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_new;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
     double sommeLL;
@@ -158,12 +158,12 @@ std::array<parametres,NB_CLASSE_AGE> burning_phase(std::array<parametres,NB_CLAS
 }
 
 
-std::array<parametres,NB_CLASSE_AGE> metropolis(std::array<parametres,NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,gsl_rng* r,double &sigma)
 {
     double LL_old,LL_new;
     double alpha;
-    std::array<parametres,NB_CLASSE_AGE> p_old;
-    std::array<parametres,NB_CLASSE_AGE> p_new;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_old;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_new;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
     std::string savename;

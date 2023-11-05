@@ -13,14 +13,14 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<parametres,NB_CLASSE_AGE> &param_opti,const Data &data)
+int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti,const Data &data)
 {
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
-        set_condition_initiale(f[classe],param_opti[classe].x0,classe);
+        set_condition_initiale(f[classe],param_opti[NB_PARAM_TOT*classe + PARAM_ID_X0_infect],classe);
     }
     
-    return bb_discret(f,param_opti,data);
+    return bb_discret_new(f,param_opti,data);
 }
 
 
@@ -117,7 +117,6 @@ int SIRQD_discret(std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> &y,p
 
     if (p.beta[p.i]*lambda > 1)
     {
-        //std::cout <<  "!!! p.beta[i]*lambda > 1 !!!" << "  \n" << std::endl;
         return -1;
     }    
 
@@ -162,7 +161,7 @@ double force_infection_classe(int jour,int classe_age,std::array<ODE,NB_CLASSE_A
  * @param p tableau de structure parametres pour la fonction f.
  * @param data données réelles pour la calibration.
  */
-/*
+
 int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const Data &data)
 {   
     //print_parameter(p);
@@ -179,7 +178,7 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
             lambda = force_infection_classe(jour,classe,f,data);
-            output_model = f[classe].m_function_discret_new(f[classe].m_result_integration,p,jour,lambda,classe,jour);
+            output_model = f[classe].m_function_discret_new(f[classe].m_result_integration,p,jour,lambda,classe,confinement);
             if(output_model != 0){
                 return output_model;
             }    
@@ -188,7 +187,7 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
     }
     return 0;
 }
-*/
+
 
 
 /**
@@ -199,8 +198,8 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
  * @param n entier n pour connaitre l'itération
  * @param lambda force d'infection
  */
-/*
-int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int i)
+
+int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int confinement)
 {
 
     //std::cout << lambda << std::endl;
@@ -209,7 +208,7 @@ int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,s
     double eps = p[NB_PARAM_TOT*classe + PARAM_ID_EPS];
     double r = p[NB_PARAM_TOT*classe + PARAM_ID_R];
 
-    double beta = p[NB_PARAM_TOT*classe + NB_PARAM + i];
+    double beta = p[NB_PARAM_TOT*classe + NB_PARAM + confinement];
 
 
     y[S_COMP][n+1] = y[S_COMP][n] - beta*lambda*y[S_COMP][n];
@@ -229,7 +228,7 @@ int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,s
     //std::cout << y[S_COMP][n+1] << " " << y[I_COMP][n+1] << " " << y[R_COMP][n+1] << " " << y[Q_COMP][n+1] << " " << y[D_COMP][n+1] << std::endl;
     
 
-    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0  || y[E_COMP][n+1] < 0 )
+    if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0)
 
     {
         std::cout << "\n output negatifs \n" << std::endl;
@@ -239,7 +238,7 @@ int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT> &y,s
 
     return 0;
 }
-*/
+
 
 
 

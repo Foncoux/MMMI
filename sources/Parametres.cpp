@@ -20,7 +20,7 @@
 #include "../headers/optimisation_algo.hpp"
 
 
-std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,double sigma,std::array<parametres,NB_CLASSE_AGE> p_opt)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,double sigma,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_opt)
 {
     switch (MCMC_PARAM_TYPE_SELECTION)
     {
@@ -41,37 +41,28 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,dou
  * @brief retourne des parametres à partir d'une loi normale centre en p_opt et d'écart-type sigma
  *     Social_contact_matrix.cpprametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal_all(gsl_rng* r,double sigma,std::array<parametres,NB_CLASSE_AGE> p_opt)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal_all(gsl_rng* r,double sigma,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_opt)
 {
-    std::array<parametres,NB_CLASSE_AGE> p;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
     int ite=0;
 
     do
     {   
+
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
-            for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+            for (size_t param_id = 0; param_id < NB_PARAM_TOT; param_id++)
             {
-                p[classe].beta[i] = p_opt[classe].beta[i] + gsl_ran_gaussian(r, sigma);
+                ite = NB_PARAM_TOT*classe + param_id;
+                if (param_id == PARAM_ID_X0_infect)
+                {
+                    p[NB_PARAM_TOT*classe + param_id]= p_opt[NB_PARAM_TOT*classe + param_id] + gsl_ran_gaussian(r, sigma)*(5000/POP_TOT);
+                }
+                else
+                {
+                    p[NB_PARAM_TOT*classe + param_id]= p_opt[NB_PARAM_TOT*classe + param_id] + gsl_ran_gaussian(r, sigma);
+                }
             }
-
-            p[classe].delta = p_opt[classe].delta + gsl_ran_gaussian(r, sigma); // Générer un nombre aléatoire compris entre 0 et 1
-            p[classe].eps = p_opt[classe].eps + gsl_ran_gaussian(r, sigma);
-            p[classe].gamma = p_opt[classe].gamma + gsl_ran_gaussian(r, sigma);
-            p[classe].r = p_opt[classe].r + gsl_ran_gaussian(r, sigma);
-
-            p[classe].sigma = 1.0/5.5;
-            //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
-
-            double y = gsl_ran_gaussian(r, sigma);
-            p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + y*(5000/POP_TOT);
-//            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
-//            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
-            p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
-            p[classe].x0[R_COMP] = 0;
-            p[classe].x0[Q_COMP] = 0;
-            p[classe].x0[D_COMP] = 0;
-            
             
         }
         
@@ -81,61 +72,27 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal_all(gsl_rng* r
 }
 
 
-std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal_gibbs(gsl_rng* r,double sigma,std::array<parametres,NB_CLASSE_AGE> p_opt)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal_gibbs(gsl_rng* r,double sigma,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_opt)
 {
-    std::array<parametres,NB_CLASSE_AGE> p;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
     int ite=0;
-    int random_int;
-    int classe,conf;
+    int param_id;
+    int classe;
     double y;
     
     do
     {   
         p=p_opt;
-        conf = gsl_rng_uniform_int(r,NB_CONFINEMENT) + 1;
+        param_id = gsl_rng_uniform_int(r,NB_PARAM_TOT);
         classe = gsl_rng_uniform_int(r,NB_CLASSE_AGE);
-        random_int = gsl_rng_uniform_int(r,6);
         
-        switch (random_int)
+        if (param_id == PARAM_ID_X0_infect)
         {
-        case 0:
-            p[classe].delta = p_opt[classe].delta + gsl_ran_gaussian(r, sigma);
-            break;
-        
-        case 1:
-            p[classe].eps = p_opt[classe].eps + gsl_ran_gaussian(r, sigma);
-
-            break;
-        case 2:
-             p[classe].gamma = p_opt[classe].gamma + gsl_ran_gaussian(r, sigma);
-           
-            break;
-        case 3:
-             p[classe].r = p_opt[classe].r + gsl_ran_gaussian(r, sigma);
-           
-            break;
-        case 4:
-            y = gsl_ran_gaussian(r, sigma);
-            p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + y*(5000/POP_TOT);
-            p[classe].beta[0] = p_opt[classe].beta[0] + gsl_ran_gaussian(r, sigma);
-            break;
-        case 5:
-            p[classe].beta[conf] = p_opt[classe].beta[conf] + gsl_ran_gaussian(r, sigma);
-            break;
-      
-        default:
-            break;
+            p[NB_PARAM_TOT*classe + param_id]= p_opt[NB_PARAM_TOT*classe + param_id] + gsl_ran_gaussian(r, sigma)*(5000/POP_TOT);
         }
-
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+        else
         {
-
-            p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
-            p[classe].x0[R_COMP] = 0;
-            p[classe].x0[Q_COMP] = 0;
-            p[classe].x0[D_COMP] = 0;
-            
-            
+            p[NB_PARAM_TOT*classe + param_id]= p_opt[NB_PARAM_TOT*classe + param_id] + gsl_ran_gaussian(r, sigma);
         }
         
     } while (! validation_parametres(p));
@@ -152,53 +109,27 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random_normal_gibbs(gsl_rng*
  * @param r pointeurs pour l'aléatoire
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<parametres,NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
 {
-    std::array<parametres,NB_CLASSE_AGE> p;
-    
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
+    double y;
     do
-    {
+    {   
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-        {
-            for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+        {        
+            for (size_t param_id = 0; param_id < NB_PARAM_TOT; param_id++)
             {
-                p[classe].beta[i] = gsl_rng_uniform(r);
+                if (param_id == PARAM_ID_X0_infect)
+                {
+                    p[NB_PARAM_TOT*classe + param_id]= gsl_rng_uniform(r)*(4478.0/POP_TOT);
+                }
+                else 
+                {
+                    y = gsl_rng_uniform(r);
+                    double a = NB_PARAM_TOT*classe + param_id;
+                    p[NB_PARAM_TOT*classe + param_id] = y;
+                }
             }
-            
-            
-            if(gsl_rng_uniform(r) < 0.5){
-                p[classe].delta = gsl_rng_uniform(r); // Générer un nombre aléatoire compris entre 0 et 1
-                p[classe].gamma = gsl_rng_uniform(r)*(1-p[classe].delta);
-            }else{
-                p[classe].gamma = gsl_rng_uniform(r);
-                p[classe].delta = gsl_rng_uniform(r)*(1-p[classe].gamma); // Générer un nombre aléatoire compris entre 0 et 1
-            }
-            
-            if(gsl_rng_uniform(r) < 0.5){
-                p[classe].eps = gsl_rng_uniform(r);
-                p[classe].r = gsl_rng_uniform(r)*(1-p[classe].eps);
-            }else{
-                p[classe].r = gsl_rng_uniform(r);
-                p[classe].eps = gsl_rng_uniform(r)*(1-p[classe].r);
-                
-            }
-            p[classe].sigma = 1.0/5.5;
-
-            //p.x0[I_COMP] = gsl_rng_uniform(r)*(5000/POP_TOT);
-
-            
-            
-                         
-                p[classe].x0[I_COMP] = gsl_rng_uniform(r)*(4478/POP_TOT);
-    //            p[classe].x0[classe][E_COMP] = p[classe].x0[classe][I_COMP];
-    //            p[classe].x0[classe][S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[classe][I_COMP]-p[classe].x0[classe][E_COMP];
-                p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
-                p[classe].x0[R_COMP] = 0;
-                p[classe].x0[Q_COMP] = 0;
-                p[classe].x0[D_COMP] = 0;
-                
-            
-            
         } 
     }while (! validation_parametres(p));
 
@@ -215,6 +146,7 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
  * @param radius rayon de la boule
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
+/*
 std::array<parametres,NB_CLASSE_AGE> set_parametres_radius(gsl_rng* r,std::array<parametres,NB_CLASSE_AGE> p_opt,double radius){
     
     std::array<parametres,NB_CLASSE_AGE> p;
@@ -251,7 +183,7 @@ std::array<parametres,NB_CLASSE_AGE> set_parametres_radius(gsl_rng* r,std::array
     return p;
 
 }
-
+*/
 void conversion(const std::array<parametres,NB_CLASSE_AGE>& p_struct,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p_tab)
 {
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
@@ -282,7 +214,7 @@ void conversion(const std::array<parametres,NB_CLASSE_AGE>& p_struct,std::array<
  * @return true si les parametres sont valides
  * @return false sinon
  */
-bool validation_parametres(const std::array<parametres,NB_CLASSE_AGE> p){
+bool validation_parametres(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p){
     
     bool ok=true;
     double somme1 = 0;
@@ -290,44 +222,38 @@ bool validation_parametres(const std::array<parametres,NB_CLASSE_AGE> p){
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
     
-        for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
+        for (int i = 0; i < NB_CONFINEMENT+1; i++)
         {
-            if(p[classe].beta[i] >1 || p[classe].beta[i]<0){
+            if(p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i] >1 || p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i] <0){
                 ok=false;  
                 
             }
         }
 
-        if(p[classe].delta>1 || p[classe].delta<0){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_DELTA]>1 || p[NB_PARAM_TOT*classe + PARAM_ID_DELTA]<0){
             ok=false;  
              
         }
-        if(p[classe].gamma>1 || p[classe].gamma<0){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA]>1 || p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA]<0){
             ok=false; 
                
         }
-        if(p[classe].eps>1 || p[classe].eps<0){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_EPS]>1 || p[NB_PARAM_TOT*classe + PARAM_ID_EPS]<0){
             ok=false;   
              
         }
-        if(p[classe].r>1 || p[classe].r<0){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_R]>1 || p[NB_PARAM_TOT*classe + PARAM_ID_R]<0){
             ok=false;    
         }
-        if(p[classe].delta + p[classe].gamma >1 || p[classe].eps + p[classe].r >1){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_DELTA] + p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA]>1 || p[NB_PARAM_TOT*classe + PARAM_ID_EPS] + p[NB_PARAM_TOT*classe + PARAM_ID_R] >1){
             ok=false;
         }
 
-        if(p[classe].x0[I_COMP] < 0 || p[classe].x0[I_COMP] > 4478/POP_TOT){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] < 0 || p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] > 4478/POP_TOT){
             ok=false;
         } 
 
-        for (size_t compart = 0; compart < COMPARTIMENT; compart++)
-        {         
-            somme = somme + p[classe].x0[compart];
-        }
-
-        somme1 = somme1 + p[classe].x0[I_COMP];
-
+        somme1 = somme1 + p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
 
     }
 
@@ -335,11 +261,7 @@ bool validation_parametres(const std::array<parametres,NB_CLASSE_AGE> p){
         ok=false;
     } 
 
-    double epsilon = GSL_DBL_EPSILON;
-    if (gsl_fcmp(somme, 1, epsilon) != 0 )
-    {
-        ok=false;
-    }
+
 
 /*
     if (p[0].r > p[1].r)

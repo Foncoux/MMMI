@@ -9,7 +9,6 @@ set(SOURCES
     fonction_discret.cpp
     read_and_write_data.cpp
     Parametres.cpp
-    fonction_continuous.cpp
 
     )
 

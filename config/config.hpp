@@ -48,12 +48,13 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #define PARAM_ID_R 3
 
     #define PARAM_ID_X0_infect 4
+    #define PARAM_ID_BETA0 5
 
-    #define NB_PARAM_TOT NB_PARAM + NB_CONFINEMENT + 1
+    #define NB_PARAM_TOT (NB_PARAM + NB_CONFINEMENT + 1)
 
     #define PHANTOM_COMPART 1
     #define COMPARTIMENT 5
-    #define COMPARTIMENT_TOT PHANTOM_COMPART+COMPARTIMENT
+    #define COMPARTIMENT_TOT (PHANTOM_COMPART+COMPARTIMENT)
     #define FCT_OBJ_CHOICE 1
 
     extern std::vector<int> TAB_DATE_CONFINEMENT;

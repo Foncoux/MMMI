@@ -21,9 +21,9 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-std::array<parametres,NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,Data data,int fct_obj_choice,std::array<parametres,NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,Data data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {   
-    std::array<parametres,NB_CLASSE_AGE> param_opti;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     switch (ALGO)
     {
     case 1:
@@ -58,13 +58,13 @@ std::array<parametres,NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_pt
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<parametres,NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     
     double y[COMPARTIMENT*NB_CLASSE_AGE];
-    std::array<parametres,NB_CLASSE_AGE> p;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
     int output_model_return;
-    std::array<parametres,NB_CLASSE_AGE> param_opti = cond_init;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = cond_init;
 
     while (model(f,param_opti,data) != 0)
     {
@@ -112,15 +112,15 @@ std::array<parametres,NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::arra
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<parametres,NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<parametres,NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     double sigma=SIGMA;
     int save_intermediaire = 0;
     double accept_ite = 0;    
     double y[COMPARTIMENT*NB_CLASSE_AGE];
 
-    std::array<parametres,NB_CLASSE_AGE> param_opti = cond_init;
-    std::array<parametres,NB_CLASSE_AGE> p;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = cond_init;
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
     
     while (model(f,param_opti,data) !=0)
     {

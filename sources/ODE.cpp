@@ -67,14 +67,14 @@ ODE::ODE()
 }
 
 
-void set_condition_initiale(ODE &f,std::array<double, COMPARTIMENT> &cond_init,int classe)
+void set_condition_initiale(ODE &f,double cond_init_infect,int classe)
 {
    
-    f.m_result_integration[S_COMP][0] = cond_init[S_COMP];
-    f.m_result_integration[I_COMP][0] = cond_init[I_COMP];
-    f.m_result_integration[R_COMP][0] = cond_init[R_COMP];
-    f.m_result_integration[Q_COMP][0] = cond_init[Q_COMP];
-    f.m_result_integration[D_COMP][0] = cond_init[D_COMP];
+    f.m_result_integration[I_COMP][0] = cond_init_infect;
+    f.m_result_integration[S_COMP][0] = PROP_PAR_CLASSE[classe] - cond_init_infect;
+    f.m_result_integration[R_COMP][0] = 0;
+    f.m_result_integration[Q_COMP][0] = 0;
+    f.m_result_integration[D_COMP][0] = 0;
     
     
 }
