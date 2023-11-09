@@ -29,6 +29,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal(gsl_r
         break;
     case 1:
         return set_parametres_random_normal_gibbs(r,sigma,p_opt);
+        break;
 
     
     default:
@@ -146,65 +147,6 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
  * @param radius rayon de la boule
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-/*
-std::array<parametres,NB_CLASSE_AGE> set_parametres_radius(gsl_rng* r,std::array<parametres,NB_CLASSE_AGE> p_opt,double radius){
-    
-    std::array<parametres,NB_CLASSE_AGE> p;
-    
-
-    do
-    {
-        for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-        {
-            for (size_t i = 0; i < NB_CONFINEMENT+1; i++)
-            {
-                p[classe].beta[i] = p_opt[classe].beta[i] + ((gsl_rng_uniform(r)*2)-1)*(radius);
-            }
-
-            p[classe].delta = p_opt[classe].delta + (gsl_rng_uniform(r)*2-1)*radius; // Générer un nombre aléatoire compris entre 0 et 1
-            p[classe].eps = p_opt[classe].eps + (gsl_rng_uniform(r)*2-1)*radius;
-            p[classe].gamma = p_opt[classe].gamma + (gsl_rng_uniform(r)*2-1)*radius;
-            p[classe].r = p_opt[classe].r + (gsl_rng_uniform(r)*2-1)*radius;
-
-            //p.x0[I_COMP] = (gsl_rng_uniform(r)*(5000/POP_TOT)*2-(5000/POP_TOT))*radius;
-            for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-            {
-                p[classe].x0[I_COMP] = p_opt[classe].x0[I_COMP] + ((gsl_rng_uniform(r)*(4478/POP_TOT)*2)-(4478/POP_TOT))*radius;
-                p[classe].x0[S_COMP] = PROP_PAR_CLASSE[classe]-p[classe].x0[I_COMP];
-                p[classe].x0[R_COMP] = 0;
-                p[classe].x0[Q_COMP] = 0;
-                p[classe].x0[D_COMP] = 0;
-            }
-        }
-    } while (! validation_parametres(p));
-
-    
-
-    return p;
-
-}
-*/
-void conversion(const std::array<parametres,NB_CLASSE_AGE>& p_struct,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p_tab)
-{
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-    {
-        p_tab[NB_PARAM_TOT*classe + PARAM_ID_DELTA] = p_struct[classe].delta;
-        p_tab[NB_PARAM_TOT*classe + PARAM_ID_GAMMA] = p_struct[classe].gamma;
-        p_tab[NB_PARAM_TOT*classe + PARAM_ID_EPS] = p_struct[classe].eps;
-        p_tab[NB_PARAM_TOT*classe + PARAM_ID_R] = p_struct[classe].r;
-
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 0] = p_struct[classe].beta[0];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 1] = p_struct[classe].beta[1];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 2] = p_struct[classe].beta[2];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 3] = p_struct[classe].beta[3];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 4] = p_struct[classe].beta[4];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 5] = p_struct[classe].beta[5];
-        p_tab[NB_PARAM_TOT*classe + NB_PARAM + 6] = p_struct[classe].beta[6];
-    }
-    
-}
-
-
 
 
 /**

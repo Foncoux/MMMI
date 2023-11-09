@@ -18,7 +18,7 @@
 //#define SIGMA 0.0000047
 #define SIGMA_INIT_BURNING 0.005
 #define ALGO 3
-#define READ_SAVE_PARAM false
+#define READ_SAVE_PARAM true
 #define WRITE_SAVE_PARAM true
 
 #define BURNIN_STEP 1000

@@ -115,45 +115,6 @@ void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
     
 }
 
-/*
-void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr) {
-    boost::property_tree::ptree main_tree;
-
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++) {
-        boost::property_tree::ptree classe_tree;
-
-        boost::property_tree::ptree beta_tree;
-        for (size_t i = 0; i < NB_CONFINEMENT+1; i++) {
-            beta_tree.put_value(p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i]);
-            classe_tree.add_child("beta" + std::to_string(i), beta_tree);
-            beta_tree.clear();
-        }
-
-        classe_tree.put("delta", p[NB_PARAM_TOT*classe + PARAM_ID_DELTA]);
-        classe_tree.put("eps", p[NB_PARAM_TOT*classe + PARAM_ID_EPS]);
-        classe_tree.put("gamma", p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA]);
-        classe_tree.put("r", p[NB_PARAM_TOT*classe + PARAM_ID_R]);
-        classe_tree.put("x0", p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect]);
-
-        if(COMPARTIMENT == 6)
-        {
-            //classe_tree.put("sigma", p[classe].sigma);
-        }
-        
-
-        main_tree.add_child("classe_" + std::to_string(classe), classe_tree);
-    }
-
-    std::string filename = save_nbr + ".json";
-    std::ofstream myfile(filename);
-    if (myfile.is_open()) {
-        boost::property_tree::write_json(myfile, main_tree, true);
-        myfile.close();
-    } else {
-        std::cout << "Unable to open file";
-    }
-}
-*/
 
 void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr) {
     std::ofstream file(save_nbr + ".csv");
@@ -172,35 +133,33 @@ void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& 
 }
 
 
-
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr) {
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr)
+{
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
-
-    std::string filename = save_nbr + ".json";
-    boost::property_tree::ptree main_tree;
-    boost::property_tree::read_json(filename, main_tree);
-
-    int classe = 0;
-
-    for (const auto& item : main_tree) {
-        const auto& classe_tree = item.second;
-
-        for (size_t i = 0; i < NB_CONFINEMENT+1; i++) {
-            p[NB_PARAM_TOT*classe + PARAM_ID_BETA0 + i] = classe_tree.get<double>("beta" + std::to_string(i));
-        }
-
-        p[NB_PARAM_TOT*classe + PARAM_ID_DELTA] = classe_tree.get<double>("delta");
-        p[NB_PARAM_TOT*classe + PARAM_ID_EPS] = classe_tree.get<double>("eps");
-        p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA] = classe_tree.get<double>("gamma");
-        p[NB_PARAM_TOT*classe + PARAM_ID_R] = classe_tree.get<double>("r");
-        p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] = classe_tree.get<double>("x0");
-        if(COMPARTIMENT == 6)
-        {
-            //p[classe].sigma = classe_tree.get<double>("sigma");
-        }
-
-        classe++;
+    std::ifstream file(save_nbr + ".csv");
+    if (!file.is_open()) {
+        std::cout << "Impossible d'ouvrir le fichier. (read_save_parameters)" << std::endl;
+        exit(0);
     }
 
+    std::string line;
+    //std::getline(file,line);
+
+    int classe = 0;
+    while (std::getline(file, line) && classe < NB_CLASSE_AGE) {
+        std::istringstream iss(line);
+        std::string value;
+        int i = 0;
+
+        while (std::getline(iss, value, ',') && i < NB_PARAM_TOT ) {
+            p[NB_PARAM_TOT*classe + i] = std::stod(value);
+            
+            i++;
+        }
+        classe++;
+    }
+    
+    file.close();
     return p;
 }
+
