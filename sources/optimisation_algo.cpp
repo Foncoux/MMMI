@@ -21,7 +21,7 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,Data data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,ODE& f,Data data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {   
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     switch (ALGO)
@@ -58,7 +58,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* 
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,ODE& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     
     double y[COMPARTIMENT*NB_CLASSE_AGE];
@@ -112,7 +112,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,ODE& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     double sigma=SIGMA;
     int save_intermediaire = 0;
@@ -174,7 +174,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
  * @return true s'il le jeu de parametres minimise
  * @return false sinon
  */
-bool minimisation(double &fct_obj, const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int fct_obj_choice)
+bool minimisation(double &fct_obj, const Data &data, ODE& output_data,int fct_obj_choice)
 {
     double fct_obj_temp = -fonction_obj(data, output_data,fct_obj_choice);
     

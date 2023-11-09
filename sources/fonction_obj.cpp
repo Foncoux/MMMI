@@ -22,7 +22,7 @@
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative au mort totales
  */
-double log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_death(const Data &data, ODE& output_data)
 {
     double somme = 0;
     double total_output_new,total_output_old,total_diff;
@@ -36,7 +36,7 @@ double log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& out
         
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {               
-                total_output_new = total_output_new + (output_data[classe].m_result_integration[D_COMP][i])*POP_TOT;
+                total_output_new = total_output_new + (output_data.m_result_simulation[classe][D_COMP][i])*POP_TOT;
         }   
 
         total_diff = total_output_new - total_output_old;
@@ -58,7 +58,7 @@ double log_likelyhood_death(const Data &data, std::array<ODE,NB_CLASSE_AGE>& out
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux hospitalisations totales
  */
-double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_hosp_week_day(const Data &data, ODE& output_data)
 {
     double somme = 0;
     double total_output;
@@ -69,7 +69,7 @@ double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_A
         total_output = 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {                           
-            total_output = total_output + output_data[classe].m_result_integration[Q_ENTRY_COMP][i]*POP_TOT;
+            total_output = total_output + output_data.m_result_simulation[classe][Q_ENTRY_COMP][i]*POP_TOT;
         }   
 
         if( total_output > 0){
@@ -89,7 +89,7 @@ double log_likelyhood_hosp_week_day(const Data &data, std::array<ODE,NB_CLASSE_A
  * @param output_data tableau de itérations du modèle
  * @return double -log likelyhood relative aux rétabils totaux
  */
-double log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double log_likelyhood_recovered(const Data &data, ODE& output_data)
 {
     double somme = 0;
     double total_output;    
@@ -97,7 +97,7 @@ double log_likelyhood_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>&
     total_output = 0;
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {                           
-        total_output = total_output + output_data[classe].m_result_integration[R_COMP][38];
+        total_output = total_output + output_data.m_result_simulation[classe][R_COMP][38];
     }   
     
     if( total_output > 0){
@@ -176,7 +176,7 @@ double log_likelyhood_death_par_day_per_age(const Data &data, std::array<ODE,NB_
 
 
 
-double fonction_obj_classe_1(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int loglikelyhood)
+double fonction_obj_classe_1(const Data &data, ODE& output_data,int loglikelyhood)
 {
     double result1,result2,result3,result4;
     result1 = log_likelyhood_death(data,output_data);
@@ -196,7 +196,7 @@ double fonction_obj_classe_1(const Data &data, std::array<ODE,NB_CLASSE_AGE>& ou
  * @return double -log likelyhood total
  */
 
-double fonction_obj(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data,int loglikelyhood)
+double fonction_obj(const Data &data, ODE& output_data,int loglikelyhood)
 {
     double result,result1,result2,result3,result4,result5,result6,result7,result8,result9;
     if(loglikelyhood == 1){
@@ -234,7 +234,7 @@ double fonction_obj(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data
 }
 
 
-double mean_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& output_data)
+double mean_square_recovered(const Data &data, ODE& output_data)
 {
     double total_output;
     double somme2=0;
@@ -242,7 +242,7 @@ double mean_square_recovered(const Data &data, std::array<ODE,NB_CLASSE_AGE>& ou
     total_output = 0;
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {                           
-        total_output = total_output + output_data[classe].m_result_integration[R_COMP][38];
+        total_output = total_output + output_data.m_result_simulation[classe][R_COMP][38];
     }   
     
     total_output = total_output;

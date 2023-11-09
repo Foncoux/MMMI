@@ -57,7 +57,7 @@ void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CO
 }
 
 
-void write_data(const std::array<ODE, NB_CLASSE_AGE>& f,const std::string& filename1) {
+void write_data(const ODE& f,const std::string& filename1) {
     boost::property_tree::ptree main_tree;
 
     for (int k = 0; k < NB_CLASSE_AGE; k++) {
@@ -68,7 +68,7 @@ void write_data(const std::array<ODE, NB_CLASSE_AGE>& f,const std::string& filen
             
             for (int i = 0; i < T_FINAL; i++) {
                 boost::property_tree::ptree value;
-                value.put_value(f[k].m_result_integration[j][i] * POP_TOT);
+                value.put_value(f.m_result_simulation[k][j][i] * POP_TOT);
                 child_tree.push_back(std::make_pair("", value));
             }
             ode_tree.add_child(NAMES_COMPARTIMENT[j], child_tree);

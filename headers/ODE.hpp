@@ -14,12 +14,12 @@ class ODE
         int (*m_function)(double, const double [], double [],void*);
         int (*m_jacobian)(double, const double [], double *, double [], void *);
         std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> m_result_integration;
+        std::array<std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT>,NB_CLASSE_AGE> m_result_simulation;
 
         ODE();
         
 };
 
-void set_condition_initiale(ODE& f,double cond_init_infect,int classe);
-
+void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &p);
 
 #endif

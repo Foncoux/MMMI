@@ -10,7 +10,7 @@ void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CO
 
 //void read_dataD(std::array<double,DAY> &death);
 void read_dataH(std::array<double,NB_DAY> &hosp);
-void write_data(const std::array<ODE, NB_CLASSE_AGE>& f,const std::string& filename);
+void write_data(const ODE& f,const std::string& filename);
 
 void print_parameter(std::array<parametres,NB_CLASSE_AGE> p);
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr);

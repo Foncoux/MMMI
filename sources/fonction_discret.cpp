@@ -13,12 +13,9 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti,const Data &data)
+int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti,const Data &data)
 {
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-    {
-        set_condition_initiale(f[classe],param_opti[NB_PARAM_TOT*classe + PARAM_ID_X0_infect],classe);
-    }
+    set_condition_initiale(f,param_opti);
     
     return bb_discret_new(f,param_opti,data);
 }
@@ -34,12 +31,12 @@ int model(std::array<ODE,NB_CLASSE_AGE> &f,std::array<double,NB_PARAM_TOT*NB_CLA
  * @param data 
  * @return double 
  */
-double force_infection_classe(int jour,int classe_age,std::array<ODE,NB_CLASSE_AGE>& f,const Data &data) 
+double force_infection_classe(int jour,int classe_age,ODE& f,const Data &data) 
 {
     
     double result=0;
     for (size_t j = 0; j < NB_CLASSE_AGE; j++){
-        result = result + SOCIAL_CONTACT_MATRIX[classe_age][j]*(f[j].m_result_integration[I_COMP][jour]) /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
+        result = result + SOCIAL_CONTACT_MATRIX[classe_age][j]*(f.m_result_simulation[classe_age][I_COMP][jour]) /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
     }
     
     return result;
@@ -55,9 +52,8 @@ double force_infection_classe(int jour,int classe_age,std::array<ODE,NB_CLASSE_A
  * @param data données réelles pour la calibration.
  */
 
-int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const Data &data)
+int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const Data &data)
 {   
-    //print_parameter(p);
     int output_model;
     double confinement = 0;
     
@@ -71,7 +67,7 @@ int bb_discret_new(std::array<ODE,NB_CLASSE_AGE>& f,std::array<double,NB_PARAM_T
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
             lambda = force_infection_classe(jour,classe,f,data);
-            output_model = f[classe].m_function_discret_new(f[classe].m_result_integration,p,jour,lambda,classe,confinement);
+            output_model = f.m_function_discret_new(f.m_result_simulation[classe],p,jour,lambda,classe,confinement);
             if(output_model != 0){
                 return output_model;
             }    

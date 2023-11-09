@@ -22,7 +22,7 @@ int main (void)
     config_table_extern();
     int fct_obj_choice = FCT_OBJ_CHOICE;
     Data data;
-    std::array<ODE,NB_CLASSE_AGE> f;
+    ODE f;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init;
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires

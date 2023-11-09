@@ -48,15 +48,16 @@ ODE::ODE()
 }
 
 
-void set_condition_initiale(ODE &f,double cond_init_infect,int classe)
+void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &p)
 {
-   
-    f.m_result_integration[I_COMP][0] = cond_init_infect;
-    f.m_result_integration[S_COMP][0] = PROP_PAR_CLASSE[classe] - cond_init_infect;
-    f.m_result_integration[R_COMP][0] = 0;
-    f.m_result_integration[Q_COMP][0] = 0;
-    f.m_result_integration[D_COMP][0] = 0;
-    
-    
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        f.m_result_simulation[classe][I_COMP][0] = p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
+        f.m_result_simulation[classe][S_COMP][0] = PROP_PAR_CLASSE[classe] - p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
+        f.m_result_simulation[classe][R_COMP][0] = 0;
+        f.m_result_simulation[classe][Q_COMP][0] = 0;
+        f.m_result_simulation[classe][D_COMP][0] = 0;
+    }
+       
 }
 
