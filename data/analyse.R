@@ -1,5 +1,6 @@
-load('social_contact_analysis.RData')
-write.csv(location_matrices$total, "social_contact_matrix.csv", row.names=FALSE)
+load('DATA_calibration/social_contact_analysis.RData')
+location_matrices$total
+write.csv(location_matrices$total, "social_contact_matrix_0-65_65-inf.csv", row.names=FALSE)
 write.csv(location_matrices$home, "social_contact_matrix.csv", row.names=FALSE)
 write.csv(location_matrices$work, "social_contact_matrix.csv", row.names=FALSE)
 write.csv(location_matrices$school, "social_contact_matrix.csv", row.names=FALSE)

@@ -11,9 +11,10 @@ std::vector<int> TAB_DATE_CONFINEMENT;
 std::vector<double> PROP_PAR_CLASSE;
 std::vector<std::string> NAMES_COMPARTIMENT;
 std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
+std::vector<std::string> SELECT_CLASSE_AGE;
 
 void config_table_extern(){
-    
+
     switch (NB_CONFINEMENT)
     {
     case 4:

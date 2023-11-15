@@ -37,7 +37,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define NB_CLASSE_MONTH 2
 #define NB_MONTH 10
 
-#define NB_DATA_DAY_DEATH 1
+
 
 #if SETUP == SIRQD
 
@@ -61,9 +61,17 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     extern std::vector<double> PROP_PAR_CLASSE;
     extern std::vector<std::string> NAMES_COMPARTIMENT;
     extern std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
+    extern std::vector<std::string> SELECT_CLASSE_AGE;
+  
+    
 
     #if NB_CLASSE_AGE == 1
+        #define NB_DATA_DAY_DEATH 1
+        #define NB_DATA_DAY_HOSP 1
+
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 1
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/All/day_death_csv.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/All/day_hosp_csv.csv"
 
         #define DAY_DATA_filename "../data/day_data.csv"
         #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
@@ -76,13 +84,18 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #endif
 
     #if NB_CLASSE_AGE == 2
+        #define NB_DATA_DAY_DEATH 3
+        #define NB_DATA_DAY_HOSP 3
+
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 2
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_death_csv_0-65_65-inf.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_hosp_csv_0-65_65-inf.csv"
 
         #define DAY_DATA_filename "../data/day_data.csv"
         #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
         #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week_age2.csv"
         #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
-        #define SOCIAL_CONTACT_MATRIX_filename "../data/social_contact_matrix_2.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/0-65_65-inf/social_contact_matrix_0-65_65-inf.csv"
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_2classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_2classe" //4

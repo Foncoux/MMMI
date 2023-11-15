@@ -69,7 +69,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     int compteur_suiteLL=0;
     double moyenneLL_old=0,moyenneLL_new=0;
     std::string savename;
-    double gamma = 0.1;
+    double gamma = 0.9;
 
     while (model(f,cond_init,data) !=0)
     {
@@ -121,7 +121,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
 
             taux_acceptation = nombre_acceptation/(iter_total+1);
-            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
+            //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
             //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.50)/(1-0.50)));
 
             std::cout << std::left  << std::setw(10) << iter_total
