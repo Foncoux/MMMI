@@ -86,6 +86,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal_gibbs
         p=p_opt;
         param_id = gsl_rng_uniform_int(r,NB_PARAM_TOT);
         classe = gsl_rng_uniform_int(r,NB_CLASSE_AGE);
+        //classe = 0;
         
         if (param_id == PARAM_ID_X0_infect)
         {

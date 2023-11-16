@@ -2,11 +2,43 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
-# Spécifiez le chemin vers votre fichier CSV
-filename = "./data/MCMC_param/save_MCMC0.csv"
+
+
 
 # Utilisez la fonction read_csv de pandas pour lire le fichier
-df = pd.read_csv(filename,sep=',')
+import csv
+
+classe = 2
+# Spécifiez le chemin du fichier CSV
+filename = "./data/MCMC_param/save_MCMC"
+
+
+import pandas as pd
+import glob
+
+
+
+# Utilisez la bibliothèque glob pour obtenir la liste des fichiers CSV dans le répertoire
+liste_fichiers_csv = glob.glob(filename + '*.csv')
+
+# Initialisez un DataFrame vide
+dataframe_global = pd.DataFrame()
+
+# Parcourez chaque fichier CSV et ajoutez ses données au DataFrame global
+for fichier_csv in liste_fichiers_csv:
+    # Lisez le fichier CSV
+    dataframe_temporaire = pd.read_csv(fichier_csv)
+    
+    # Ajoutez les données au DataFrame global
+    dataframe_global = pd.concat([dataframe_global, dataframe_temporaire], ignore_index=True)
+
+# Affichez le DataFrame global
+print(dataframe_global)
+
+
+
+
+
 
 
 

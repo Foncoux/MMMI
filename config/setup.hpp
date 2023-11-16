@@ -14,7 +14,7 @@
 
 #define NB_CLASSE_AGE 2
 // 0.0000026083
-#define SIGMA 0.000002
+#define SIGMA 0.00002
 //#define SIGMA 0.0000047
 #define SIGMA_INIT_BURNING 0.005
 #define ALGO 3

@@ -141,7 +141,7 @@ double log_likelyhood_death_par_day_per_age(const Data &data, ODE& output_data)
             if (classe == 0 && data.day_death[classe][day] == -1 && total_diff > 0)
             {
                 total_diff = total_diff + output_data.m_result_simulation[1][D_COMP][day]*POP_TOT - output_data.m_result_simulation[1][D_COMP][day]*POP_TOT;
-                somme = somme + (((data.day_death[classe][NB_DATA_DAY_DEATH-1]))*gsl_sf_log(total_diff) - total_diff);
+                somme = somme + (((data.day_death[NB_DATA_DAY_DEATH-1][day]))*gsl_sf_log(total_diff) - total_diff);
 
             }else if( total_diff > 0){
                 somme = somme + (((data.day_death[classe][day]))*gsl_sf_log(total_diff) - total_diff);

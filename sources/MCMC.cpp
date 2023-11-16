@@ -122,7 +122,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
             taux_acceptation = nombre_acceptation/(iter_total+1);
             //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
-            //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.50)/(1-0.50)));
+            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.50)/(1-0.50)));
 
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
