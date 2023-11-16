@@ -68,7 +68,6 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #if NB_CLASSE_AGE == 1
         #define NB_DATA_DAY_DEATH 1
         #define NB_DATA_DAY_HOSP 1
-
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 1
         #define DAY_DEATH_DATA_filename "../data/DATA_calibration/All/day_death_csv.csv"
         #define DAY_HOSP_DATA_filename "../data/DATA_calibration/All/day_hosp_csv.csv"
@@ -86,8 +85,10 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     #if NB_CLASSE_AGE == 2
         #define NB_DATA_DAY_DEATH 3
         #define NB_DATA_DAY_HOSP 3
-
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 2
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_death_csv_0-65_65-inf.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_hosp_csv_0-65_65-inf.csv"
+
         #define DAY_DEATH_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_death_csv_0-65_65-inf.csv"
         #define DAY_HOSP_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_hosp_csv_0-65_65-inf.csv"
 

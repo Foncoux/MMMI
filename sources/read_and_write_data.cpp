@@ -58,6 +58,30 @@ void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CO
 
 
 void write_data(const ODE& f,const std::string& filename1) {
+    std::ofstream file(filename1 + ".csv");
+    if (file.is_open()) {
+        for (size_t day = 0; day < NB_DAY; day++)
+        {
+            for (int classe=0; classe < NB_CLASSE_AGE; classe++) 
+            {
+                for (int comp=0;comp<COMPARTIMENT_TOT; comp++) 
+                {
+                    file << f.m_result_simulation[classe][comp][day] << ',';    
+                }
+            }
+            file << '\n';
+        }
+        file.close();
+        
+    } else {
+        std::cerr << "Impossible d'ouvrir le fichier " << filename1 << std::endl;
+    }
+}
+
+
+
+/*
+void write_data(const ODE& f,const std::string& filename1) {
     boost::property_tree::ptree main_tree;
 
     for (int k = 0; k < NB_CLASSE_AGE; k++) {
@@ -88,7 +112,7 @@ void write_data(const ODE& f,const std::string& filename1) {
         std::cout << "Unable to open file";
     }
 }
-
+*/
 
 void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
 {

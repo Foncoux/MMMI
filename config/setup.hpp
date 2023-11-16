@@ -10,9 +10,9 @@
 #define MCMC_PARAM_TYPE_SELECTION 1
 #define NB_CONFINEMENT 6
 #define DISCRET 1
-#define NB_CLASSE_AGE 1
 #define MODEL 4
 
+#define NB_CLASSE_AGE 2
 // 0.0000026083
 #define SIGMA 0.000002
 //#define SIGMA 0.0000047
