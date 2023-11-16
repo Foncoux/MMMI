@@ -153,36 +153,6 @@ double log_likelyhood_death_par_day_per_age(const Data &data, ODE& output_data)
     return somme;
 }
 
-/**
- * @brief Calcule -log likelyhood relative aux morts par âges
- * 
- * @param data données rélles pour la calibration
- * @param output_data tableau de itérations du modèle
- * @return double -log likelyhood relative au mort totales
- */
-
-double log_likelyhood_hosp_par_day_per_age(const Data &data, ODE& output_data)
-{
-    double somme = 0;
-    
-    double total_output;
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
-    {
-        
-        for (size_t day = 0; day < NB_DAY; day++)
-        {
-            total_output = output_data.m_result_simulation[classe][Q_ENTRY_COMP][day]*POP_TOT;
-            
-            if( total_output > 0){
-                somme = somme + (((data.day_hosp[classe][day]))*gsl_sf_log(total_output) - total_output);
-            }
-
-
-        }
-    }
-
-    return somme;
-}
 
 
 /**
