@@ -6,9 +6,6 @@
 void config_table_extern();
 void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::string filename);
 
-#define T_FINAL 295
-#define T_DEBUT 0
-
 #define POP_TOT 17282163.0
 
 #define S_COMP 0
@@ -18,8 +15,9 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define D_COMP 4
 #define Q_ENTRY_COMP 5
 #define E_COMP 6
-
-#define NB_DAY 295
+/*295*/
+#define NB_DAY 350
+#define NB_DAY_CALIBRATION 282
 #define HOSP_DEBUT 237
 
 #define NB_DATA_DAY 6

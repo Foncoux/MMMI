@@ -90,7 +90,7 @@ void write_data(const ODE& f,const std::string& filename1) {
         for (int j = 0; j < COMPARTIMENT_TOT; j++) {
             boost::property_tree::ptree child_tree;
             
-            for (int i = 0; i < T_FINAL; i++) {
+            for (int i = 0; i < NB_DAY; i++) {
                 boost::property_tree::ptree value;
                 value.put_value(f.m_result_simulation[k][j][i] * POP_TOT);
                 child_tree.push_back(std::make_pair("", value));

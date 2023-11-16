@@ -132,10 +132,10 @@ double log_likelyhood_death_par_day_per_age(const Data &data, ODE& output_data)
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
         total_output_old=0;
-        for (size_t day = 0; day < NB_DAY; day++)
+        for (size_t day = 0; day < NB_DAY_CALIBRATION; day++)
         {
             total_output_new = output_data.m_result_simulation[classe][D_COMP][day]*POP_TOT;
-            total_diff = total_output_new-total_output_old;
+            total_diff = total_output_new - total_output_old;
             total_output_old=total_output_new;
 
             if (classe == 0 && data.day_death[classe][day] == -1 && total_diff > 0)
@@ -171,7 +171,7 @@ double log_likelyhood_hosp_par_day_per_age(const Data &data, ODE& output_data)
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
         
-        for (size_t day = 0; day < NB_DAY; day++)
+        for (size_t day = 0; day < NB_DAY_CALIBRATION; day++)
         {
             total_output = output_data.m_result_simulation[classe][Q_ENTRY_COMP][day]*POP_TOT;
             

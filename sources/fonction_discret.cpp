@@ -88,7 +88,7 @@ int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const 
  * @param lambda force d'infection
  */
 
-int SIRQD_discret_new(std::array<std::array<double, T_FINAL>, COMPARTIMENT_TOT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int confinement)
+int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int confinement)
 {
 
     //std::cout << lambda << std::endl;

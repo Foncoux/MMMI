@@ -21,7 +21,7 @@
 #define READ_SAVE_PARAM true
 #define WRITE_SAVE_PARAM true
 
-#define BURNIN_STEP 1000000
+#define BURNIN_STEP 20000000
 #define BURNIN_PHASE true
 #define MCMC_PHASE true
 

@@ -4,7 +4,7 @@ rm(list = ls())
 
 library(jsonlite)
 library(ggplot2)
-
+NB_DAY = 350
 
 df_param1 <- data.frame(matrix(ncol = 12, nrow = 100))
 df_param2 <- data.frame(matrix(ncol = 12, nrow = 100))
@@ -66,12 +66,12 @@ for (i in 1:99) {
 
 ### compartiement D ###
 Compartiment = 5
-df1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df2) <- paste0("Jour_", 1:295)
+df1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:NB_DAY)
+df2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df2) <- paste0("Jour_", 1:NB_DAY)
 
-for (j in 1:295) {
+for (j in 1:NB_DAY) {
   COMP1 = c()
   COMP2 = c()
   for (i in 1:100) {
@@ -82,22 +82,22 @@ for (j in 1:295) {
   df2[,j] = COMP2
 }
 
-df_result1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df_result1) <- paste0("Jour_", 1:295)
-df_result2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df_result2) <- paste0("Jour_", 1:295)
+df_result1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df_result1) <- paste0("Jour_", 1:NB_DAY)
+df_result2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df_result2) <- paste0("Jour_", 1:NB_DAY)
 
 df_result1[,1] = df1[,1]
 df_result2[,1] = df2[,1]
-for(i in 2:295){
+for(i in 2:NB_DAY){
   df_result1[,i] = df1[,i] - df1[,i-1]
   df_result2[,i] = df2[,i] - df2[,i-1]
 }
 
 
-df_stat1_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat1_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat1_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat1_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat1_classe1$median[j] = median(df1[,j])
   df_stat1_classe1$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
   df_stat1_classe1$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
@@ -107,9 +107,9 @@ for (j in 1:295) {
   df_stat1_classe2$upper[j] = quantile(df2[,j], c(0.025, 0.975))[2]
 }
 
-df_stat2_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat2_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat2_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat2_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat2_classe2$median[j] = median(df_result2[,j])
   df_stat2_classe2$lower[j] = quantile(df_result2[,j], c(0.025, 0.975))[1]
   df_stat2_classe2$upper[j] = quantile(df_result2[,j], c(0.025, 0.975))[2]
@@ -123,7 +123,7 @@ for (j in 1:295) {
 df_stat1_all = df_stat1_classe1+df_stat1_classe2
 df_stat2_all = df_stat2_classe1+df_stat2_classe2
 
-days = 1:295
+days = 1:NB_DAY
 ggplot(df_stat1_classe1, aes(x=days)) +
   geom_line(aes(y=median), color="blue") +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
@@ -143,8 +143,19 @@ ggplot(df_stat1_all, aes(x=days)) +
   theme_minimal()
 
 
+death1 = read.table('day_death_csv_0-65_65-inf.csv',header = TRUE, sep = ",")
+death = death1[1:281,]
+# La nouvelle longueur souhaitée
+nouvelle_longueur <- NB_DAY
 
-death = read.table('day_death_csv_0-65_65-inf.csv',header = TRUE, sep = ",")
+# Ajouter des valeurs manquantes à toutes les colonnes si la longueur actuelle est inférieure à la nouvelle longueur
+if (nrow(death) < nouvelle_longueur) {
+  nombre_de_valeurs_manquantes <- nouvelle_longueur - nrow(death)
+  new_data=data.frame(matrix(NA, nrow = nombre_de_valeurs_manquantes, ncol = ncol(death)))
+  colnames(new_data) <- colnames(death)
+  death <- rbind(death, new_data)
+}
+
 ggplot(df_stat2_classe1, aes(x=days)) +
   geom_line(aes(y=median), color="blue") +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
@@ -170,12 +181,12 @@ ggplot(df_stat2_all, aes(x=days)) +
 
 ### COMPARTIMENT Q ###
 Compartiment = 6
-df1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df2) <- paste0("Jour_", 1:295)
+df1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:NB_DAY)
+df2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df2) <- paste0("Jour_", 1:NB_DAY)
 
-for (j in 1:295) {
+for (j in 1:NB_DAY) {
   COMP1 = c()
   COMP2 = c()
   for (i in 1:100) {
@@ -186,9 +197,9 @@ for (j in 1:295) {
   df2[,j] = COMP2
 }
 
-df_stat1_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat1_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat1_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat1_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat1_classe1$median[j] = median(df1[,j])
   df_stat1_classe1$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
   df_stat1_classe1$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
@@ -201,7 +212,19 @@ for (j in 1:295) {
 df_stat1_all = df_stat1_classe1+df_stat1_classe2
 
 
-death = read.table('day_hosp_csv_0-65_65-inf.csv',header = TRUE, sep = ",")
+death1 = read.table('day_hosp_csv_0-65_65-inf.csv',header = TRUE, sep = ",")
+death = death1[1:281,]
+# La nouvelle longueur souhaitée
+nouvelle_longueur <- NB_DAY
+
+# Ajouter des valeurs manquantes à toutes les colonnes si la longueur actuelle est inférieure à la nouvelle longueur
+if (nrow(death) < nouvelle_longueur) {
+  nombre_de_valeurs_manquantes <- nouvelle_longueur - nrow(death)
+  new_data=data.frame(matrix(NA, nrow = nombre_de_valeurs_manquantes, ncol = ncol(death)))
+  colnames(new_data) <- colnames(death)
+  death <- rbind(death, new_data)
+}
+
 ggplot(df_stat1_classe1, aes(x=days)) +
   geom_line(aes(y=median), color="blue") +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="skyblue", alpha=0.4) +
@@ -227,12 +250,12 @@ ggplot(df_stat1_all, aes(x=days)) +
 
 ### COMPARTIMENT R ###
 Compartiment = 3
-df1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df2) <- paste0("Jour_", 1:295)
+df1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:NB_DAY)
+df2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df2) <- paste0("Jour_", 1:NB_DAY)
 
-for (j in 1:295) {
+for (j in 1:NB_DAY) {
   COMP1 = c()
   COMP2 = c()
   for (i in 1:100) {
@@ -243,9 +266,9 @@ for (j in 1:295) {
   df2[,j] = COMP2
 }
 
-df_stat1_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat1_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat1_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat1_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat1_classe1$median[j] = median(df1[,j])
   df_stat1_classe1$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
   df_stat1_classe1$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
@@ -279,12 +302,12 @@ ggplot(df_stat1_all, aes(x=days)) +
 
 ### COMPARTIMENT I ###
 Compartiment = 2
-df1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df2) <- paste0("Jour_", 1:295)
+df1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:NB_DAY)
+df2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df2) <- paste0("Jour_", 1:NB_DAY)
 
-for (j in 1:295) {
+for (j in 1:NB_DAY) {
   COMP1 = c()
   COMP2 = c()
   for (i in 1:100) {
@@ -295,9 +318,9 @@ for (j in 1:295) {
   df2[,j] = COMP2
 }
 
-df_stat1_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat1_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat1_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat1_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat1_classe1$median[j] = median(df1[,j])
   df_stat1_classe1$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
   df_stat1_classe1$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
@@ -331,12 +354,12 @@ ggplot(df_stat1_all, aes(x=days)) +
 
 ### COMPARTIMENT S ###
 Compartiment = 1
-df1 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df1) <- paste0("Jour_", 1:295)
-df2 <- data.frame(matrix(ncol = 295, nrow = 100))
-colnames(df2) <- paste0("Jour_", 1:295)
+df1 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df1) <- paste0("Jour_", 1:NB_DAY)
+df2 <- data.frame(matrix(ncol = NB_DAY, nrow = 100))
+colnames(df2) <- paste0("Jour_", 1:NB_DAY)
 
-for (j in 1:295) {
+for (j in 1:NB_DAY) {
   COMP1 = c()
   COMP2 = c()
   for (i in 1:100) {
@@ -347,9 +370,9 @@ for (j in 1:295) {
   df2[,j] = COMP2
 }
 
-df_stat1_classe1 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-df_stat1_classe2 <- data.frame(median = numeric(295), lower = numeric(295), upper = numeric(295))
-for (j in 1:295) {
+df_stat1_classe1 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+df_stat1_classe2 <- data.frame(median = numeric(NB_DAY), lower = numeric(NB_DAY), upper = numeric(NB_DAY))
+for (j in 1:NB_DAY) {
   df_stat1_classe1$median[j] = median(df1[,j])
   df_stat1_classe1$lower[j] = quantile(df1[,j], c(0.025, 0.975))[1]
   df_stat1_classe1$upper[j] = quantile(df1[,j], c(0.025, 0.975))[2]
