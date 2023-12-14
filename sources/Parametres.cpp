@@ -128,7 +128,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random(gsl_rng* r)
                 else 
                 {
                     y = gsl_rng_uniform(r);
-                    double a = NB_PARAM_TOT*classe + param_id;
+                    
                     p[NB_PARAM_TOT*classe + param_id] = y;
                 }
             }
@@ -198,11 +198,17 @@ bool validation_parametres(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p
 
         somme1 = somme1 + p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
 
+/*
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_BETA0] < p[NB_PARAM_TOT*classe + PARAM_ID_BETA0+1]){
+                ok=false;   
+        }
+*/
     }
 
     if(somme1 < 1/POP_TOT || somme1 > 4478/POP_TOT){
         ok=false;
     } 
+
 
 
 

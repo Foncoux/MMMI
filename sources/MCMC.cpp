@@ -69,7 +69,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     int compteur_suiteLL=0;
     double moyenneLL_old=0,moyenneLL_new=0;
     std::string savename;
-    double gamma = 0.9;
+    double gamma = 0.1;
 
     while (model(f,cond_init,data) !=0)
     {
@@ -82,6 +82,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     int j=0;
     int iter_select = 0;
     int iter_total=0;
+    int iter_maj_sigma=0;
     bool stop = false; 
     //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
     
@@ -93,7 +94,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                             << std::setw(4) << "|"
                             << std::setw(15) << "LL_old"
                             << std::setw(4) << "|"
-                            << std::setw(15) << "LL_new - LL_old"
+                            << std::setw(15) << "sigma"
                             << std::setw(4) << "|"
                             << std::setw(15) << "sigma"
                             << "\r" << std::endl;
@@ -120,9 +121,22 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
 
 
-            taux_acceptation = nombre_acceptation/(iter_total+1);
-            //sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.234)/(1-0.234)));
-            sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-0.50)/(1-0.50)));
+            taux_acceptation = nombre_acceptation/(iter_maj_sigma+1);
+
+            
+
+            if (iter_maj_sigma > 5000)
+            {
+                iter_maj_sigma = 0;
+                sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-TAUX_ACCEPT_OBJ)/(1-TAUX_ACCEPT_OBJ)));
+                
+                sigma = sigma > 0.001 ? 0.001 : sigma;
+                sigma = sigma < 0.000001 ? 0.000001 : sigma;
+
+                nombre_acceptation=0;
+
+            }
+            iter_maj_sigma++;
 
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
@@ -132,7 +146,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                                     << std::setw(4) << "|"
                                     << std::setw(15) << std::fixed << std::setprecision(2) << LL_old
                                     << std::setw(4) << "|"
-                                    << std::setw(15) << LL_new - LL_old
+                                    << std::setw(15) << std::setprecision(10) << p_old[PARAM_ID_DELTA]
+                                    << std::setw(4) << "|"
+                                    << std::setw(15) << p_old[NB_PARAM_TOT + PARAM_ID_DELTA]
                                     << std::setw(4) << "|"
                                     << std::setw(15)<< std::setprecision(10) << sigma
 
@@ -164,6 +180,8 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
     double alpha;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_old;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_new;
+
+    std::vector<std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>> p_storage;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
     std::string savename;
@@ -214,17 +232,19 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
                 
             }
 
-
+ 
                   
             taux_acceptation = nombre_acceptation/(iter_total+1);
             if (iter_select > ITE_RECUP_MCMC)
             {
                 iter_select=0;
-                savename = SAVE_MCMC_WRITE + std::to_string(j);
-                write_save_parameters(p_old,savename);
+                
+
+                p_storage.push_back(p_old);
+
                 model(f,p_old,data);
                 savename = DATA_MCMC_WRITE + std::to_string(j);
-                write_data(f,savename);
+                write_data_csv(f,savename);
 
                 j++;
                 if (j >= NB_POST_DIST)
@@ -234,7 +254,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
                 }
                 
             }
+
             
+
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -258,6 +280,8 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
         iter_total++;
     }
     
+    write_save_parameters_MCMC(p_storage);
+
     std::cout << std::setprecision(16) << std::endl;
     return p_old;
 

@@ -14,7 +14,8 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define Q_COMP 3
 #define D_COMP 4
 #define Q_ENTRY_COMP 5
-#define E_COMP 6
+#define D_ENTRY_COMP 6
+#define E_COMP 7
 /*295*/
 #define NB_DAY 350
 #define NB_DAY_CALIBRATION 282
@@ -50,7 +51,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
     #define NB_PARAM_TOT (NB_PARAM + NB_CONFINEMENT + 1)
 
-    #define PHANTOM_COMPART 1
+    #define PHANTOM_COMPART 2
     #define COMPARTIMENT 5
     #define COMPARTIMENT_TOT (PHANTOM_COMPART+COMPARTIMENT)
     #define FCT_OBJ_CHOICE 1
@@ -58,6 +59,9 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     extern std::vector<int> TAB_DATE_CONFINEMENT;
     extern std::vector<double> PROP_PAR_CLASSE;
     extern std::vector<std::string> NAMES_COMPARTIMENT;
+    extern std::vector<std::string> NAMES_COMPARTIMENT_CSV;
+
+    extern std::vector<std::string> NAMES_PARAM;
     extern std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
     extern std::vector<std::string> SELECT_CLASSE_AGE;
   

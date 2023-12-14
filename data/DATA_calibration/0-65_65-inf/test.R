@@ -8,14 +8,14 @@ NB_DAY = 350
 
 df_param1 <- data.frame(matrix(ncol = 12, nrow = 100))
 df_param2 <- data.frame(matrix(ncol = 12, nrow = 100))
-colnames(df_param1) <- c("Delta", "Gamma", "Epsilon", "r", "X0", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6")
-colnames(df_param2) <- c("Delta", "Gamma", "Epsilon", "r", "X0", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6")
+#colnames(df_param1) <- c("Delta", "Gamma", "Epsilon", "r", "X0", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6")
+#colnames(df_param2) <- c("Delta", "Gamma", "Epsilon", "r", "X0", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6")
 
 
 for (i in 1:100) {
   
   filename <- paste0("../../MCMC_param/save_MCMC", i-1, ".csv")
-  data <- read.table(filename,header = FALSE,sep = ',')
+  data <- read.table(filename,header = TRUE,sep = ',')
   for (j in 1:12) {
     df_param1[i,j] = data[1,j]
     df_param2[i,j] = data[2,j]

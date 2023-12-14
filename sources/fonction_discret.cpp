@@ -105,6 +105,7 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
     y[Q_COMP][n+1] = y[Q_COMP][n] + delta*y[I_COMP][n] - (eps + r)*y[Q_COMP][n];
     y[D_COMP][n+1] = y[D_COMP][n] + r*y[Q_COMP][n];
     y[Q_ENTRY_COMP][n+1] = delta*y[I_COMP][n];
+    y[D_ENTRY_COMP][n+1] = r*y[Q_COMP][n];
 
 
     if (beta*lambda > 1)

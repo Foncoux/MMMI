@@ -4,6 +4,7 @@
 #include <iostream>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_rng.h>
+#include <math.h>
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
@@ -42,7 +43,7 @@ double log_likelyhood_death(const Data &data, ODE& output_data)
         total_diff = total_output_new - total_output_old;
 
         if( total_diff > 0){
-            inter = (data.day_death[DEATH_DAY][i]*gsl_sf_log(total_diff) - total_diff);
+            
             somme = somme + (((data.day_death[0][i]))*gsl_sf_log(total_diff) - total_diff);
         }
         total_output_old = total_output_new;
@@ -128,29 +129,22 @@ double log_likelyhood_death_par_day_per_age(const Data &data, ODE& output_data)
 {
     double somme = 0;
     
-    double total_output_new,total_output_old,total_diff;
+    double total_output;
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {
-        total_output_old=0;
         for (size_t day = 0; day < NB_DAY_CALIBRATION; day++)
         {
-            total_output_new = output_data.m_result_simulation[classe][D_COMP][day]*POP_TOT;
-            total_diff = total_output_new - total_output_old;
-            total_output_old=total_output_new;
-
-            if (classe == 0 && data.day_death[classe][day] == -1 && total_diff > 0)
-            {
-                total_diff = total_diff + output_data.m_result_simulation[1][D_COMP][day]*POP_TOT - output_data.m_result_simulation[1][D_COMP][day]*POP_TOT;
-                somme = somme + (((data.day_death[NB_DATA_DAY_DEATH-1][day]))*gsl_sf_log(total_diff) - total_diff);
-
-            }else if( total_diff > 0){
-                somme = somme + (((data.day_death[classe][day]))*gsl_sf_log(total_diff) - total_diff);
+            total_output = output_data.m_result_simulation[classe][D_ENTRY_COMP][day]*POP_TOT;
+            
+            if( total_output > 0){
+                somme = somme + (((data.day_death[classe][day]))*gsl_sf_log(total_output) - total_output);
             }
 
         }
     }
 
     return somme;
+    
 }
 
 
@@ -208,7 +202,7 @@ double fonction_obj_classe_2(const Data &data, ODE& output_data,int loglikelyhoo
     result3 = log_likelyhood_hosp_par_day_per_age(data, output_data);
 
 
-    return result1 + result2+ result3;
+    return result1 +result2+ result3;
 }
 
 /**
@@ -282,19 +276,19 @@ double mean_square_recovered_classe2(const Data &data, ODE& output_data)
     total_output = output_data.m_result_simulation[0][R_COMP][38];
     if(total_output < (0.6/100) || total_output > (7.5/100))
     {   
-        somme2 = somme2 + ((4.05/100) - total_output)*((4.05/100) - total_output)*10000000000;
+        somme2 = somme2 + sqrt(((4.05/100) - total_output)*((4.05/100) - total_output))*10000000;
     }
 
     total_output = output_data.m_result_simulation[1][R_COMP][38];
     if(total_output < (1.2/100) || total_output > (5.1/100))
     {   
-        somme2 = somme2 + ((2.5/100) - total_output)*((2.5/100) - total_output)*10000000000;
+        somme2 = somme2 + sqrt(((2.5/100) - total_output)*((2.5/100) - total_output))*10000000;
     }    
 
     total_output = output_data.m_result_simulation[0][R_COMP][38] + output_data.m_result_simulation[1][R_COMP][38];
     if(total_output < (2.1/100) || total_output > (3.7/100))
     {   
-        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*10000000000;
+        somme2 = somme2 + sqrt(((2.8/100) - total_output)*((2.8/100) - total_output))*10000000;
     }
     
 

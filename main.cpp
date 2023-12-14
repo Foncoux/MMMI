@@ -4,6 +4,7 @@
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_rng.h>
 #include <string>
+#include <time.h>
 
 #include "config/config.hpp"
 #include "headers/Data.hpp"
@@ -27,6 +28,7 @@ int main (void)
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init;
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
+    gsl_rng_set(random_ptr,time(NULL));
 
     if (READ_SAVE_PARAM)
     {
@@ -45,7 +47,7 @@ int main (void)
         write_save_parameters(param_opti,SAVE_TO_WRITE); 
     }
     
-    write_data(f,DATA_TO_WRITE); 
+    write_data_csv(f,DATA_TO_WRITE); 
     
     //print_parameter(param_opti);
 

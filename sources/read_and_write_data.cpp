@@ -18,8 +18,6 @@
 #include <iomanip> 
 #include <array>
 #include <gsl/gsl_rng.h>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
@@ -56,62 +54,52 @@ void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CO
 
 }
 
-/*
-void write_data(const ODE& f,const std::string& filename1) {
+
+void write_data_csv(const ODE& f,const std::string& filename1) {
     std::ofstream file(filename1 + ".csv");
     if (file.is_open()) {
+
+        //put headers in the top of the csv file
+        for (int i=0;i<COMPARTIMENT_TOT*NB_CLASSE_AGE; i++) {
+            file << NAMES_COMPARTIMENT_CSV[i];
+            if(i != COMPARTIMENT_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
+            }
+        }
+        file << "\n";
+
         for (size_t day = 0; day < NB_DAY; day++)
         {
             for (int classe=0; classe < NB_CLASSE_AGE; classe++) 
             {
                 for (int comp=0;comp<COMPARTIMENT_TOT; comp++) 
                 {
-                    file << f.m_result_simulation[classe][comp][day] << ',';    
+                    file << f.m_result_simulation[classe][comp][day];
+
+                    if(comp != COMPARTIMENT_TOT-1)
+                    {
+                        file << ',';
+                    }
+                    if(classe != NB_CLASSE_AGE-1 && comp == COMPARTIMENT_TOT-1)
+                    {
+                        file << ',';
+                    }
                 }
             }
             file << '\n';
         }
         file.close();
         
-    } else {
+    }else{
         std::cerr << "Impossible d'ouvrir le fichier " << filename1 << std::endl;
     }
 }
-*/
 
 
 
-void write_data(const ODE& f,const std::string& filename1) {
-    boost::property_tree::ptree main_tree;
 
-    for (int k = 0; k < NB_CLASSE_AGE; k++) {
-        boost::property_tree::ptree ode_tree;
 
-        for (int j = 0; j < COMPARTIMENT_TOT; j++) {
-            boost::property_tree::ptree child_tree;
-            
-            for (int i = 0; i < NB_DAY; i++) {
-                boost::property_tree::ptree value;
-                value.put_value(f.m_result_simulation[k][j][i] * POP_TOT);
-                child_tree.push_back(std::make_pair("", value));
-            }
-            ode_tree.add_child(NAMES_COMPARTIMENT[j], child_tree);
-        }
-
-        // Si vous voulez nommer chaque "ODE" dans le JSON (par exemple "ODE1", "ODE2", ...)
-        std::string ode_name = "Classe" + std::to_string(k+1);
-        main_tree.add_child(ode_name, ode_tree);
-    }
-
-    std::string filename = filename1 + ".json";
-    std::ofstream myfile(filename);
-    if (myfile.is_open()) {
-        boost::property_tree::write_json(myfile, main_tree, true);
-        myfile.close();
-    } else {
-        std::cout << "Unable to open file";
-    }
-}
 
 
 void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
@@ -139,17 +127,65 @@ void print_parameter(std::array<parametres,NB_CLASSE_AGE> p)
     
 }
 
+void write_save_parameters_MCMC(const std::vector<std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>> p_storage) {
+    
+    std::ofstream file(std::string(SAVE_MCMC_WRITE) + ".csv");
+    file << std::fixed << std::setprecision(15);
+    
+    if (file.is_open()){
+        //put headers in the top of the csv file
+        for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++) {
+            file << NAMES_PARAM[i];
+            if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
+            }
+        }
+        file << "\n";
+
+        //data storage
+        for (size_t vec = 0; vec < p_storage.size(); vec++)
+        {
+            for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
+                file << p_storage[vec][i];
+                if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+                {
+                    file << ',';
+                }
+            }
+            file << "\n";
+        }
+        
+        file.close();
+        
+    } else {
+        std::cerr << "Impossible d'ouvrir le fichier" << std::endl;
+    }
+}
+
+
 
 void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr) {
     std::ofstream file(save_nbr + ".csv");
     file << std::fixed << std::setprecision(15);
     if (file.is_open()) {
-        for (int classe=0; classe < NB_CLASSE_AGE; classe++) {
-            for (int i=0;i<NB_PARAM_TOT; i++) {
-                file << p[NB_PARAM_TOT*classe + i] << ',';
+        for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++) {
+            file << NAMES_PARAM[i];
+            if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
             }
-            file << '\n';
         }
+        file << "\n";
+
+        for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
+            file << p[i];
+            if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
+            }
+        }
+        
         file.close();
         
     } else {
@@ -168,21 +204,20 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::st
     }
 
     std::string line;
-    //std::getline(file,line);
+    std::getline(file,line);
 
-    int classe = 0;
-    while (std::getline(file, line) && classe < NB_CLASSE_AGE) {
-        std::istringstream iss(line);
-        std::string value;
-        int i = 0;
+    std::getline(file, line);
+    std::istringstream iss(line);
+    std::string value;
+    int i = 0;
 
-        while (std::getline(iss, value, ',') && i < NB_PARAM_TOT ) {
-            p[NB_PARAM_TOT*classe + i] = std::stod(value);
-            
-            i++;
-        }
-        classe++;
+    while (std::getline(iss, value, ',') && i < NB_PARAM_TOT*NB_CLASSE_AGE ) {
+        p[i] = std::stod(value);
+        
+        i++;
     }
+        
+    
     
     file.close();
     return p;

@@ -10,6 +10,8 @@
 std::vector<int> TAB_DATE_CONFINEMENT;
 std::vector<double> PROP_PAR_CLASSE;
 std::vector<std::string> NAMES_COMPARTIMENT;
+std::vector<std::string> NAMES_COMPARTIMENT_CSV;
+std::vector<std::string> NAMES_PARAM;
 std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
 std::vector<std::string> SELECT_CLASSE_AGE;
 
@@ -55,11 +57,11 @@ void config_table_extern(){
     
     switch (COMPARTIMENT_TOT)
     {
-    case 6:
-        NAMES_COMPARTIMENT = {"S","I","R","Q","D","Q_entry"};
+    case 7:
+        NAMES_COMPARTIMENT = {"S","I","R","Q","D","Q_entry","D_entry"};
         break;
     
-    case 7:
+    case 8:
         NAMES_COMPARTIMENT = {"S","I","R","Q","D","E"};
         break;
     
@@ -67,10 +69,30 @@ void config_table_extern(){
         break;
     }
 
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        for (size_t comp = 0; comp < COMPARTIMENT_TOT; comp++)
+        {
+            NAMES_COMPARTIMENT_CSV.push_back(NAMES_COMPARTIMENT[comp] + "_" + std::to_string(classe));
+        }
+        
+    }
+
+
     std::string filename = SOCIAL_CONTACT_MATRIX_filename;
     set_social_contact_matrix(SOCIAL_CONTACT_MATRIX,filename);
     
-
+    std::vector<std::string> NAMES_PARAM_temp = {"delta", "gamma", "eps", "r", "x0_infect", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6"};
+    
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        for (size_t param_id = 0; param_id < NB_PARAM_TOT; param_id++)
+        {
+            NAMES_PARAM.push_back(NAMES_PARAM_temp[param_id] + "_" + std::to_string(classe));
+        }
+        
+    }
+    
 }
 
 

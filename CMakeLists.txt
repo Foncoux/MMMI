@@ -10,17 +10,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # compilation en mode debug
 set(CMAKE_BUILD_TYPE Debug)
 
-set (Boost_USE_STATIC_LIBS ON)
 find_package(GSL REQUIRED)
-
-
-find_package(Boost 1.83 REQUIRED COMPONENTS json)
 
 option(BUILD_TESTING "Are we building for testing?" OFF)
 
 
 #enable_testing()
-
+link_directories(./lib/NOMAD) 
 include_directories(headers)
 
 
@@ -36,10 +32,19 @@ set(MAIN
     main.cpp
     )
 
+
+
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
 add_executable(main ${MAIN})
 
-target_link_libraries(main sources config_projet GSL::gsl GSL::gslcblas Boost::json)
+if(OpenMP_CXX_FOUND)
+  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval OpenMP::OpenMP_CXX)
+else()
+  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval)
+endif()
+
+
+target_link_libraries(main PUBLIC sources config_projet GSL::gsl GSL::gslcblas)
 
 
 
