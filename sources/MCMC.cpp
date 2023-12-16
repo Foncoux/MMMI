@@ -71,7 +71,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     std::string savename;
     double gamma = 0.1;
 
-    while (model(f,cond_init,data) !=0)
+    while (model(f,cond_init) !=0)
     {
         cond_init = set_parametres_random(r);
     }
@@ -104,7 +104,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     
         p_new = set_parametres_random_normal(r,sigma,p_old);
 
-        if (model(f,p_new,data) == 0)
+        if (model(f,p_new) == 0)
         {
             LL_new = fonction_obj(data,f,1);
             alpha = gsl_rng_uniform(r);
@@ -186,7 +186,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
     double taux_acceptation = 0;
     std::string savename;
 
-    while (model(f,cond_init,data) !=0)
+    while (model(f,cond_init) !=0)
     {
         cond_init = set_parametres_random(r);
     }
@@ -218,7 +218,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
       
         p_new = set_parametres_random_normal(r,sigma,p_old);
 
-        if (model(f,p_new,data) == 0)
+        if (model(f,p_new) == 0)
         {
             LL_new = fonction_obj(data,f,1);
             alpha = gsl_rng_uniform(r);
@@ -242,7 +242,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
 
                 p_storage.push_back(p_old);
 
-                model(f,p_old,data);
+                model(f,p_old);
                 savename = DATA_MCMC_WRITE + std::to_string(j);
                 write_data_csv(f,savename);
 

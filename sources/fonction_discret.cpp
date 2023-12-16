@@ -13,11 +13,11 @@
 #include "../headers/fonction_continuous.hpp"
 
 
-int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti,const Data &data)
+int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti)
 {
     set_condition_initiale(f,param_opti);
     
-    return bb_discret_new(f,param_opti,data);
+    return bb_discret_new(f,param_opti);
 }
 
 
@@ -31,7 +31,7 @@ int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti,const
  * @param data 
  * @return double 
  */
-double force_infection_classe(int jour,int classe_age,ODE& f,const Data &data) 
+double force_infection_classe(int jour,int classe_age,ODE& f) 
 {
     
     double result=0;
@@ -52,7 +52,7 @@ double force_infection_classe(int jour,int classe_age,ODE& f,const Data &data)
  * @param data données réelles pour la calibration.
  */
 
-int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const Data &data)
+int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p)
 {   
     int output_model;
     double confinement = 0;
@@ -66,7 +66,7 @@ int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,const 
 
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {
-            lambda = force_infection_classe(jour,classe,f,data);
+            lambda = force_infection_classe(jour,classe,f);
             output_model = f.m_function_discret_new(f.m_result_simulation[classe],p,jour,lambda,classe,confinement);
             if(output_model != 0){
                 return output_model;

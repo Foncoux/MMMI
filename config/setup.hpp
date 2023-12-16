@@ -12,7 +12,7 @@
 
 #define NB_CONFINEMENT 6
 #define DISCRET 1
-#define MODEL 4
+#define MODEL_BB 4
 
 #define NB_CLASSE_AGE 2
 // 0.0000026083

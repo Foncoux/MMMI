@@ -9,7 +9,7 @@ set(SOURCES
     fonction_discret.cpp
     read_and_write_data.cpp
     Parametres.cpp
-
+    Nomad_file.cpp
     )
 
 add_library(sources ${SOURCES})

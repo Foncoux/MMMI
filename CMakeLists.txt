@@ -16,7 +16,10 @@ option(BUILD_TESTING "Are we building for testing?" OFF)
 
 
 #enable_testing()
-link_directories(./lib/NOMAD) 
+
+link_directories(./lib/NOMAD/lib)
+
+include_directories(${CMAKE_SOURCE_DIR}/lib/NOMAD/include)
 include_directories(headers)
 
 
@@ -35,7 +38,13 @@ set(MAIN
 
 
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
+
+
+
+
 add_executable(main ${MAIN})
+
+target_link_libraries(main PUBLIC sources config_projet GSL::gsl GSL::gslcblas)
 
 if(OpenMP_CXX_FOUND)
   target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval OpenMP::OpenMP_CXX)
@@ -43,8 +52,6 @@ else()
   target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval)
 endif()
 
-
-target_link_libraries(main PUBLIC sources config_projet GSL::gsl GSL::gslcblas)
 
 
 

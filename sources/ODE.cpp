@@ -30,7 +30,7 @@
 
 ODE::ODE()
 {   
-    switch (MODEL)
+    switch (MODEL_BB)
     {
     case 4:
         m_function_discret_new = SIRQD_discret_new;

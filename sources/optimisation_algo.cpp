@@ -66,7 +66,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
     int output_model_return;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = cond_init;
 
-    while (model(f,param_opti,data) != 0)
+    while (model(f,param_opti) != 0)
     {
         param_opti = set_parametres_random(random_ptr);
     }
@@ -81,7 +81,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
         
         std::cout << i << "   ";
             
-        if (model(f,p,data)  == 0)
+        if (model(f,p)  == 0)
         {
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
@@ -122,7 +122,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = cond_init;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
     
-    while (model(f,param_opti,data) !=0)
+    while (model(f,param_opti) !=0)
     {
         param_opti = set_parametres_random(random_ptr);
     }
@@ -142,7 +142,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
         p = set_parametres_random_normal(random_ptr,sigma,param_opti);
         
         std::cout << i << "   " << sigma << "   ";    
-        if (model(f,p,data) == 0)
+        if (model(f,p) == 0)
         {
             if(minimisation(fct_obj, data, f,fct_obj_choice))
             {
