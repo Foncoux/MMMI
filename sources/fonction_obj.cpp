@@ -26,27 +26,20 @@
 double log_likelyhood_death(const Data &data, ODE& output_data)
 {
     double somme = 0;
-    double total_output_new,total_output_old,total_diff;
-    double log;
-    total_output_old = 0;
-    double inter;
+    double total_output;
 
-    for(size_t i=0;i< NB_DAY; i++)
+    for(size_t i=0;i< NB_DAY_CALIBRATION; i++)
     {
-        total_output_new = 0;
-        
+        total_output= 0;
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
         {               
-                total_output_new = total_output_new + (output_data.m_result_simulation[classe][D_COMP][i])*POP_TOT;
+                total_output = total_output + (output_data.m_result_simulation[classe][D_ENTRY_COMP][i])*POP_TOT;
         }   
 
-        total_diff = total_output_new - total_output_old;
-
-        if( total_diff > 0){
+        if( total_output > 0){
             
-            somme = somme + (((data.day_death[0][i]))*gsl_sf_log(total_diff) - total_diff);
+            somme = somme + (((data.day_death[0][i]))*gsl_sf_log(total_output) - total_output);
         }
-        total_output_old = total_output_new;
     }    
     
     return somme;
@@ -64,7 +57,7 @@ double log_likelyhood_hosp_week_day(const Data &data, ODE& output_data)
     double somme = 0;
     double total_output;
     
-    for(size_t i=0;i< NB_DAY; i++)
+    for(size_t i=0;i< NB_DAY_CALIBRATION; i++)
     {
         
         total_output = 0;
@@ -191,7 +184,8 @@ double fonction_obj_classe_1(const Data &data, ODE& output_data,int loglikelyhoo
     //result3 = log_likelyhood_hosp_week(data,output_data);
     result4 = log_likelyhood_hosp_week_day(data, output_data);
 
-    return result1 + result2 + result4;
+    double result = result1 + result2 + result4;
+    return result;
 }
 
 double fonction_obj_classe_2(const Data &data, ODE& output_data,int loglikelyhood)
@@ -257,7 +251,7 @@ double mean_square_recovered(const Data &data, ODE& output_data)
 
     if (total_output < (2.1/100) || total_output > (3.7/100))
     {   
-        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*10000000000;
+        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*1000000000000;
         
     }
 

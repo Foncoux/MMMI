@@ -16,11 +16,11 @@ class Data
     //std::array<std::array<double, NB_CLASSE_SOCIAL_CONTACT_MATRIX>, NB_CLASSE_SOCIAL_CONTACT_MATRIX> social_contact_matrix_leisure;
     //std::array<std::array<double, NB_CLASSE_SOCIAL_CONTACT_MATRIX>, NB_CLASSE_SOCIAL_CONTACT_MATRIX> social_contact_matrix_other;
 
-    std::array<std::array<double, NB_DAY>, NB_DATA_DAY_DEATH> day_death;
-    std::array<std::array<double, NB_DAY>, NB_DATA_DAY_DEATH> day_hosp;
+    std::array<std::array<double, NB_DAY_CALIBRATION>, NB_DATA_DAY_DEATH> day_death;
+    std::array<std::array<double, NB_DAY_CALIBRATION>, NB_DATA_DAY_DEATH> day_hosp;
 
-    std::array<std::array<double, NB_DAY>, NB_DATA_DAY> day_all;
-    std::array<std::array<double, NB_DAY>, NB_DATA_DEATH_AGE_DAY> day_death_age;
+    std::array<std::array<double, NB_DAY_CALIBRATION>, NB_DATA_DAY> day_all;
+    std::array<std::array<double, NB_DAY_CALIBRATION>, NB_DATA_DEATH_AGE_DAY> day_death_age;
 
     std::array<std::array<double, NB_WEEK>, NB_CLASSE_WEEK> week_hosp_ages;
     std::array<std::array<double, NB_MONTH>, NB_CLASSE_MONTH> month_death_ages;

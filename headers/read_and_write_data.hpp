@@ -20,4 +20,6 @@ void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& 
 
 void write_save_parameters_MCMC(const std::vector<std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>> p_storage);
 
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution();
+
 #endif

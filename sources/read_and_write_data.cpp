@@ -223,3 +223,27 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::st
     return p;
 }
 
+
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution()
+{
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
+    std::ifstream file("../best_feasible_point.txt");
+    if (!file.is_open()) {
+        std::cout << "Impossible d'ouvrir le fichier. (read_nomad_best_feasible)" << std::endl;
+        exit(0);
+    }
+
+
+    double value;
+    int i=0;
+    while (file >> value && i < NB_PARAM_TOT*NB_CLASSE_AGE) {
+        p[i] = value;
+        i++;
+    }
+
+    // Fermer le fichier
+    file.close();
+    
+    return p;
+}
+

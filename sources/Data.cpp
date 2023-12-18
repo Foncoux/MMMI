@@ -17,8 +17,8 @@ Data::Data()
 
     //read_data<NB_CLASSE_WEEK, NB_WEEK>(HOSP_WEEK_AGE_DATA_filename, week_hosp_ages);
 
-    read_data_csv<NB_DATA_DAY_DEATH, NB_DAY>(DAY_DEATH_DATA_filename, day_death);
-    read_data_csv<NB_DATA_DAY_HOSP, NB_DAY>(DAY_HOSP_DATA_filename, day_hosp);
+    read_data_csv<NB_DATA_DAY_DEATH, NB_DAY_CALIBRATION>(DAY_DEATH_DATA_filename, day_death);
+    read_data_csv<NB_DATA_DAY_HOSP, NB_DAY_CALIBRATION>(DAY_HOSP_DATA_filename, day_hosp);
 
     
 }

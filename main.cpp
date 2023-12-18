@@ -21,7 +21,10 @@
 
 int main (void)
 {   
-    int test = 0;
+    gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
+    gsl_rng_set(random_ptr,time(NULL));
+    int test = NOMAD_ALGO;
+    int fct_obj_choice = FCT_OBJ_CHOICE;
     if(test == 0){
         Data data;
         config_table_extern();
@@ -30,8 +33,7 @@ int main (void)
         ODE f;
         std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
         std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init;
-        gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
-        gsl_rng_set(random_ptr,time(NULL));
+       
 
         if (READ_SAVE_PARAM)
         {
@@ -54,11 +56,30 @@ int main (void)
         
         //print_parameter(param_opti);
 
-        gsl_rng_free(random_ptr);
 
     }else{
-        main2();
+        config_table_extern();
+        
+        //main2();
+
+        Data data;
+        ODE f;
+        std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = read_nomad_best_feasible_solution();
+
+        param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, param_opti);
+
+        model(f,param_opti);
+        
+        if (WRITE_SAVE_PARAM == true)
+        {
+            write_save_parameters(param_opti,SAVE_TO_WRITE); 
+        }
+        
+
+
     }
+
+    gsl_rng_free(random_ptr);
 
 
     return 0;
