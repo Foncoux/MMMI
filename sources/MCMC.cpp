@@ -69,7 +69,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     int compteur_suiteLL=0;
     double moyenneLL_old=0,moyenneLL_new=0;
     std::string savename;
-    double gamma = 0.1;
+    double gamma = 0.4;
 
     while (model(f,cond_init) !=0)
     {

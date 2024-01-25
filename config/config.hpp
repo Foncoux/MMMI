@@ -71,14 +71,10 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
         #define NB_DATA_DAY_DEATH 1
         #define NB_DATA_DAY_HOSP 1
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 1
-        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/All/day_death_csv.csv"
-        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/All/day_hosp_csv.csv"
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/1_classe/death_1.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/1_classe/hosp_1.csv"
 
-        #define DAY_DATA_filename "../data/day_data.csv"
-        #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
-        #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week.csv"
-        #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
-        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/All/social_contact_matrix_1.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/1_classe/Social_contact_matrix_1.csv"
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_1classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_1classe" //4
@@ -88,20 +84,28 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
         #define NB_DATA_DAY_DEATH 3
         #define NB_DATA_DAY_HOSP 3
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 2
-        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_death_csv_0-65_65-inf.csv"
-        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_hosp_csv_0-65_65-inf.csv"
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/2_classe/death_2.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/2_classe/hosp_2.csv"
 
-        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_death_csv_0-65_65-inf.csv"
-        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/0-65_65-inf/day_hosp_csv_0-65_65-inf.csv"
-
-        #define DAY_DATA_filename "../data/day_data.csv"
-        #define DAY_DEATH_AGE_DATA_filename "../data/death_day_age.csv"
-        #define HOSP_WEEK_AGE_DATA_filename "../data/hosp_week_age2.csv"
-        #define DEATH_MONTH_AGE_DATA_filename "../data/death_month_age.csv"
-        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/0-65_65-inf/social_contact_matrix_0-65_65-inf.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/2_classe/Social_contact_matrix_2.csv"
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_2classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_2classe" //4
+        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_2classe_mads" //4
+    #endif
+
+    #if NB_CLASSE_AGE == 4
+        #define NB_DATA_DAY_DEATH 5
+        #define NB_DATA_DAY_HOSP 5
+        #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 4
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/4_classe/death_4.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/4_classe/hosp_4.csv"
+
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/2_classe/Social_contact_matrix_2.csv"
+
+        #define SAVE_TO_READ "../data/save_dir/save_SIRQD_2classe" //4
+        #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_2classe" //4
+        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_2classe_mads" //4
     #endif
 
 

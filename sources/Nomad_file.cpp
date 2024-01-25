@@ -21,10 +21,11 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue( "DIMENSION", n);
     // The algorithm terminates after
     // this number of black-box evaluations
-    allParams->setAttributeValue( "MAX_BB_EVAL", 5000);
+    allParams->setAttributeValue( "MAX_BB_EVAL", 50000);
     // Starting point
     NOMAD::Point X0(n, 0.1);
     X0[PARAM_ID_X0_infect] = 2500/POP_TOT; // starting point (0.0 0.0 0.0 0.0 0.0 -4.0)
+    X0[NB_PARAM_TOT + PARAM_ID_X0_infect] = 2500/POP_TOT; // starting point (0.0 0.0 0.0 0.0 0.0 -4.0)
     allParams->setAttributeValue( "X0", X0 );
 
     allParams->getPbParams()->setAttributeValue("GRANULARITY", NOMAD::ArrayOfDouble(n, 0));
@@ -48,8 +49,21 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
 
     allParams->setAttributeValue("LOWER_BOUND", NOMAD::ArrayOfDouble(n, 0.0000000000001)); // all var. >= 0 
     NOMAD::ArrayOfDouble ub(n,1);     // x_i < 1
-    ub[PARAM_ID_X0_infect] = 5000/POP_TOT;     // x_x_0 <= 5000/POP_TOT 
+    for (size_t i = 0; i < NB_CLASSE_AGE; i++)
+    {
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +1] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +2] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +3] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +4] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +5] = 0.9;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +6] = 0.9;
 
+    }
+    
+
+    ub[PARAM_ID_X0_infect] = 5000/POP_TOT;     // x_x_0 <= 5000/POP_TOT 
+    ub[NB_PARAM_TOT + PARAM_ID_X0_infect] = 5000/POP_TOT;
     allParams->setAttributeValue("UPPER_BOUND", ub);
 
 
@@ -88,16 +102,17 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
         if (model(fct,x) !=-1)
         {
             f = -fonction_obj(data,fct,1);
+            countEval = true;
         }else{
-            
+            countEval = false;
         }
         
-        
+        /*
         for (size_t i = 0; i < NB_PARAM_TOT; i++)
         {
             nbr.push_back(x[i].todouble());
         }
-    
+    */
 
         NOMAD::Double EB;
         std::string bbo = f.tostring();
@@ -122,7 +137,7 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
         throw std::logic_error(err);
     }
 
-    countEval = true;
+    
     return eval_ok;
 }
 

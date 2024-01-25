@@ -47,6 +47,9 @@ set(MAIN
 
 add_executable(main ${MAIN})
 
+
+
+
 target_compile_options(main PRIVATE -fsanitize=address)
 target_link_options(main PRIVATE -fsanitize=address)
 target_compile_options(main PRIVATE -fsanitize=leak)
@@ -57,9 +60,9 @@ target_link_options(main PRIVATE -fsanitize=undefined)
 target_link_libraries(main PUBLIC sources config_projet GSL::gsl GSL::gslcblas)
 
 if(OpenMP_CXX_FOUND)
-  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval OpenMP::OpenMP_CXX)
+  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval sgtelib OpenMP::OpenMP_CXX)
 else()
-  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval)
+  target_link_libraries(main PUBLIC nomadAlgos nomadUtils nomadEval sgtelib)
 endif()
 
 # Et pour que l'exécutable fonctionne, il faut lui indiquer les bibliothèques dont il dépend

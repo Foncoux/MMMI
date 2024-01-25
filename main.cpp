@@ -25,6 +25,7 @@ int main (void)
     gsl_rng_set(random_ptr,time(NULL));
     int test = NOMAD_ALGO;
     int fct_obj_choice = FCT_OBJ_CHOICE;
+
     if(test == 0){
         Data data;
         config_table_extern();
@@ -52,7 +53,7 @@ int main (void)
             write_save_parameters(param_opti,SAVE_TO_WRITE); 
         }
         
-        write_data_csv(f,DATA_TO_WRITE); 
+        //write_data_csv(f,DATA_TO_WRITE); 
         
         //print_parameter(param_opti);
 
@@ -60,21 +61,20 @@ int main (void)
     }else{
         config_table_extern();
         
-        //main2();
+        main2();
 
-        Data data;
+        //Data data;
+        /*
         ODE f;
         std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = read_nomad_best_feasible_solution();
 
-        param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, param_opti);
+        //param_opti = optimisation_algo_choice(random_ptr, f, data, fct_obj_choice, param_opti);
 
         model(f,param_opti);
         
-        if (WRITE_SAVE_PARAM == true)
-        {
-            write_save_parameters(param_opti,SAVE_TO_WRITE); 
-        }
-        
+        write_save_parameters(param_opti,SAVE_TO_WRITE2);
+        write_data_csv(f,DATA_TO_WRITE); 
+      */
 
 
     }

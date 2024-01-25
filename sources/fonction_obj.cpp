@@ -181,7 +181,6 @@ double fonction_obj_classe_1(const Data &data, ODE& output_data,int loglikelyhoo
     double result1,result2,result3,result4;
     result1 = log_likelyhood_death(data,output_data);
     result2 = - mean_square_recovered(data,output_data);
-    //result3 = log_likelyhood_hosp_week(data,output_data);
     result4 = log_likelyhood_hosp_week_day(data, output_data);
 
     double result = result1 + result2 + result4;
@@ -251,7 +250,7 @@ double mean_square_recovered(const Data &data, ODE& output_data)
 
     if (total_output < (2.1/100) || total_output > (3.7/100))
     {   
-        somme2 = somme2 + ((2.8/100) - total_output)*((2.8/100) - total_output)*1000000000000;
+        somme2 = somme2 + sqrt(((2.8/100) - total_output)*((2.8/100) - total_output))*1000000000000;
         
     }
 
