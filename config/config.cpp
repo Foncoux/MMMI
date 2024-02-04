@@ -5,7 +5,9 @@
 #include <fstream>
 #include <iomanip> 
 
+
 #include "config.hpp"
+
 
 std::vector<int> TAB_DATE_CONFINEMENT;
 std::vector<double> PROP_PAR_CLASSE;
@@ -14,6 +16,9 @@ std::vector<std::string> NAMES_COMPARTIMENT_CSV;
 std::vector<std::string> NAMES_PARAM;
 std::vector<std::vector<double>> SOCIAL_CONTACT_MATRIX;
 std::vector<std::string> SELECT_CLASSE_AGE;
+
+int COND_INIT_NBR;
+
 
 void config_table_extern(){
 
@@ -47,6 +52,16 @@ void config_table_extern(){
     case 2:
         PROP_PAR_CLASSE = {0.7012859, 0.2987141};
         break;
+
+    case 4:
+        PROP_PAR_CLASSE = {0.2309419, 0.2647056, 0.3314419, 0.1729106};
+        break;
+
+    case 8:
+        PROP_PAR_CLASSE = {0.23094192, 0.26470555, 0.15196345 ,0.13124615, 0.04823235, 0.04709637,0.04459933, 0.08121488};
+        break;
+
+
     default:
         break;
     }
@@ -93,6 +108,11 @@ void config_table_extern(){
         
     }
     
+
+
+
+
+
 }
 
 

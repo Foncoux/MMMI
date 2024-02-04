@@ -6,14 +6,75 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
-#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
-#include "../headers/ODE.hpp"
-#include "../headers/read_and_write_data.hpp"
 #include "../headers/fonction_discret.hpp"
+#include "../headers/Data.hpp"
 #include "../headers/fonction_continuous.hpp"
 
 #include "nomad/Nomad/nomad.hpp"
+
+
+#include "nomad/Nomad/nomad.hpp"
+
+
+
+
+ODE::ODE(int function)
+{   
+    switch (function)
+    {
+    case 0:
+        m_function_discret_new = SIRQD_discret_new;
+    
+    case 1:
+        m_function_discret_nomad = SIRQD_discret_new;
+    default:
+        break;
+    }
+
+
+
+
+
+}
+
+void set_condition_initiale(ODE &f,const NOMAD::EvalPoint &p)
+{
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        f.m_result_simulation[classe][I_COMP][0] = p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect].todouble();
+        f.m_result_simulation[classe][S_COMP][0] = PROP_PAR_CLASSE[classe] - p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect].todouble();
+        f.m_result_simulation[classe][R_COMP][0] = 0;
+        f.m_result_simulation[classe][Q_COMP][0] = 0;
+        f.m_result_simulation[classe][D_COMP][0] = 0;
+        f.m_result_simulation[classe][Q_ENTRY_COMP][0] = 0;
+        f.m_result_simulation[classe][D_ENTRY_COMP][0] = 0;
+    }
+       
+}
+
+void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &p)
+{
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    {
+        f.m_result_simulation[classe][I_COMP][0] = p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
+        f.m_result_simulation[classe][S_COMP][0] = PROP_PAR_CLASSE[classe] - p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect];
+        f.m_result_simulation[classe][R_COMP][0] = 0;
+        f.m_result_simulation[classe][Q_COMP][0] = 0;
+        f.m_result_simulation[classe][D_COMP][0] = 0;
+        f.m_result_simulation[classe][Q_ENTRY_COMP][0] = 0;
+        f.m_result_simulation[classe][D_ENTRY_COMP][0] = 0;
+    }
+       
+}
+
+
+
+
+
+
+
+
 
 
 int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti)
@@ -162,14 +223,7 @@ int bb_discret_new(ODE& f,const NOMAD::EvalPoint &p)
     double confinement = 0;
     
     double lambda;
-    /*
-    double abc;
-    for (size_t zert = 0; zert < NB_PARAM_TOT; zert++)
-    {
-        abc = p[zert].todouble();
-        std::cout << abc << " ";
-    }
-*/
+
     for (int jour = 0; jour < NB_DAY-1; jour++)
     {           
         if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), jour) != TAB_DATE_CONFINEMENT.end()){
@@ -220,7 +274,7 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
 
     if (beta*lambda > 1)
     {
-        std::cout <<  "!!! p.beta[i]*lambda > 1 !!!" << "  \n" << std::endl;
+        //std::cout <<  "!!! p.beta[i]*lambda > 1 !!!" << "  \n" << std::endl;
         //throw std::invalid_argument("beta*lambda > 1");
         return -1;
     }
@@ -230,10 +284,13 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
     
 
     if(y[S_COMP][n+1] < 0 || y[I_COMP][n+1] < 0 || y[R_COMP][n+1] < 0 || y[Q_COMP][n+1] < 0 || y[D_COMP][n+1] < 0)
-
     {
-        std::cout << "\n output negatifs \n" << std::endl;
-        throw std::invalid_argument("outputs négatifs");
+        //std::cout << "\n output negatifs \n" << std::endl;
+
+        //std::cout << delta + gamma << "  " << eps + r << "  " << std::endl;
+
+        return -2;
+        //throw std::invalid_argument("outputs négatifs");
         exit(0);
     }
 

@@ -10,34 +10,33 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
-#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
-#include "../headers/ODE.hpp"
-#include "../headers/read_and_write_data.hpp"
-#include "../headers/fonction_obj.hpp"
 #include "../headers/fonction_discret.hpp"
+#include "../headers/Data.hpp"
+
+#include "../headers/fonction_obj.hpp"
 #include "../headers/optimisation_algo.hpp"
 #include "../headers/MCMC.hpp"
 #include "../headers/fonction_continuous.hpp"
 
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,ODE& f,Data data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {   
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     switch (ALGO)
     {
     case 1:
-        param_opti = random_search(random_ptr,f,data,fct_obj_choice,cond_init);
+        param_opti = random_search(random_ptr,f,cond_init);
         break;
 
     case 2:
 
         break;  
     case 3:
-        param_opti = MCMC(cond_init,random_ptr,f,data);
+        param_opti = MCMC(cond_init,random_ptr,f);
         break; 
     case 4:
-        param_opti = random_search_normal(random_ptr,f,data,fct_obj_choice,cond_init);
+        param_opti = random_search_normal(random_ptr,f,cond_init);
         break;
     default:
         std::cout << "mauvais choix d'algo" <<   std::endl;
@@ -58,7 +57,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* 
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,ODE& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     
     double y[COMPARTIMENT*NB_CLASSE_AGE];
@@ -72,7 +71,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
     }
     
     
-    double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
+    double fct_obj = -fonction_obj(f); ///////
     
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
     {   
@@ -83,7 +82,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
             
         if (model(f,p)  == 0)
         {
-            if(minimisation(fct_obj, data, f,fct_obj_choice))
+            if(minimisation(fct_obj,f))
             {
                 param_opti = p;
             }
@@ -112,7 +111,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search(gsl_rng* random_ptr,
  * @param cond_init parametres initiaux pour le modèle
  * @return std::array<parametres,NB_CLASSE_AGE> tableau de parametres contenant les parametres optimaux par classe d'age, trouvé par l'algo
  */
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,ODE& f,const Data &data,int fct_obj_choice,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* random_ptr,ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)
 {
     double sigma=SIGMA;
     int save_intermediaire = 0;
@@ -126,7 +125,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
     {
         param_opti = set_parametres_random(random_ptr);
     }
-    double fct_obj = -fonction_obj(data,f,fct_obj_choice); ///////
+    double fct_obj = -fonction_obj(f); ///////
 
     for (size_t i = 0; i < NB_ITE_BLACKBOX; i++)
     {   
@@ -144,7 +143,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
         std::cout << i << "   " << sigma << "   ";    
         if (model(f,p) == 0)
         {
-            if(minimisation(fct_obj, data, f,fct_obj_choice))
+            if(minimisation(fct_obj,f))
             {
                 i=0;
                 accept_ite++;
@@ -174,9 +173,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> random_search_normal(gsl_rng* rand
  * @return true s'il le jeu de parametres minimise
  * @return false sinon
  */
-bool minimisation(double &fct_obj, const Data &data, ODE& output_data,int fct_obj_choice)
+bool minimisation(double &fct_obj,ODE& output_data)
 {
-    double fct_obj_temp = -fonction_obj(data, output_data,fct_obj_choice);
+    double fct_obj_temp = -fonction_obj(output_data);
     
     std::cout << fct_obj << "  |  " << fct_obj_temp;
 

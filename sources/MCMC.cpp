@@ -25,10 +25,10 @@
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
-#include "../headers/Data.hpp"
 #include "../headers/Parametres.hpp"
-#include "../headers/ODE.hpp"
-#include "../headers/read_and_write_data.hpp"
+#include "../headers/fonction_discret.hpp"
+
+#include "../headers/Data.hpp"
 #include "../headers/optimisation_algo.hpp"
 #include "../headers/fonction_obj.hpp"
 
@@ -36,18 +36,18 @@
 #include "../headers/MCMC.hpp"
 #include "../headers/fonction_continuous.hpp"
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,ODE& f,const Data &data)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,ODE& f)
 {
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p = cond_init;
     
     double sigma = SIGMA;
     if(BURNIN_PHASE == true)
     {
-        p = burning_phase(p,f,data,random_ptr,sigma);
+        p = burning_phase(p,f,random_ptr,sigma);
     }
     if(MCMC_PHASE == true)
     {
-        p = metropolis(p,f,data,random_ptr,sigma);
+        p = metropolis(p,f,random_ptr,sigma);
 
     }
     
@@ -55,7 +55,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TO
 
 }
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,ODE& f,const Data &data,gsl_rng* r,double &sigma)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,ODE& f,gsl_rng* r,double &sigma)
 {
     double LL_old;
     double LL_new;
@@ -77,7 +77,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     }
     
     p_old = cond_init;
-    LL_old = fonction_obj(data,f,1);
+    LL_old = fonction_obj(f);
     
     int j=0;
     int iter_select = 0;
@@ -106,7 +106,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
         if (model(f,p_new) == 0)
         {
-            LL_new = fonction_obj(data,f,1);
+            LL_new = fonction_obj(f);
             alpha = gsl_rng_uniform(r);
 
             if (gsl_sf_log(alpha) < LL_new - LL_old)
@@ -174,7 +174,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 }
 
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,ODE& f,const Data &data,gsl_rng* r,double &sigma)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,ODE& f,gsl_rng* r,double &sigma)
 {
     double LL_old,LL_new;
     double alpha;
@@ -192,7 +192,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
     }
     
     p_old = cond_init;
-    LL_old = fonction_obj(data,f,1);
+    LL_old = fonction_obj(f);
     
     int j=0;
     int iter_select = 0;
@@ -220,7 +220,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
 
         if (model(f,p_new) == 0)
         {
-            LL_new = fonction_obj(data,f,1);
+            LL_new = fonction_obj(f);
             alpha = gsl_rng_uniform(r);
 
             if (gsl_sf_log(alpha) < LL_new - LL_old)

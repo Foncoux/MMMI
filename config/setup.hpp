@@ -13,7 +13,7 @@
 #define NB_CONFINEMENT 6
 #define DISCRET 1
 
-#define NOMAD_ALGO 0 
+#define NOMAD_ALGO 1 
 #if NOMAD_ALGO == 1 
     #define MODEL_BB 5
 #endif
@@ -21,13 +21,13 @@
     #define MODEL_BB 4 
 #endif
 
-#define NB_CLASSE_AGE 2
+#define NB_CLASSE_AGE 1
 // 0.0000026083
 #define SIGMA 0.000003
 //#define SIGMA 0.0000047
 #define SIGMA_INIT_BURNING 0.0005
 #define ALGO 3
-#define READ_SAVE_PARAM true
+#define READ_SAVE_PARAM false
 #define WRITE_SAVE_PARAM true
 
 #define BURNIN_STEP 1000000

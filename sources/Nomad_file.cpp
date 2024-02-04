@@ -1,4 +1,7 @@
 #include <vector>
+#include <gsl/gsl_rng.h>
+#include <string>
+#include <time.h>
 
 
 #include "nomad/Nomad/nomad.hpp"
@@ -6,67 +9,142 @@
 
 #include "../config/config.hpp"
 
-#include "ODE.hpp"
 #include "fonction_discret.hpp"
 #include "Data.hpp"
 #include "fonction_obj.hpp"
 #include "../headers/Data.hpp"
 
 
+NOMAD::Point set_cond_init(NOMAD::Point X0, int CI_nbr, std::string filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Impossible d'ouvrir le fichier. (set_cond_init)" << std::endl;
+        exit(0);
+    }
+
+    std::string line;
+    std::getline(file,line);
+
+    for (size_t i = 0; i < CI_nbr+1; i++)
+    {
+        std::getline(file,line);
+    }
+
+    std::istringstream iss(line);
+    std::string value;
+    int i = 0;
+
+    while (std::getline(iss, value, ',') && i < NB_PARAM_TOT*NB_CLASSE_AGE ) {
+        X0[i] = std::stod(value);
+        
+        i++;
+    }
+    
+    file.close();
+    return X0;
+}
+
+
+
 void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
 {
-    // Parameters creation
+    
     // Number of variables
     size_t n = NB_CLASSE_AGE*NB_PARAM_TOT;
     allParams->setAttributeValue( "DIMENSION", n);
-    // The algorithm terminates after
-    // this number of black-box evaluations
-    allParams->setAttributeValue( "MAX_BB_EVAL", 50000);
+
+    // max number of evaluation of bb
+    allParams->setAttributeValue( "MAX_BB_EVAL", 100);
+
     // Starting point
-    NOMAD::Point X0(n, 0.1);
-    X0[PARAM_ID_X0_infect] = 2500/POP_TOT; // starting point (0.0 0.0 0.0 0.0 0.0 -4.0)
-    X0[NB_PARAM_TOT + PARAM_ID_X0_infect] = 2500/POP_TOT; // starting point (0.0 0.0 0.0 0.0 0.0 -4.0)
+    NOMAD::Point X0(n);
+
+    X0 = set_cond_init(X0, COND_INIT_NBR,COND_INIT_filename);
     allParams->setAttributeValue( "X0", X0 );
 
+    // Control Granularity, the number of decimal
     allParams->getPbParams()->setAttributeValue("GRANULARITY", NOMAD::ArrayOfDouble(n, 0));
 
     // Constraints and objective
     NOMAD::BBOutputTypeList bbOutputTypes;
-
-    bbOutputTypes.push_back(NOMAD::BBOutputType::OBJ);
-
-    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
+    bbOutputTypes.push_back(NOMAD::BBOutputType::OBJ); // define objective placement
+    for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++) // define constraint placement
     {
         bbOutputTypes.push_back(NOMAD::BBOutputType::EB);
         bbOutputTypes.push_back(NOMAD::BBOutputType::EB);
     }
 
+    //Set information to output of MADS
     allParams->setAttributeValue("BB_OUTPUT_TYPE", bbOutputTypes );
-    allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_2N);
+
+    // 2 for normal, 3 is too much, 0 or 1 is nothing
     allParams->setAttributeValue("DISPLAY_DEGREE", 2);
+
+    // Direction types for poll step
+    allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_2N);
+
+    // output of the best feasible solution in a file
     std::string best_feasible_sol_filename = "../best_feasible_point.txt";
     allParams->setAttributeValue("SOLUTION_FILE", best_feasible_sol_filename);
 
+    // set the lower bound of variables
     allParams->setAttributeValue("LOWER_BOUND", NOMAD::ArrayOfDouble(n, 0.0000000000001)); // all var. >= 0 
+
+    // set the upper bound of variables
     NOMAD::ArrayOfDouble ub(n,1);     // x_i < 1
+    /*
     for (size_t i = 0; i < NB_CLASSE_AGE; i++)
     {
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +1] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +2] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +3] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +4] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +5] = 0.9;
-        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +6] = 0.9;
-
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +1] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +2] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +3] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +4] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +5] = 1;
+        ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +6] = 1;
     }
-    
-
+    */
     ub[PARAM_ID_X0_infect] = 5000/POP_TOT;     // x_x_0 <= 5000/POP_TOT 
-    ub[NB_PARAM_TOT + PARAM_ID_X0_infect] = 5000/POP_TOT;
     allParams->setAttributeValue("UPPER_BOUND", ub);
 
+    //MADS uses anisotropic mesh for generating directions
+//    allParams->setAttributeValue("ANISOTROPIC_MESH", true);
+    //MADS anisotropy factor for mesh size change
+//    allParams->setAttributeValue("ANISOTROPIC_FACTOR", 0.1);
 
+    //histoire de cache
+
+    //Coordinate Search optimization
+    //allParams->setAttributeValue("CS_OPTIMIZATION", false);
+    // Direction types for Mads secondary poll
+    //allParams->setAttributeValue("DIRECTION_TYPE_SECONDARY_POLL", NOMAD::DirectionType::DOUBLE);
+    //Flag to display all evaluations
+    //allParams->setAttributeValue("DISPLAY_ALL_EVAL", false);
+    //Flag to display failed evaluation
+    //allParams->setAttributeValue("DISPLAY_FAILED", false);
+    //Frequency at which the stats header is displayed
+    //allParams->setAttributeValue("DISPLAY_HEADER", 40);
+    //Format for displaying the evaluation points
+    //allParams->setAttributeValue("DISPLAY_STATS", 0.1);
+    //Flag to display unsuccessful
+    //allParams->setAttributeValue("DISPLAY_UNSUCCESSFUL", false);
+    //Opportunistic strategy: Terminate evaluations as soon as a success is found
+    //allParams->setAttributeValue("EVAL_OPPORTUNISTIC", true);
+    //Opportunistic strategy: Flag to clear EvaluatorControl queue between each run
+    //allParams->setAttributeValue("EVAL_QUEUE_CLEAR", 0.1);
+    //How to sort points before evaluation
+    //allParams->setAttributeValue("EVAL_QUEUE_SORT", 0.1);
+    //The name of the file for stats about evaluations and successes
+    //allParams->setAttributeValue("EVAL_STATS_FILE", 0.1);
+    //Initial value of hMax
+    //allParams->setAttributeValue("H_MAX_0", 0.1);
+    //The initial frame size of MADS
+    //allParams->setAttributeValue("INITIAL_FRAME_SIZE", 0.1);
+    //The initial mesh size of MADS
+    //allParams->setAttributeValue("INITIAL_MESH_SIZE", 0.1);
+    
+    
 
 
 
@@ -96,23 +174,24 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
 
     try
     {
-        Data data;
-        ODE fct;
+        ODE fct(1);
         
-        if (model(fct,x) !=-1)
+        int test = model(fct,x);
+        if ( test == 0)
         {
-            f = -fonction_obj(data,fct,1);
+            f = -fonction_obj(fct);
             countEval = true;
         }else{
+            f = 1e+20;
             countEval = false;
+            /*
+            if(test == -2)
+            {
+                return false;
+            }
+            */
+            
         }
-        
-        /*
-        for (size_t i = 0; i < NB_PARAM_TOT; i++)
-        {
-            nbr.push_back(x[i].todouble());
-        }
-    */
 
         NOMAD::Double EB;
         std::string bbo = f.tostring();
@@ -146,6 +225,8 @@ void main2()
 {
     NOMAD::MainStep TheMainStep;
 
+    std::cout << COND_INIT_NBR << std::endl;
+
     auto params = std::make_shared<NOMAD::AllParameters>();
     initAllParams(params);
     TheMainStep.setAllParameters(params);
@@ -158,9 +239,6 @@ void main2()
         TheMainStep.start();
         TheMainStep.run();
         TheMainStep.end();
-
-
-
     }
     catch(std::exception &e)
     {

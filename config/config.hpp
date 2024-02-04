@@ -3,6 +3,7 @@
 
 #include "setup.hpp"
 
+
 void config_table_extern();
 void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::string filename);
 
@@ -36,6 +37,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define NB_CLASSE_MONTH 2
 #define NB_MONTH 10
 
+extern int COND_INIT_NBR;
 
 
 #if SETUP == SIRQD
@@ -78,6 +80,8 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_1classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_1classe" //4
+        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_1classe_mads" //4
+        #define COND_INIT_filename "../data/Conditions_initiales/1_classe_CI.csv"
     #endif
 
     #if NB_CLASSE_AGE == 2
@@ -92,6 +96,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_2classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_2classe" //4
         #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_2classe_mads" //4
+        #define COND_INIT_filename "../data/Conditions_initiales/2_classe_CI.csv"
     #endif
 
     #if NB_CLASSE_AGE == 4
@@ -101,11 +106,28 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
         #define DAY_DEATH_DATA_filename "../data/DATA_calibration/4_classe/death_4.csv"
         #define DAY_HOSP_DATA_filename "../data/DATA_calibration/4_classe/hosp_4.csv"
 
-        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/2_classe/Social_contact_matrix_2.csv"
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/4_classe/Social_contact_matrix_4.csv"
 
-        #define SAVE_TO_READ "../data/save_dir/save_SIRQD_2classe" //4
-        #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_2classe" //4
-        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_2classe_mads" //4
+        #define SAVE_TO_READ "../data/save_dir/save_SIRQD_4classe" //4
+        #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_4classe" //4
+        #define SAVE_TO_WRITE4 "../data/save_dir/save_SIRQD_4classe_mads" //4
+        #define COND_INIT_filename "../data/Conditions_initiales/4_classe_CI.csv"
+    #endif
+
+
+    #if NB_CLASSE_AGE == 8
+        #define NB_DATA_DAY_DEATH 9
+        #define NB_DATA_DAY_HOSP 9
+        #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 8
+        #define DAY_DEATH_DATA_filename "../data/DATA_calibration/8_classe/death_8.csv"
+        #define DAY_HOSP_DATA_filename "../data/DATA_calibration/8_classe/hosp_8.csv"
+
+        #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/8_classe/Social_contact_matrix_8.csv"
+
+        #define SAVE_TO_READ "../data/save_dir/save_SIRQD_8classe" //4
+        #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_8classe" //4
+        #define SAVE_TO_WRITE8 "../data/save_dir/save_SIRQD_8classe_mads" //4
+        #define COND_INIT_filename "../data/Conditions_initiales/8_classe_CI.csv"
     #endif
 
 
@@ -125,6 +147,10 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     
 
 #endif
+
+
+
+
 
 #endif
 

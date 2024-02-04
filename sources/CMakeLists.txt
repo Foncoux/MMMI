@@ -2,12 +2,10 @@
 set(SOURCES
     
     Data.cpp
-    ODE.cpp
     MCMC.cpp
     optimisation_algo.cpp
     fonction_obj.cpp
     fonction_discret.cpp
-    read_and_write_data.cpp
     Parametres.cpp
     Nomad_file.cpp
     )
