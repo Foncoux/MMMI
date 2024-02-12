@@ -1,23 +1,16 @@
 #include <iostream>
-#include <array>
-#include <vector>
-#include <algorithm>
-#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_sf_log.h>
 
 #include "../config/setup.hpp"
-#include "../config/config.hpp"
+
 #include "../headers/Parametres.hpp"
-#include "../headers/fonction_discret.hpp"
-#include "../headers/Data.hpp"
 
 #include "../headers/fonction_obj.hpp"
-#include "../headers/optimisation_algo.hpp"
 #include "../headers/MCMC.hpp"
-#include "../headers/fonction_continuous.hpp"
+#include "../headers/optimisation_algo.hpp"
 
 
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> optimisation_algo_choice(gsl_rng* random_ptr,ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init)

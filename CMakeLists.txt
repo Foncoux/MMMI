@@ -23,7 +23,9 @@ option(BUILD_TESTING "Are we building for testing?" OFF)
 link_directories(./lib/NOMAD/lib)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/NOMAD/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/NOMAD/include/nomad)
 include_directories(headers)
+
 
 
 # On inclut notre bibliothèque dans le processus de CMake

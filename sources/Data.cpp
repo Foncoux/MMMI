@@ -1,20 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <array>
-#include <vector>
 #include <iomanip> 
-#include <array>
 #include <gsl/gsl_rng.h>
 
-#include "../config/config.hpp"
-
-
 #include "../config/setup.hpp"
-#include "../config/config.hpp"
-
-#include "../headers/Parametres.hpp"
-#include "../headers/fonction_discret.hpp"
 #include "../headers/Data.hpp"
 
 Data::Data()
@@ -39,7 +29,7 @@ void Data::read_data_csv(std::string filename, std::array<std::array<double, Y>,
 {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cout << "Impossible d'ouvrir le fichier." << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier. (data.cpp [read_data_csv)" << std::endl;
         return;
     }
 
@@ -69,33 +59,6 @@ void Data::read_data_csv(std::string filename, std::array<std::array<double, Y>,
 
 
 
-
-void set_social_contact_matrix(std::array<std::array<double, NB_CLASSE_SOCIAL_CONTACT_MATRIX>, NB_CLASSE_SOCIAL_CONTACT_MATRIX>& matrix,std::string filename)
-{   
-    
-    std::ifstream file(filename);
-    if(!file.is_open()){
-        std::cout << "Impossible d'ouvrir le fichier." << std::endl;
-    }
-    
-    std::string line;
-    int i=0;
-    
-    while(std::getline(file, line)){
-        int j=0;
-        std::istringstream iss(line);
-        std::string value;
-        while(std::getline(iss, value, ',')){
-            matrix[i][j] = std::stod(value);
-            //std::cout << matrix[i][j] << "\n\n";
-            j++;
-        }
-        i++;
-    }
-
-    file.close();    
-
-}
 
 
 void write_data_csv(const ODE& f,const std::string& filename1) {
@@ -135,7 +98,7 @@ void write_data_csv(const ODE& f,const std::string& filename1) {
         file.close();
         
     }else{
-        std::cerr << "Impossible d'ouvrir le fichier " << filename1 << std::endl;
+        std::cerr << "Impossible d'ouvrir le fichier [data.cpp write_data_csv] " << filename1 << std::endl;
     }
 }
 
@@ -172,7 +135,7 @@ void write_save_parameters_MCMC(const std::vector<std::array<double,NB_PARAM_TOT
         file.close();
         
     } else {
-        std::cerr << "Impossible d'ouvrir le fichier" << std::endl;
+        std::cerr << "Impossible d'ouvrir le fichier [data.cpp write_save_parameters_MCMC]" << std::endl;
     }
 }
 
@@ -202,7 +165,7 @@ void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& 
         file.close();
         
     } else {
-        std::cerr << "Impossible d'ouvrir le fichier " << save_nbr << std::endl;
+        std::cerr << "Impossible d'ouvrir le fichier [data.cpp write_save_parameters]" << save_nbr << std::endl;
     }
 }
 
@@ -230,8 +193,6 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::st
         i++;
     }
         
-    
-    
     file.close();
     return p;
 }
@@ -259,3 +220,41 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution(
     
     return p;
 }
+
+
+
+
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_cond_init_mcmc(int CI_nbr, std::string filename)
+{
+
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> X0;
+
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Impossible d'ouvrir le fichier. (set_cond_init)" << std::endl;
+        exit(0);
+    }
+
+    std::string line;
+    std::getline(file,line);
+
+    for (size_t i = 0; i < CI_nbr+1; i++)
+    {
+        std::getline(file,line);
+    }
+
+    std::istringstream iss(line);
+    std::string value;
+    int i = 0;
+
+    while (std::getline(iss, value, ',') && i < NB_PARAM_TOT*NB_CLASSE_AGE ) {
+        X0[i] = std::stod(value);
+        
+        i++;
+    }
+    
+    file.close();
+    return X0;
+}
+
+

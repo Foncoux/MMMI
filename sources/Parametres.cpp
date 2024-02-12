@@ -1,23 +1,11 @@
-#include <iostream>
-#include <array>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_sf_log.h>
 
 #include "../config/setup.hpp"
-#include "../config/config.hpp"
-#include "../headers/Parametres.hpp"
-#include "../headers/fonction_discret.hpp"
 
-#include "../headers/Data.hpp"
-#include "../headers/fonction_obj.hpp"
-#include "../headers/optimisation_algo.hpp"
-#include "nomad/Nomad/nomad.hpp"
+#include "../headers/Parametres.hpp"
 
 
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_parametres_random_normal(gsl_rng* r,double sigma,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_opt)
@@ -318,7 +306,7 @@ bool validation_parametres(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p
             ok=false;
         }
 
-        if(p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] < 0 || p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] > 4478/POP_TOT){
+        if(p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] < 0 || p[NB_PARAM_TOT*classe + PARAM_ID_X0_infect] > 5000/POP_TOT){
             ok=false;
         } 
 
@@ -331,10 +319,11 @@ bool validation_parametres(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p
 */
     }
 
+/*
     if(somme1 < 1/POP_TOT || somme1 > 4478/POP_TOT){
         ok=false;
     } 
-
+*/
 
 
 

@@ -1,4 +1,3 @@
-#include <array>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -120,7 +119,7 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
     
     std::ifstream file(filename);
     if(!file.is_open()){
-        std::cout << "Impossible d'ouvrir le fichier." << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier. (set social contact matrix config.cpp)" << std::endl;
         return;
     }
     

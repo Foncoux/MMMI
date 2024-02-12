@@ -8,14 +8,10 @@
  * @copyright Copyright (c) 2023
  * 
  */
-#include <array>
 #include <vector>
-#include <cmath>
 
 #include <iostream>
 #include <iomanip>
-#include <algorithm>
-#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_machine.h>
@@ -24,17 +20,14 @@
 
 
 #include "../config/setup.hpp"
-#include "../config/config.hpp"
+
 #include "../headers/Parametres.hpp"
 #include "../headers/fonction_discret.hpp"
 
 #include "../headers/Data.hpp"
-#include "../headers/optimisation_algo.hpp"
 #include "../headers/fonction_obj.hpp"
 
-#include "../headers/fonction_discret.hpp"
 #include "../headers/MCMC.hpp"
-#include "../headers/fonction_continuous.hpp"
 
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,ODE& f)
 {
@@ -71,11 +64,14 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     std::string savename;
     double gamma = 0.4;
 
+    /*
     while (model(f,cond_init) !=0)
     {
         cond_init = set_parametres_random(r);
     }
-    
+    */
+    model(f,cond_init);
+
     p_old = cond_init;
     LL_old = fonction_obj(f);
     

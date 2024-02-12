@@ -1,0 +1,12 @@
+hyades 
+
+intervalle pour les betas + calcul de la force d'infection
+
+latin hypercube, une façon de gérer les contraintes ? (notamment somme de parametres < 1)
+
+
+
+temps total
+temps CPU
+nombre d'itérations
+

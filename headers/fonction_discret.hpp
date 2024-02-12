@@ -1,6 +1,11 @@
 #ifndef FONCTION_DISCRET_HPP
 #define FONCTION_DISCRET_HPP
 
+#include <array>
+
+#include "../config/config.hpp"
+#include "nomad/Nomad/nomad.hpp"
+
 
 class ODE
 {

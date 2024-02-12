@@ -1,6 +1,8 @@
 #ifndef CONFIG_HPP1
 #define CONFIG_HPP1
 
+#include <vector>
+#include <string>
 #include "setup.hpp"
 
 
@@ -110,7 +112,7 @@ extern int COND_INIT_NBR;
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_4classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_4classe" //4
-        #define SAVE_TO_WRITE4 "../data/save_dir/save_SIRQD_4classe_mads" //4
+        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_4classe_mads" //4
         #define COND_INIT_filename "../data/Conditions_initiales/4_classe_CI.csv"
     #endif
 
@@ -126,7 +128,7 @@ extern int COND_INIT_NBR;
 
         #define SAVE_TO_READ "../data/save_dir/save_SIRQD_8classe" //4
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_8classe" //4
-        #define SAVE_TO_WRITE8 "../data/save_dir/save_SIRQD_8classe_mads" //4
+        #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_8classe_mads" //4
         #define COND_INIT_filename "../data/Conditions_initiales/8_classe_CI.csv"
     #endif
 

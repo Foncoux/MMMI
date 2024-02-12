@@ -1,14 +1,10 @@
 #include <array>
-#include <vector>
-#include <iostream>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_rng.h>
 #include <math.h>
 
 #include "../config/setup.hpp"
 #include "../config/config.hpp"
-#include "../headers/Parametres.hpp"
-#include "../headers/fonction_discret.hpp"
 
 #include "../headers/Data.hpp"
 #include "../headers/fonction_obj.hpp"
@@ -90,7 +86,7 @@ double log_likelyhood_hosp(ODE& output_data)
 
 double fonction_obj(ODE& output_data)
 {
-    double result,result1,result2,result3,result4,result5,result6,result7,result8,result9;
+    double result,result1,result2,result3;
     
     result1 = log_likelyhood_death(output_data);
     result3 = log_likelyhood_hosp(output_data);

@@ -1,18 +1,16 @@
+#include <cstddef>
 #include <vector>
 #include <gsl/gsl_rng.h>
 #include <string>
 #include <time.h>
 
 
-#include "nomad/Nomad/nomad.hpp"
 #include "Nomad_file.hpp"
 
 #include "../config/config.hpp"
 
 #include "fonction_discret.hpp"
-#include "Data.hpp"
 #include "fonction_obj.hpp"
-#include "../headers/Data.hpp"
 
 
 NOMAD::Point set_cond_init(NOMAD::Point X0, int CI_nbr, std::string filename)
@@ -105,7 +103,13 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
         ub[i*NB_PARAM_TOT + PARAM_ID_BETA0 +6] = 1;
     }
     */
-    ub[PARAM_ID_X0_infect] = 5000/POP_TOT;     // x_x_0 <= 5000/POP_TOT 
+
+    for (size_t classe=0; classe < NB_CLASSE_AGE; classe++)
+    {
+        ub[classe*NB_PARAM_TOT + PARAM_ID_X0_infect] = 5000/POP_TOT; 
+    }
+
+        // x_x_0 <= 5000/POP_TOT 
     allParams->setAttributeValue("UPPER_BOUND", ub);
 
     //MADS uses anisotropic mesh for generating directions

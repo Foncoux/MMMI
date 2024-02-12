@@ -1,21 +1,11 @@
-#include <array>
 #include <vector>
 #include <iostream>
-#include <stdexcept>
 #include <gsl/gsl_rng.h>
 
 #include "../config/setup.hpp"
-#include "../config/config.hpp"
-#include "../headers/Parametres.hpp"
 #include "../headers/fonction_discret.hpp"
-#include "../headers/Data.hpp"
-#include "../headers/fonction_continuous.hpp"
 
 #include "nomad/Nomad/nomad.hpp"
-
-
-#include "nomad/Nomad/nomad.hpp"
-
 
 
 
