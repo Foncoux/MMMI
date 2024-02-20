@@ -19,5 +19,6 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams);
 // Déclaration de la fonction principale
 void main2();
 
+
 #endif // MAIN_HPP
 

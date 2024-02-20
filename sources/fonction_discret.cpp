@@ -1,12 +1,10 @@
+#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <gsl/gsl_rng.h>
 
 #include "../config/setup.hpp"
 #include "../headers/fonction_discret.hpp"
-
-#include "nomad/Nomad/nomad.hpp"
-
 
 
 ODE::ODE(int function)
@@ -69,9 +67,16 @@ void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>
 
 int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti)
 {
+    STAT_nbr_model_evaluation++;
     set_condition_initiale(f,param_opti);
     
-    return bb_discret_new(f,param_opti);
+    int value = bb_discret_new(f,param_opti);
+    if(value!=0)
+    {
+        STAT_nbr_model_evaluation_aborted++;
+    }
+
+    return value;
 }
 
 
@@ -193,9 +198,16 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
 
 int model(ODE& f,const NOMAD::EvalPoint &x)
 {
+    STAT_nbr_model_evaluation++;
     set_condition_initiale(f,x);
     
-    return bb_discret_new(f,x);
+    int value = bb_discret_new(f,x);
+    if(value!=0)
+    {
+        STAT_nbr_model_evaluation_aborted++;
+    }
+
+    return value;
 }
 
 

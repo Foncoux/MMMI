@@ -13,10 +13,10 @@
 #define NB_CONFINEMENT 6
 #define DISCRET 1
 
-#define NOMAD_ALGO 1 
+#define NOMAD_ALGO 0
 
 
-#define NB_CLASSE_AGE 8
+#define NB_CLASSE_AGE 1
 // 0.0000026083
 #define SIGMA 0.000003
 //#define SIGMA 0.0000047
@@ -25,9 +25,9 @@
 #define READ_SAVE_PARAM false
 #define WRITE_SAVE_PARAM true
 
-#define BURNIN_STEP 1000000
+#define BURNIN_STEP 100000
 #define BURNIN_PHASE true
-#define MCMC_PHASE true
+#define MCMC_PHASE false
 
 #define SETUP SIRQD
 

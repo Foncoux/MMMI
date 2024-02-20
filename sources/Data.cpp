@@ -258,3 +258,41 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_cond_init_mcmc(int CI_nbr, std
 }
 
 
+
+void write_output_data_in_file(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p)
+{
+    std::ofstream file("../output.csv");
+    file << std::fixed << std::setprecision(15);
+    
+    if (file.is_open()) {
+
+        file << "Method,Parametre_method_1,Parametre_method_2,fct_obj,nbr_evaluation,nbr_evaluation_aborted,temps,temps_CPU," ;
+
+        for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++) {
+            file << NAMES_PARAM[i];
+            if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
+            }
+        }
+        file << "\n";
+
+
+        file << "MCMC,Gibbs,/" << "," << STAT_obj_fct_value << "," << STAT_nbr_model_evaluation << "," << STAT_nbr_model_evaluation_aborted << "," << STAT_time_taken << "," << STAT_CPU_time_taken << "," ;
+
+        for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
+            file << p[i];
+            if(i != NB_PARAM_TOT*NB_CLASSE_AGE-1)
+            {
+                file << ',';
+            }
+        }
+        
+        file.close();
+        
+    } else {
+        std::cerr << "Impossible d'ouvrir le fichier [data.cpp write_save_parameters]" << std::endl;
+    }
+}
+
+

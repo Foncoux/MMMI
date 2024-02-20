@@ -18,6 +18,18 @@ std::vector<std::string> SELECT_CLASSE_AGE;
 
 int COND_INIT_NBR;
 
+int STAT_nbr_model_evaluation;
+int STAT_nbr_model_evaluation_aborted;
+int STAT_obj_fct_value;
+
+ std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_start;
+ std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_end;
+double STAT_time_taken;
+
+struct timespec STAT_CPU_time_start;
+struct timespec STAT_CPU_time_end;
+double STAT_CPU_time_taken;
+
 
 void config_table_extern(){
 
@@ -146,3 +158,4 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 //https://www.containmentnu.nl/articles/timeline?lang=en
 //https://www.researchgate.net/figure/Timeline-of-the-COVID-19-pandemic-in-the-Netherlands-and-Lifelines-data-collection-A_fig1_350142568
 //file:///home/foncoux/T%C3%A9l%C3%A9chargements/jech-2020-215678.full1.pdf
+//https://dc-covid.site.ined.fr/en/data/netherlands/

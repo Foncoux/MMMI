@@ -53,7 +53,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue( "DIMENSION", n);
 
     // max number of evaluation of bb
-    allParams->setAttributeValue( "MAX_BB_EVAL", 100);
+    allParams->setAttributeValue( "MAX_BB_EVAL", 500);
 
     // Starting point
     NOMAD::Point X0(n);
@@ -80,7 +80,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue("DISPLAY_DEGREE", 2);
 
     // Direction types for poll step
-    allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_2N);
+    allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_NP1_QUAD);
 
     // output of the best feasible solution in a file
     std::string best_feasible_sol_filename = "../best_feasible_point.txt";
@@ -143,18 +143,28 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     //allParams->setAttributeValue("EVAL_STATS_FILE", 0.1);
     //Initial value of hMax
     //allParams->setAttributeValue("H_MAX_0", 0.1);
+
     //The initial frame size of MADS
     //allParams->setAttributeValue("INITIAL_FRAME_SIZE", 0.1);
     //The initial mesh size of MADS
     //allParams->setAttributeValue("INITIAL_MESH_SIZE", 0.1);
     
+    std::string stat_filename = "../stat_nomad.txt";
+    allParams->setAttributeValue("STATS_FILE", stat_filename);
     
+    std::string eval_stat_filename = "../eval_stat_nomad.txt";
+    allParams->setAttributeValue("EVAL_STATS_FILE", eval_stat_filename);
+
+    allParams->setAttributeValue("INITIAL_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0.1));
 
 
 
 
     // Parameters validation
     allParams->checkAndComply();
+
+
+
 
 }
 
@@ -174,7 +184,7 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
     bool eval_ok = false;
     // Based on G2.
     NOMAD::Double f = 1e+20;
-    std::vector<double> nbr;
+    std::vector<double> nbr;  
 
     try
     {

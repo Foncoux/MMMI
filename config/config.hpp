@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include <time.h>
+#include <chrono>
+
 #include "setup.hpp"
 
 
@@ -41,6 +44,17 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
 extern int COND_INIT_NBR;
 
+extern int STAT_nbr_model_evaluation;
+extern int STAT_nbr_model_evaluation_aborted;
+extern int STAT_obj_fct_value;
+
+extern  std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_start;
+extern  std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_end;
+extern double STAT_time_taken;
+
+extern struct timespec STAT_CPU_time_start;
+extern struct timespec STAT_CPU_time_end;
+extern double STAT_CPU_time_taken;
 
 #if SETUP == SIRQD
 

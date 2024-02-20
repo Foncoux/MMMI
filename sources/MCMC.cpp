@@ -41,7 +41,6 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TO
     if(MCMC_PHASE == true)
     {
         p = metropolis(p,f,random_ptr,sigma);
-
     }
     
     return p;
@@ -57,10 +56,6 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_new;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
-    double sommeLL;
-    int compteur_moyenne=1;
-    int compteur_suiteLL=0;
-    double moyenneLL_old=0,moyenneLL_new=0;
     std::string savename;
     double gamma = 0.4;
 
@@ -156,13 +151,16 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
         {
             iter_total--;
         }     
-        if(iter_total>BURNIN_STEP || compteur_suiteLL == 5)
+        if(iter_total>BURNIN_STEP)
         {
             stop=true;
         }
         
         iter_total++;
     }
+
+    STAT_obj_fct_value = LL_old;
+    
     
     std::cout << std::setprecision(16) << std::endl;
     return p_old;
