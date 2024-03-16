@@ -5,6 +5,7 @@
 
 #include "../config/setup.hpp"
 #include "../headers/fonction_discret.hpp"
+#include "Stats.hpp"
 
 
 ODE::ODE(int function)
@@ -67,13 +68,13 @@ void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>
 
 int model(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti)
 {
-    STAT_nbr_model_evaluation++;
+    STATS.add_model_evaluation();
     set_condition_initiale(f,param_opti);
     
     int value = bb_discret_new(f,param_opti);
     if(value!=0)
     {
-        STAT_nbr_model_evaluation_aborted++;
+        STATS.add_model_evaluation_aborted();
     }
 
     return value;
@@ -118,9 +119,11 @@ int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p)
     
     double lambda;
     for (int jour = 0; jour < NB_DAY-1; jour++)
-    {           
-        if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), jour) != TAB_DATE_CONFINEMENT.end()){
-            confinement++;
+    {   
+        if (confinement < TAB_DATE_CONFINEMENT.size()) {
+            if (jour == TAB_DATE_CONFINEMENT[confinement]) {
+                confinement++;
+            }
         }
 
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
@@ -155,16 +158,19 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
     double gamma = p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA];
     double eps = p[NB_PARAM_TOT*classe + PARAM_ID_EPS];
     double r = p[NB_PARAM_TOT*classe + PARAM_ID_R];
-
     double beta = p[NB_PARAM_TOT*classe + NB_PARAM + confinement];
 
-    y[S_COMP][n+1] = y[S_COMP][n] - beta*lambda*y[S_COMP][n];
-    y[I_COMP][n+1] = y[I_COMP][n] + beta*lambda*y[S_COMP][n] - (delta+gamma)*y[I_COMP][n];
+    double Beta_lambda_S = beta*lambda*y[S_COMP][n];
+    double delta_I = delta*y[I_COMP][n];
+    double r_Q = r*y[Q_COMP][n];
+
+    y[S_COMP][n+1] = y[S_COMP][n] - Beta_lambda_S;
+    y[I_COMP][n+1] = y[I_COMP][n] + Beta_lambda_S - (delta+gamma)*y[I_COMP][n];
     y[R_COMP][n+1] = y[R_COMP][n] + gamma*y[I_COMP][n] + eps*y[Q_COMP][n];
-    y[Q_COMP][n+1] = y[Q_COMP][n] + delta*y[I_COMP][n] - (eps + r)*y[Q_COMP][n];
-    y[D_COMP][n+1] = y[D_COMP][n] + r*y[Q_COMP][n];
-    y[Q_ENTRY_COMP][n+1] = delta*y[I_COMP][n];
-    y[D_ENTRY_COMP][n+1] = r*y[Q_COMP][n];
+    y[Q_COMP][n+1] = y[Q_COMP][n] + delta_I - (eps + r)*y[Q_COMP][n];
+    y[D_COMP][n+1] = y[D_COMP][n] + r_Q;
+    y[Q_ENTRY_COMP][n+1] = delta_I;
+    y[D_ENTRY_COMP][n+1] = r_Q;
 
 
     if (beta*lambda > 1)
@@ -198,13 +204,13 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
 
 int model(ODE& f,const NOMAD::EvalPoint &x)
 {
-    STAT_nbr_model_evaluation++;
+    STATS.add_model_evaluation();
     set_condition_initiale(f,x);
     
     int value = bb_discret_new(f,x);
     if(value!=0)
     {
-        STAT_nbr_model_evaluation_aborted++;
+        STATS.add_model_evaluation_aborted();
     }
 
     return value;
@@ -228,8 +234,10 @@ int bb_discret_new(ODE& f,const NOMAD::EvalPoint &p)
 
     for (int jour = 0; jour < NB_DAY-1; jour++)
     {           
-        if(std::find(TAB_DATE_CONFINEMENT.begin(), TAB_DATE_CONFINEMENT.end(), jour) != TAB_DATE_CONFINEMENT.end()){
-            confinement++;
+        if (confinement < TAB_DATE_CONFINEMENT.size()) {
+            if (jour == TAB_DATE_CONFINEMENT[confinement]) {
+                confinement++;
+            }
         }
 
         for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
@@ -261,16 +269,20 @@ int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &
     double gamma = p[NB_PARAM_TOT*classe + PARAM_ID_GAMMA].todouble();
     double eps = p[NB_PARAM_TOT*classe + PARAM_ID_EPS].todouble();
     double r = p[NB_PARAM_TOT*classe + PARAM_ID_R].todouble();
-
     double beta = p[NB_PARAM_TOT*classe + NB_PARAM + confinement].todouble();
 
-    y[S_COMP][n+1] = y[S_COMP][n] - beta*lambda*y[S_COMP][n];
-    y[I_COMP][n+1] = y[I_COMP][n] + beta*lambda*y[S_COMP][n] - (delta+gamma)*y[I_COMP][n];
+
+    double Beta_lambda_S = beta*lambda*y[S_COMP][n];
+    double delta_I = delta*y[I_COMP][n];
+    double r_Q = r*y[Q_COMP][n];
+
+    y[S_COMP][n+1] = y[S_COMP][n] - Beta_lambda_S;
+    y[I_COMP][n+1] = y[I_COMP][n] + Beta_lambda_S - (delta+gamma)*y[I_COMP][n];
     y[R_COMP][n+1] = y[R_COMP][n] + gamma*y[I_COMP][n] + eps*y[Q_COMP][n];
-    y[Q_COMP][n+1] = y[Q_COMP][n] + delta*y[I_COMP][n] - (eps + r)*y[Q_COMP][n];
-    y[D_COMP][n+1] = y[D_COMP][n] + r*y[Q_COMP][n];
-    y[Q_ENTRY_COMP][n+1] = delta*y[I_COMP][n];
-    y[D_ENTRY_COMP][n+1] = r*y[Q_COMP][n];
+    y[Q_COMP][n+1] = y[Q_COMP][n] + delta_I - (eps + r)*y[Q_COMP][n];
+    y[D_COMP][n+1] = y[D_COMP][n] + r_Q;
+    y[Q_ENTRY_COMP][n+1] = delta_I;
+    y[D_ENTRY_COMP][n+1] = r_Q;
 
     
 

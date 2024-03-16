@@ -38,7 +38,7 @@ void write_data_csv(const ODE& f,const std::string& filename);
 void write_save_parameters_MCMC(const std::vector<std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>> p_storage);
 void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p, const std::string& save_nbr);
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr);
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution();
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution(double & obj_fct_value);
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_cond_init_mcmc(int CI_nbr, std::string filename);
 
 

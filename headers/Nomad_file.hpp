@@ -1,7 +1,7 @@
 #ifndef NOMAD_FILE_HPP
 #define NOMAD_FILE_HPP
 
-#include "nomad/Nomad/nomad.hpp"
+#include "Nomad/nomad.hpp"
 
 // Déclaration de la classe d'évaluateur
 class My_Evaluator : public NOMAD::Evaluator

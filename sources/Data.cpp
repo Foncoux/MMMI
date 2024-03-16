@@ -9,12 +9,6 @@
 
 Data::Data()
 {
-    
-    //read_data<NB_DATA_DAY, NB_DAY>(DAY_DATA_filename, day_all);
-    //read_data<NB_DATA_DEATH_AGE_DAY, NB_DAY>(DAY_DEATH_AGE_DATA_filename, day_death_age);
-    //read_data<NB_CLASSE_MONTH, NB_MONTH>(DEATH_MONTH_AGE_DATA_filename, month_death_ages);
-
-    //read_data<NB_CLASSE_WEEK, NB_WEEK>(HOSP_WEEK_AGE_DATA_filename, week_hosp_ages);
 
     read_data_csv<NB_DATA_DAY_DEATH, NB_DAY_CALIBRATION>(DAY_DEATH_DATA_filename, day_death);
     read_data_csv<NB_DATA_DAY_HOSP, NB_DAY_CALIBRATION>(DAY_HOSP_DATA_filename, day_hosp);
@@ -198,10 +192,20 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::st
 }
 
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution()
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution(double & obj_fct_value)
 {
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
-    std::ifstream file("../best_feasible_point.txt");
+    std::ifstream file;
+    if(ON_CLUSTER)
+    {
+        std::ostringstream formattedStream;
+        formattedStream << std::setw(3) << std::setfill('0') << COND_INIT_NBR;
+
+        file.open(SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt");
+    }else {
+        file.open(SOLUTION_FILE_MADS_filename);
+    }
+    
     if (!file.is_open()) {
         std::cout << "Impossible d'ouvrir le fichier. (read_nomad_best_feasible)" << std::endl;
         exit(0);
@@ -214,6 +218,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution(
         p[i] = value;
         i++;
     }
+    obj_fct_value = value;
 
     // Fermer le fichier
     file.close();
@@ -258,7 +263,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> set_cond_init_mcmc(int CI_nbr, std
 }
 
 
-
+/*
 void write_output_data_in_file(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& p)
 {
     std::ofstream file("../output.csv");
@@ -294,5 +299,5 @@ void write_output_data_in_file(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AG
         std::cerr << "Impossible d'ouvrir le fichier [data.cpp write_save_parameters]" << std::endl;
     }
 }
-
+*/
 

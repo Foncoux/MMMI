@@ -18,18 +18,6 @@ std::vector<std::string> SELECT_CLASSE_AGE;
 
 int COND_INIT_NBR;
 
-int STAT_nbr_model_evaluation;
-int STAT_nbr_model_evaluation_aborted;
-int STAT_obj_fct_value;
-
- std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_start;
- std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_end;
-double STAT_time_taken;
-
-struct timespec STAT_CPU_time_start;
-struct timespec STAT_CPU_time_end;
-double STAT_CPU_time_taken;
-
 
 void config_table_extern(){
 

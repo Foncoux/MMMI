@@ -132,7 +132,6 @@ double least_square_recovered_1(ODE& output_data)
         total_output = total_output + output_data.m_result_simulation[classe][R_COMP][38];
     }   
     
-    total_output = total_output;
 
     if (total_output < (2.1/100) || total_output > (3.7/100))
     {   

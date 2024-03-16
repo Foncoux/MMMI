@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2023
  * 
  */
+#include <cmath>
 #include <vector>
 
 #include <iostream>
@@ -29,8 +30,11 @@
 
 #include "../headers/MCMC.hpp"
 
+#include "Stats.hpp"
+
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> MCMC(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,gsl_rng* random_ptr,ODE& f)
 {
+
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p = cond_init;
     
     double sigma = SIGMA;
@@ -56,7 +60,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p_new;
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
-    std::string savename;
+    
     double gamma = 0.4;
 
     /*
@@ -70,13 +74,12 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     p_old = cond_init;
     LL_old = fonction_obj(f);
     
-    int j=0;
-    int iter_select = 0;
+    int j;
     int iter_total=0;
     int iter_maj_sigma=0;
     bool stop = false; 
     //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
-    
+    /*
     std::cout << std::left  << std::setw(10) << "ite_tot"
                             << std::setw(4) << "|"
                             << std::setw(15) << "Nb_post_dist"
@@ -89,7 +92,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                             << std::setw(4) << "|"
                             << std::setw(15) << "sigma"
                             << "\r" << std::endl;
-    
+    */
     while(stop == false)
     {
     
@@ -128,7 +131,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
             }
             iter_maj_sigma++;
-
+/*
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -144,28 +147,50 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                                     << std::setw(15)<< std::setprecision(10) << sigma
 
                                     << "\r" << std::flush;
-            
+*/
+
+
 
              
         }else
         {
             iter_total--;
         }     
+        
         if(iter_total>BURNIN_STEP)
         {
             stop=true;
         }
         
-        iter_total++;
+        iter_total++; 
+
+
+        int interval = std::round(NB_ITER_TOT/NB_RECORD_IN_STATS_FILE);
+        if((STATS.get_model_evaluation_nbr()%interval) >= (interval-1))
+        {
+            STATS.close_stats(LL_old,p_old);
+        }
+
+        if (LL_old > -FCT_OBJ_LIMIT && STOP_FCT_OBJ) {
+            STATS.close_stats(LL_old,p_old);
+            gsl_rng_free(r);
+            exit(0);
+        }
+      
+
     }
 
-    STAT_obj_fct_value = LL_old;
     
     
     std::cout << std::setprecision(16) << std::endl;
     return p_old;
 
 }
+
+
+
+
+
 
 
 std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init,ODE& f,gsl_rng* r,double &sigma)
@@ -194,6 +219,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
     bool stop = false; 
     //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
     
+
     std::cout << std::left  << std::setw(10) << "ite_tot"
                             << std::setw(4) << "|"
                             << std::setw(15) << "Nb_post_dist"
@@ -206,6 +232,8 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> metropolis(std::array<double,NB_PA
                             << std::setw(4) << "|"
                             << std::setw(15) << "sigma"
                             << "\r" << std::endl;
+
+
 
     while(stop == false)
     {

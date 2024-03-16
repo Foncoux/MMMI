@@ -1,4 +1,6 @@
+#include <array>
 #include <cstddef>
+#include <iomanip>
 #include <vector>
 #include <gsl/gsl_rng.h>
 #include <string>
@@ -11,12 +13,25 @@
 
 #include "fonction_discret.hpp"
 #include "fonction_obj.hpp"
+#include "Stats.hpp"
+
+
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> nomad_point_to_array(NOMAD::EvalPoint &x)
+{
+    std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param;
+
+    for (int i=0; i < NB_PARAM_TOT*NB_CLASSE_AGE; i++) {
+        param[i] = x[i].todouble();
+    }
+
+    return param;
+}
 
 
 NOMAD::Point set_cond_init(NOMAD::Point X0, int CI_nbr, std::string filename)
 {
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open()){
         std::cout << "Impossible d'ouvrir le fichier. (set_cond_init)" << std::endl;
         exit(0);
     }
@@ -35,7 +50,6 @@ NOMAD::Point set_cond_init(NOMAD::Point X0, int CI_nbr, std::string filename)
 
     while (std::getline(iss, value, ',') && i < NB_PARAM_TOT*NB_CLASSE_AGE ) {
         X0[i] = std::stod(value);
-        
         i++;
     }
     
@@ -53,7 +67,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue( "DIMENSION", n);
 
     // max number of evaluation of bb
-    allParams->setAttributeValue( "MAX_BB_EVAL", 500);
+    allParams->setAttributeValue( "MAX_BB_EVAL", 200);
 
     // Starting point
     NOMAD::Point X0(n);
@@ -77,13 +91,24 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue("BB_OUTPUT_TYPE", bbOutputTypes );
 
     // 2 for normal, 3 is too much, 0 or 1 is nothing
-    allParams->setAttributeValue("DISPLAY_DEGREE", 2);
+    allParams->setAttributeValue("DISPLAY_DEGREE", DISPLAY_DEGREE_value);
 
     // Direction types for poll step
     allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_NP1_QUAD);
 
     // output of the best feasible solution in a file
-    std::string best_feasible_sol_filename = "../best_feasible_point.txt";
+
+    std::string best_feasible_sol_filename;
+    if(ON_CLUSTER)
+    {
+        std::ostringstream formattedStream;
+        formattedStream << std::setw(3) << std::setfill('0') << COND_INIT_NBR;
+
+        best_feasible_sol_filename = SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt";
+    }else {
+        best_feasible_sol_filename = SOLUTION_FILE_MADS_filename;
+    }
+
     allParams->setAttributeValue("SOLUTION_FILE", best_feasible_sol_filename);
 
     // set the lower bound of variables
@@ -149,16 +174,13 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     //The initial mesh size of MADS
     //allParams->setAttributeValue("INITIAL_MESH_SIZE", 0.1);
     
-    std::string stat_filename = "../stat_nomad.txt";
-    allParams->setAttributeValue("STATS_FILE", stat_filename);
+    //std::string stat_filename = "../stat_nomad.txt";
+    //allParams->setAttributeValue("STATS_FILE", stat_filename);
     
-    std::string eval_stat_filename = "../eval_stat_nomad.txt";
-    allParams->setAttributeValue("EVAL_STATS_FILE", eval_stat_filename);
+    //std::string eval_stat_filename = "../eval_stat_nomad.txt";
+    //allParams->setAttributeValue("EVAL_STATS_FILE", eval_stat_filename);
 
     allParams->setAttributeValue("INITIAL_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0.1));
-
-
-
 
     // Parameters validation
     allParams->checkAndComply();
@@ -197,14 +219,13 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
             countEval = true;
         }else{
             f = 1e+20;
-            countEval = false;
+            countEval = true;
             /*
             if(test == -2)
             {
                 return false;
             }
             */
-            
         }
 
         NOMAD::Double EB;
@@ -220,6 +241,22 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
 
 
         x.setBBO(bbo);
+
+        int interval = std::round(NB_ITER_TOT/NB_RECORD_IN_STATS_FILE);
+        if((STATS.get_model_evaluation_nbr()%interval) >= (interval-1))
+        {
+            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param = nomad_point_to_array(x);
+            STATS.close_stats(f.todouble(),param);
+        }
+
+
+
+        if (f < FCT_OBJ_LIMIT && STOP_FCT_OBJ) {
+
+            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param = nomad_point_to_array(x);
+            STATS.close_stats(f.todouble(),param);
+            exit(0);
+        }
 
         eval_ok = true;
     }

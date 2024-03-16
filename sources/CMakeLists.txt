@@ -8,6 +8,7 @@ set(SOURCES
     fonction_discret.cpp
     Parametres.cpp
     Nomad_file.cpp
+    Stats.cpp
     )
 
 add_library(sources ${SOURCES})

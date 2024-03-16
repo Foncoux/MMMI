@@ -4,7 +4,7 @@
 #include <array>
 
 #include "../config/config.hpp"
-#include "nomad/Nomad/nomad.hpp"
+#include "Nomad/nomad.hpp"
 
 
 class ODE
@@ -27,11 +27,11 @@ void set_condition_initiale(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>
 void set_condition_initiale(ODE &f,const NOMAD::EvalPoint &p);
 
 
-int model(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti);
 
 
 double force_infection_classe(int jour,int classe_age,ODE& f);
 
+int model(ODE &f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> &param_opti);
 int bb_discret_new(ODE& f,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p);
 int SIRQD_discret_new(std::array<std::array<double, NB_DAY>, COMPARTIMENT_TOT> &y,std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p,int n,double lambda, int classe, int confinement);
 

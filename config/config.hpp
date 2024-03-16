@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <string>
-#include <time.h>
-#include <chrono>
 
 #include "setup.hpp"
 
@@ -21,40 +19,11 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 #define D_COMP 4
 #define Q_ENTRY_COMP 5
 #define D_ENTRY_COMP 6
-#define E_COMP 7
 /*295*/
 #define NB_DAY 350
 #define NB_DAY_CALIBRATION 282
-#define HOSP_DEBUT 237
-
-#define NB_DATA_DAY 6
-#define NB_DATA_DEATH_AGE_DAY 3
-#define DEATH_DAY 0
-#define HOSP_DAY 1
-#define PREV_LOW_DAY 2
-#define PREV_MEDIUM_DAY 3
-#define PREV_HIGH_DAY 4
-#define HOSP_WEEK_DAY 5
-
-#define NB_CLASSE_WEEK 1
-#define NB_WEEK 42
-
-#define NB_CLASSE_MONTH 2
-#define NB_MONTH 10
 
 extern int COND_INIT_NBR;
-
-extern int STAT_nbr_model_evaluation;
-extern int STAT_nbr_model_evaluation_aborted;
-extern int STAT_obj_fct_value;
-
-extern  std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_start;
-extern  std::chrono::time_point<std::chrono::high_resolution_clock> STAT_time_end;
-extern double STAT_time_taken;
-
-extern struct timespec STAT_CPU_time_start;
-extern struct timespec STAT_CPU_time_end;
-extern double STAT_CPU_time_taken;
 
 #if SETUP == SIRQD
 
@@ -72,7 +41,6 @@ extern double STAT_CPU_time_taken;
     #define PHANTOM_COMPART 2
     #define COMPARTIMENT 5
     #define COMPARTIMENT_TOT (PHANTOM_COMPART+COMPARTIMENT)
-    #define FCT_OBJ_CHOICE 1
 
     extern std::vector<int> TAB_DATE_CONFINEMENT;
     extern std::vector<double> PROP_PAR_CLASSE;
@@ -86,6 +54,8 @@ extern double STAT_CPU_time_taken;
     
 
     #if NB_CLASSE_AGE == 1
+        #define FCT_OBJ_LIMIT -5000.0
+
         #define NB_DATA_DAY_DEATH 1
         #define NB_DATA_DAY_HOSP 1
         #define NB_CLASSE_SOCIAL_CONTACT_MATRIX 1
@@ -98,6 +68,10 @@ extern double STAT_CPU_time_taken;
         #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_1classe" //4
         #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_1classe_mads" //4
         #define COND_INIT_filename "../data/Conditions_initiales/1_classe_CI.csv"
+
+
+        
+
     #endif
 
     #if NB_CLASSE_AGE == 2
@@ -152,7 +126,6 @@ extern double STAT_CPU_time_taken;
     #define SAVE_MCMC_WRITE "../data/MCMC_param/save_MCMC"
     #define DATA_MCMC_WRITE "../data/MCMC_result/data_MCMC"
 
-    #define NB_ITE_BLACKBOX 20000
     #define STOP_ALGO 0.00001
 
     #define ITE_RECUP_MCMC 1000
@@ -164,7 +137,37 @@ extern double STAT_CPU_time_taken;
 
 #endif
 
+#if ON_CLUSTER
+    #define STATS_FILENAME "/workdir/efoncoux/STATS_files/Classe_1/Gibbs/stat_file_"
+    #define SOLUTION_FILE_MADS_filename "/workdir/efoncoux/MADS_temp/best_feasible_point_"
+    #define DISPLAY_DEGREE_value 0
+    
 
+#endif
+
+#if ON_CLUSTER == false
+    #define STATS_FILENAME "../data/STATS_files/stat_file_"
+    #define SOLUTION_FILE_MADS_filename "../best_feasible_point.txt"
+    #define DISPLAY_DEGREE_value 2
+
+#endif
+
+#if MCMC_PARAM_TYPE_SELECTION == 1
+    #define TAUX_ACCEPT_OBJ 0.5
+    #define MCMC_PARAM_TYPE_SELECTION_string "Gibbs"
+#endif
+
+#if MCMC_PARAM_TYPE_SELECTION == 0
+    #define TAUX_ACCEPT_OBJ 0.234
+    #define MCMC_PARAM_TYPE_SELECTION_string "Metropolis"
+#endif
+
+#if NOMAD_ALGO == 1
+    #define ALGO_NAME "NOMAD"
+#endif
+#if NOMAD_ALGO == 0
+    #define ALGO_NAME "MCMC"
+#endif
 
 
 
