@@ -125,13 +125,13 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                 sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-TAUX_ACCEPT_OBJ)/(1-TAUX_ACCEPT_OBJ)));
                 
                 sigma = sigma > 0.001 ? 0.001 : sigma;
-                sigma = sigma < 0.000001 ? 0.000001 : sigma;
+                sigma = sigma < 0.0000001 ? 0.0000001 : sigma;
 
                 nombre_acceptation=0;
 
             }
             iter_maj_sigma++;
-/*
+
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -147,7 +147,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                                     << std::setw(15)<< std::setprecision(10) << sigma
 
                                     << "\r" << std::flush;
-*/
+
 
 
 
@@ -165,10 +165,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
         iter_total++; 
 
 
-        int interval = std::round(NB_ITER_TOT/NB_RECORD_IN_STATS_FILE);
-        if((STATS.get_model_evaluation_nbr()%interval) >= (interval-1))
+        if (STATS.get_model_evaluation_nbr() % NB_RECORD_IN_STATS_FILE == 0)
         {
-            STATS.close_stats(LL_old,p_old);
+            STATS.close_stats(LL_old, p_old);
         }
 
         if (LL_old > -FCT_OBJ_LIMIT && STOP_FCT_OBJ) {

@@ -44,7 +44,7 @@ for i in range(nb_sample):
 column_names = [f"{name}_{i}" for i in range(num_classes) for name in base_names]
 df = pd.DataFrame(sample_scaled,columns=column_names)
 
-df.to_csv("./data/Conditions_initiales/1_classe_CI.csv",index = False)
+df.to_csv("./data/Conditions_initiales/Classe_1_CI.csv",index = False)
 
 
 
@@ -79,7 +79,7 @@ for i in range(nb_sample):
 column_names = [f"{name}_{i}" for i in range(num_classes) for name in base_names]
 df = pd.DataFrame(sample_scaled,columns=column_names)
 
-df.to_csv("./data/Conditions_initiales/2_classe_CI.csv",index = False)
+df.to_csv("./data/Conditions_initiales/Classe_2_CI.csv",index = False)
 
 
 
@@ -116,7 +116,7 @@ for i in range(nb_sample):
 column_names = [f"{name}_{i}" for i in range(num_classes) for name in base_names]
 df = pd.DataFrame(sample_scaled,columns=column_names)
 
-df.to_csv("./data/Conditions_initiales/4_classe_CI.csv",index = False)
+df.to_csv("./data/Conditions_initiales/Classe_4_CI.csv",index = False)
 
 ###########################
 ###########################
@@ -150,7 +150,7 @@ for i in range(nb_sample):
 column_names = [f"{name}_{i}" for i in range(num_classes) for name in base_names]
 df = pd.DataFrame(sample_scaled,columns=column_names)
 
-df.to_csv("./data/Conditions_initiales/8_classe_CI.csv",index = False)
+df.to_csv("./data/Conditions_initiales/Classe_8_CI.csv",index = False)
 
 
 

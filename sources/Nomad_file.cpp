@@ -11,6 +11,8 @@
 
 #include "../config/config.hpp"
 
+#include "Data.hpp"
+#include "Type/DirectionType.hpp"
 #include "fonction_discret.hpp"
 #include "fonction_obj.hpp"
 #include "Stats.hpp"
@@ -93,8 +95,29 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     // 2 for normal, 3 is too much, 0 or 1 is nothing
     allParams->setAttributeValue("DISPLAY_DEGREE", DISPLAY_DEGREE_value);
 
+    //Opportunistic strategy: Terminate evaluations as soon as a success is found
+
+    allParams->setAttributeValue("EVAL_OPPORTUNISTIC", NOMAD_STRATEGY);
+
+    NOMAD::DirectionType nomad_direction_type;
+    switch (NOMAD_DIRECTION_TYPE) {
+        case 1:
+            nomad_direction_type = NOMAD::DirectionType::ORTHO_NP1_QUAD;
+            break;
+        case 2:
+            nomad_direction_type = NOMAD::DirectionType::ORTHO_NP1_NEG;
+            break;
+        case 3:
+            nomad_direction_type = NOMAD::DirectionType::ORTHO_2N;
+            break;
+        case 4:
+
+            break;
+        
+    }
+    
     // Direction types for poll step
-    allParams->setAttributeValue("DIRECTION_TYPE", NOMAD::DirectionType::ORTHO_NP1_QUAD);
+    allParams->setAttributeValue("DIRECTION_TYPE", nomad_direction_type);
 
     // output of the best feasible solution in a file
 
@@ -158,8 +181,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     //allParams->setAttributeValue("DISPLAY_STATS", 0.1);
     //Flag to display unsuccessful
     //allParams->setAttributeValue("DISPLAY_UNSUCCESSFUL", false);
-    //Opportunistic strategy: Terminate evaluations as soon as a success is found
-    //allParams->setAttributeValue("EVAL_OPPORTUNISTIC", true);
+    
     //Opportunistic strategy: Flag to clear EvaluatorControl queue between each run
     //allParams->setAttributeValue("EVAL_QUEUE_CLEAR", 0.1);
     //How to sort points before evaluation
@@ -242,19 +264,19 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
 
         x.setBBO(bbo);
 
-        int interval = std::round(NB_ITER_TOT/NB_RECORD_IN_STATS_FILE);
-        if((STATS.get_model_evaluation_nbr()%interval) >= (interval-1))
+        if (STATS.get_model_evaluation_nbr() % NB_RECORD_IN_STATS_FILE == 0)
         {
-            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param = nomad_point_to_array(x);
-            STATS.close_stats(f.todouble(),param);
+            double obj_fct_value;
+            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = read_nomad_best_feasible_solution(obj_fct_value);
+            STATS.close_stats(obj_fct_value, param_opti);
         }
-
-
+        
 
         if (f < FCT_OBJ_LIMIT && STOP_FCT_OBJ) {
 
-            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param = nomad_point_to_array(x);
-            STATS.close_stats(f.todouble(),param);
+            double obj_fct_value;
+            std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = read_nomad_best_feasible_solution(obj_fct_value);
+            STATS.close_stats(obj_fct_value, param_opti);
             exit(0);
         }
 

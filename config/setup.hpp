@@ -1,43 +1,71 @@
 #ifndef SETUP_HPP
 #define SETUP_HPP
 
-#define ON_CLUSTER true
-#define STOP_FCT_OBJ false
+//setup 
+#define GIBBS 1
+#define METROPOLIS 0
 
-#define SIRQD 2
+#define ALGO_NOMAD 1
+#define ALGO_MCMC 0
 
-
-//select the method used for MCMC :
-// 0 = metropolis 
-// 1 = Gibbs
-#define MCMC_PARAM_TYPE_SELECTION 1
+#define OPPORTUNISTIC_STRATEGY true
+#define NOT_OPPORTUNISTIC_STRATEGY false
 
 #define NB_CONFINEMENT 6
 #define DISCRET 1
 
 
+#define ON_CLUSTER false
+#define STOP_FCT_OBJ false
+
 //select wich algorithm is used : 
-// 0 = MCMC
-// 1 = NOMAD
-#define NOMAD_ALGO 0
+// ALGO_MCMC or ALGO_NOMAD
+#define CHOICE_ALGO_TYPE ALGO_MCMC
+
+ 
+//select the method used for MCMC :
+// GIBBS or METROPOLIS
+#define MCMC_PARAM_TYPE_SELECTION METROPOLIS
+
+//select the strategy used for NOMAD :
+// OPPORTUNISTIC_STRATEGY or NOT_OPPORTUNISTIC_STRATEGY
+#define NOMAD_STRATEGY OPPORTUNISTIC_STRATEGY
 
 
-#define NB_CLASSE_AGE 1
+//select the method used for MCMC :
+//1 : ORTHO_NP1_QUAD;
+//2 : ORTHO_NP1_NEG;
+//3 : ORTHO_2N;
+#define NOMAD_DIRECTION_TYPE 1
+
+#define NB_CLASSE_AGE NB_CLASSE_AGE_CMAKE
+
+
+
+
 #define SIGMA 0.000003
 #define SIGMA_INIT_BURNING 0.0005
 #define ALGO 3
 #define READ_SAVE_PARAM false
 #define WRITE_SAVE_PARAM false
 
-#define NB_ITER_TOT 30000000
+#if NB_CLASSE_AGE_CMAKE == 1
+    #define NB_ITER_TOT 16000000
+#elif NB_CLASSE_AGE_CMAKE == 2
+    #define NB_ITER_TOT 40000000
+
+#elif NB_CLASSE_AGE_CMAKE == 4
+    #define NB_ITER_TOT 60000000
+#elif NB_CLASSE_AGE_CMAKE == 8
+    #define NB_ITER_TOT 100000000
+#endif
+
 #define BURNIN_STEP NB_ITER_TOT
 
-#define NB_RECORD_IN_STATS_FILE 1000
+#define NB_RECORD_IN_STATS_FILE 100000
 
 #define OPTIMISATION true
 #define BURNIN_PHASE true
 #define MCMC_PHASE false
-
-#define SETUP SIRQD
 
 #endif 

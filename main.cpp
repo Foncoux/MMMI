@@ -21,7 +21,7 @@ int main (int argc, char* argv[])
     gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
     gsl_rng_set(random_ptr,time(NULL));
     
-    int test = NOMAD_ALGO;
+    int test = CHOICE_ALGO_TYPE;
     config_table_extern();
 
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;

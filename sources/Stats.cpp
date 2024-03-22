@@ -34,7 +34,7 @@ Stats::Stats()
         ss << names_param[i];
     }    
     std::string chaine = ss.str();
-    std::string temp = "NbCI,Method,Parametre_method_1,Parametre_method_2,fct_obj,nbr_evaluation,nbr_evaluation_aborted,temps,temps_CPU";
+    std::string temp = "NbCI,NB_Classe,Method,Parametre_method_1,Parametre_method_2,fct_obj,nbr_evaluation,nbr_evaluation_aborted,temps,temps_CPU";
 
     m_header = temp + chaine;
  
@@ -90,7 +90,7 @@ void Stats::add_model_evaluation_aborted()
 
 void Stats::set_fct_obj(double value)
 {   
-    if(NOMAD_ALGO == 0)
+    if(CHOICE_ALGO_TYPE == ALGO_MCMC)
     {
         m_obj_fct_value = -value;
     }else {
@@ -151,7 +151,7 @@ void Stats::write_in_file(std::string filename)
     
     if (file.is_open()) {
 
-        file << COND_INIT_NBR << "," <<  ALGO_NAME << "," << MCMC_PARAM_TYPE_SELECTION_string << "," << "/" << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
+        file << COND_INIT_NBR << "," << NB_CLASSE_AGE << "," <<  ALGO_NAME << "," << MCMC_PARAM_TYPE_SELECTION_string << "," << "/" << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
 
         for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
             file << m_p[i];
