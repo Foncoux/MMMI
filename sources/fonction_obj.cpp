@@ -205,7 +205,7 @@ double least_square_recovered_4(ODE& output_data)
     }
 
 
-
+    
     total_output = output_data.m_result_simulation[3][R_COMP][38];
     if(total_output < (1.2/100) || total_output > (5.1/100))
     {   
@@ -213,7 +213,7 @@ double least_square_recovered_4(ODE& output_data)
     }
 
 
-
+    total_output = 0;
     for (size_t i = 0; i < 4; i++)
     {
         total_output = total_output + output_data.m_result_simulation[i][R_COMP][38];
@@ -265,7 +265,7 @@ double least_square_recovered_8(ODE& output_data)
     }
 
 
-
+    total_output = 0;
     for (size_t i = 0; i < 8; i++)
     {
         total_output = total_output + output_data.m_result_simulation[i][R_COMP][38];

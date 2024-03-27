@@ -15,7 +15,7 @@
 #define DISCRET 1
 
 
-#define ON_CLUSTER false
+#define ON_CLUSTER true
 #define STOP_FCT_OBJ false
 
 //select wich algorithm is used : 
@@ -51,18 +51,23 @@
 
 #if NB_CLASSE_AGE_CMAKE == 1
     #define NB_ITER_TOT 16000000
+    #define NBR_ITERATION_MADS 32000
 #elif NB_CLASSE_AGE_CMAKE == 2
     #define NB_ITER_TOT 40000000
+    #define NBR_ITERATION_MADS 80000
 
 #elif NB_CLASSE_AGE_CMAKE == 4
     #define NB_ITER_TOT 60000000
+    #define NBR_ITERATION_MADS 120000
 #elif NB_CLASSE_AGE_CMAKE == 8
     #define NB_ITER_TOT 100000000
+    #define NBR_ITERATION_MADS 200000
 #endif
 
 #define BURNIN_STEP NB_ITER_TOT
 
 #define NB_RECORD_IN_STATS_FILE 100000
+#define NB_RECORD_IN_STATS_FILE_MADS 1000
 
 #define OPTIMISATION true
 #define BURNIN_PHASE true

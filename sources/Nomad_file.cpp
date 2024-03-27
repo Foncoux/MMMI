@@ -69,7 +69,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue( "DIMENSION", n);
 
     // max number of evaluation of bb
-    allParams->setAttributeValue( "MAX_BB_EVAL", 200);
+    allParams->setAttributeValue( "MAX_BB_EVAL", NBR_ITERATION_MADS);
 
     // Starting point
     NOMAD::Point X0(n);
@@ -204,6 +204,9 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
 
     allParams->setAttributeValue("INITIAL_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0.1));
 
+    allParams->setAttributeValue("MIN_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0));
+    allParams->setAttributeValue("MIN_MESH_SIZE",NOMAD::ArrayOfDouble(n,0));
+
     // Parameters validation
     allParams->checkAndComply();
 
@@ -264,7 +267,7 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
 
         x.setBBO(bbo);
 
-        if (STATS.get_model_evaluation_nbr() % NB_RECORD_IN_STATS_FILE == 0)
+        if (STATS.get_model_evaluation_nbr() % NB_RECORD_IN_STATS_FILE_MADS == 0 && STATS.get_model_evaluation_nbr() != 0)
         {
             double obj_fct_value;
             std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti = read_nomad_best_feasible_solution(obj_fct_value);

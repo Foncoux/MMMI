@@ -151,7 +151,7 @@ void Stats::write_in_file(std::string filename)
     
     if (file.is_open()) {
 
-        file << COND_INIT_NBR << "," << NB_CLASSE_AGE << "," <<  ALGO_NAME << "," << MCMC_PARAM_TYPE_SELECTION_string << "," << "/" << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
+        file << COND_INIT_NBR << "," << NB_CLASSE_AGE << "," <<  ALGO_NAME << "," << PARAMETRES_STRING_1 << "," << PARAMETRES_STRING_2 << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
 
         for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
             file << m_p[i];
