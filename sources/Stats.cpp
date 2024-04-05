@@ -16,6 +16,9 @@ Stats::Stats()
     m_nbr_model_evaluation_aborted=0;
     m_obj_fct_value=0;
 
+    m_mcmc_accept = 0;
+    m_mcmc_not_accept=0;
+
     std::stringstream ss;
     std::vector<std::string> names_param;
     std::vector<std::string> NAMES_PARAM_temp = {"delta", "gamma", "eps", "r", "x0_infect", "beta0", "beta1", "beta2", "beta3", "beta4", "beta5", "beta6"};
@@ -34,13 +37,25 @@ Stats::Stats()
         ss << names_param[i];
     }    
     std::string chaine = ss.str();
-    std::string temp = "NbCI,NB_Classe,Method,Parametre_method_1,Parametre_method_2,fct_obj,nbr_evaluation,nbr_evaluation_aborted,temps,temps_CPU";
+    std::string temp = "NbCI,NB_Classe,Method,Parametre_method_1,Parametre_method_2,accept_mcmc,reject_mcmc,fct_obj,nbr_evaluation,nbr_evaluation_aborted,temps,temps_CPU";
 
     m_header = temp + chaine;
  
 }
 
+
 Stats STATS;
+
+void Stats::add_mcmc_accept()
+{
+    m_mcmc_accept++;
+}
+
+void Stats::add_mcmc_not_accept()
+{
+    m_mcmc_not_accept++;
+}
+
 
 int Stats::get_model_evaluation_nbr()
 {
@@ -151,7 +166,7 @@ void Stats::write_in_file(std::string filename)
     
     if (file.is_open()) {
 
-        file << COND_INIT_NBR << "," << NB_CLASSE_AGE << "," <<  ALGO_NAME << "," << PARAMETRES_STRING_1 << "," << PARAMETRES_STRING_2 << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
+        file << COND_INIT_NBR << "," << NB_CLASSE_AGE << "," <<  ALGO_NAME << "," << PARAMETRES_STRING_1 << "," << PARAMETRES_STRING_2 << "," << m_mcmc_accept << "," << m_mcmc_not_accept << "," << m_obj_fct_value << "," << m_nbr_model_evaluation << "," << m_nbr_model_evaluation_aborted << "," << m_time_taken << "," << m_CPU_time_taken << "," ;
 
         for (int i=0;i<NB_PARAM_TOT*NB_CLASSE_AGE; i++){
             file << m_p[i];

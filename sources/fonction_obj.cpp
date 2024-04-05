@@ -129,7 +129,7 @@ double least_square_recovered_1(ODE& output_data)
     total_output = 0;
     for (size_t classe = 0; classe < NB_CLASSE_AGE; classe++)
     {                           
-        total_output = total_output + output_data.m_result_simulation[classe][R_COMP][38];
+        total_output = total_output + output_data.m_result_simulation[classe][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     }   
     
 
@@ -153,19 +153,19 @@ double least_square_recovered_2(ODE& output_data)
     
     total_output = 0;
    
-    total_output = output_data.m_result_simulation[0][R_COMP][38];
+    total_output = output_data.m_result_simulation[0][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (0.6/100) || total_output > (7.5/100))
     {   
         somme2 = somme2 + sqrt(((4.05/100) - total_output)*((4.05/100) - total_output))*10000000;
     }
 
-    total_output = output_data.m_result_simulation[1][R_COMP][38];
+    total_output = output_data.m_result_simulation[1][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (1.2/100) || total_output > (5.1/100))
     {   
         somme2 = somme2 + sqrt(((2.5/100) - total_output)*((2.5/100) - total_output))*10000000;
     }    
 
-    total_output = output_data.m_result_simulation[0][R_COMP][38] + output_data.m_result_simulation[1][R_COMP][38];
+    total_output = output_data.m_result_simulation[0][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY] + output_data.m_result_simulation[1][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (2.1/100) || total_output > (3.7/100))
     {   
         somme2 = somme2 + sqrt(((2.8/100) - total_output)*((2.8/100) - total_output))*10000000;
@@ -183,14 +183,14 @@ double least_square_recovered_4(ODE& output_data)
     double total_output=0, somme2=0;
    
     
-    total_output = output_data.m_result_simulation[0][R_COMP][38];
+    total_output = output_data.m_result_simulation[0][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (0.6/100) || total_output > (4.9/100))
     {   
         somme2 = somme2 + sqrt(((1.7/100) - total_output)*((1.7/100) - total_output))*10000000;
     }
 
     
-    total_output = output_data.m_result_simulation[1][R_COMP][38];
+    total_output = output_data.m_result_simulation[1][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (3.2/100) || total_output > (7.5/100))
     {   
         somme2 = somme2 + sqrt(((4.9/100) - total_output)*((4.9/100) - total_output))*10000000;
@@ -198,7 +198,7 @@ double least_square_recovered_4(ODE& output_data)
 
 
 
-    total_output = output_data.m_result_simulation[2][R_COMP][38];
+    total_output = output_data.m_result_simulation[2][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (1.2/100) || total_output > (3.2/100))
     {   
         somme2 = somme2 + sqrt(((1.9/100) - total_output)*((1.9/100) - total_output))*10000000;
@@ -206,7 +206,7 @@ double least_square_recovered_4(ODE& output_data)
 
 
     
-    total_output = output_data.m_result_simulation[3][R_COMP][38];
+    total_output = output_data.m_result_simulation[3][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (1.2/100) || total_output > (5.1/100))
     {   
         somme2 = somme2 + sqrt(((2.5/100) - total_output)*((2.5/100) - total_output))*10000000;
@@ -216,7 +216,7 @@ double least_square_recovered_4(ODE& output_data)
     total_output = 0;
     for (size_t i = 0; i < 4; i++)
     {
-        total_output = total_output + output_data.m_result_simulation[i][R_COMP][38];
+        total_output = total_output + output_data.m_result_simulation[i][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     }
     if(total_output < (2.1/100) || total_output > (3.7/100))
     {   
@@ -235,14 +235,14 @@ double least_square_recovered_8(ODE& output_data)
     double total_output=0, somme2=0;
    
     
-    total_output = output_data.m_result_simulation[0][R_COMP][38];
+    total_output = output_data.m_result_simulation[0][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (0.6/100) || total_output > (4.9/100))
     {   
         somme2 = somme2 + sqrt(((1.7/100) - total_output)*((1.7/100) - total_output))*10000000;
     }
 
     
-    total_output = output_data.m_result_simulation[1][R_COMP][38];
+    total_output = output_data.m_result_simulation[1][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (3.2/100) || total_output > (7.5/100))
     {   
         somme2 = somme2 + sqrt(((4.9/100) - total_output)*((4.9/100) - total_output))*10000000;
@@ -250,7 +250,7 @@ double least_square_recovered_8(ODE& output_data)
 
 
 
-    total_output = output_data.m_result_simulation[2][R_COMP][38] + output_data.m_result_simulation[3][R_COMP][38] + output_data.m_result_simulation[4][R_COMP][38];
+    total_output = output_data.m_result_simulation[2][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY] + output_data.m_result_simulation[3][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY] + output_data.m_result_simulation[4][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (1.2/100) || total_output > (3.2/100))
     {   
         somme2 = somme2 + sqrt(((1.9/100) - total_output)*((1.9/100) - total_output))*10000000;
@@ -258,7 +258,7 @@ double least_square_recovered_8(ODE& output_data)
 
 
 
-    total_output = output_data.m_result_simulation[5][R_COMP][38] + output_data.m_result_simulation[6][R_COMP][38] + output_data.m_result_simulation[7][R_COMP][38];
+    total_output = output_data.m_result_simulation[5][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY] + output_data.m_result_simulation[6][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY] + output_data.m_result_simulation[7][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     if(total_output < (1.2/100) || total_output > (5.1/100))
     {   
         somme2 = somme2 + sqrt(((2.5/100) - total_output)*((2.5/100) - total_output))*10000000;
@@ -268,7 +268,7 @@ double least_square_recovered_8(ODE& output_data)
     total_output = 0;
     for (size_t i = 0; i < 8; i++)
     {
-        total_output = total_output + output_data.m_result_simulation[i][R_COMP][38];
+        total_output = total_output + output_data.m_result_simulation[i][R_COMP][DAY_SEROLOGY - DELAY_DAY_SEROLOGY];
     }
     if(total_output < (2.1/100) || total_output > (3.7/100))
     {   

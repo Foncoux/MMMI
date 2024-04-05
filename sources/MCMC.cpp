@@ -73,6 +73,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
     p_old = cond_init;
     LL_old = fonction_obj(f);
+
+    STATS.close_stats(LL_old, p_old);
+    
     
     int j;
     int iter_total=0;
@@ -110,6 +113,10 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                 
                 nombre_acceptation++;
                 
+                STATS.add_mcmc_accept();
+                
+            }else {
+                STATS.add_mcmc_not_accept();
             }
             
 
@@ -131,7 +138,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
             }
             iter_maj_sigma++;
-
+/*
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -147,7 +154,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                                     << std::setw(15)<< std::setprecision(10) << sigma
 
                                     << "\r" << std::flush;
-
+*/
 
 
 
@@ -169,6 +176,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
         {
             STATS.close_stats(LL_old, p_old);
         }
+
 
         if (LL_old > -FCT_OBJ_LIMIT && STOP_FCT_OBJ) {
             STATS.close_stats(LL_old,p_old);

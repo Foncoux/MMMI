@@ -25,6 +25,8 @@ void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::st
 
 extern int COND_INIT_NBR;
 
+#define DELAY_DAY_SEROLOGY 7
+#define DAY_SEROLOGY 39
 
 
 #define NB_PARAM 5
