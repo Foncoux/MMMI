@@ -37,3 +37,8 @@ infectiosité = ~2 + ~7 = 8 à 10 jours
 
 nombre réussi, echec MCMC
 nbre itérations
+
+
+
+plusieurs seuil
+

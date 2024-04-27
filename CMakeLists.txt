@@ -4,32 +4,10 @@ cmake_minimum_required(VERSION 3.16.3)
 project(POO LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE=Debug )
+set(CMAKE_BUILD_TYPE=Release)
 
-find_package(GSL REQUIRED)
-
-link_directories(${PROJECT_SOURCE_DIR}/../NOMAD_lib/lib)
-
-include_directories(${PROJECT_SOURCE_DIR}/../NOMAD_lib/include/nomad)
-include_directories(${PROJECT_SOURCE_DIR}/../NOMAD_lib/include/sgtelib)
-include_directories(headers)
-
-
-# preciser la version minimale de cmake requise
-cmake_minimum_required(VERSION 3.16.3)
-
-# Nom du projet
-project(POO LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE=Debug )
-# compilation en mode debug
 
 set(NB_CLASSE_AGE_CMAKE 0 CACHE STRING "An option for setting NB_CLASSE_AGE")
-
-
-
 
 find_package(GSL REQUIRED)
 
@@ -63,7 +41,7 @@ set(MAIN
 # On indique que l'on veut un exécutable "SIRQD" compilé à partir des fichiers décrits par les variables SRCS et HEADERS
 
 
-set(EXEC_NAMES main_classe_1 main_classe_2 main_classe_4 main_classe_8)
+set(EXEC_NAMES Main_classe_1 Main_classe_2 Main_classe_4 Main_classe_8)
 
 if(NB_CLASSE_AGE_CMAKE EQUAL 1)
     set(VALUE 0)
@@ -99,9 +77,3 @@ target_link_libraries(${NAME_EXEC} PUBLIC nomadAlgos nomadUtils nomadEval sgteli
 #target_link_libraries(main sources1)
 
 #target_compile_options(main PUBLIC -fsanitize=leak -fsanitize=undefined -fsanitize=address -g -Wall -Wextra -pedantic )
-target_compile_options(${NAME_EXEC} PUBLIC)
-
-
-
-
-

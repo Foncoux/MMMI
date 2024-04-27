@@ -69,7 +69,7 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     allParams->setAttributeValue( "DIMENSION", n);
 
     // max number of evaluation of bb
-    allParams->setAttributeValue( "MAX_BB_EVAL", NBR_ITERATION_MADS);
+    allParams->setAttributeValue( "MAX_ITERATIONS", NBR_ITERATION_MADS);
 
     // Starting point
     NOMAD::Point X0(n);
@@ -198,10 +198,10 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
     
     //std::string stat_filename = "../stat_nomad.txt";
     //allParams->setAttributeValue("STATS_FILE", stat_filename);
-    
-    //std::string eval_stat_filename = "../eval_stat_nomad.txt";
-    //allParams->setAttributeValue("EVAL_STATS_FILE", eval_stat_filename);
-
+    /*
+    std::string eval_stat_filename = "../eval_stat_nomad.txt";
+    allParams->setAttributeValue("EVAL_STATS_FILE", eval_stat_filename);
+    */
     allParams->setAttributeValue("INITIAL_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0.1));
 
     allParams->setAttributeValue("MIN_FRAME_SIZE",NOMAD::ArrayOfDouble(n,0));
@@ -300,8 +300,6 @@ bool My_Evaluator::eval_x(NOMAD::EvalPoint &x, const NOMAD::Double &hMax, bool &
 void main2()
 {
     NOMAD::MainStep TheMainStep;
-
-    std::cout << COND_INIT_NBR << std::endl;
 
     auto params = std::make_shared<NOMAD::AllParameters>();
     initAllParams(params);
