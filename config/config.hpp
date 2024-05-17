@@ -10,7 +10,7 @@
 void config_table_extern();
 void set_social_contact_matrix(std::vector<std::vector<double>>& matrix, std::string filename);
 
-#define POP_TOT 17282163.0
+#define POP_TOT 17407585.0
 
 #define S_COMP 0
 #define I_COMP 1
@@ -40,11 +40,15 @@ extern int COND_INIT_NBR;
 
 #define NB_PARAM_TOT (NB_PARAM + NB_CONFINEMENT + 1)
 
+
+
 #define PHANTOM_COMPART 2
 #define COMPARTIMENT 5
 #define COMPARTIMENT_TOT (PHANTOM_COMPART+COMPARTIMENT)
 
 extern std::vector<int> TAB_DATE_CONFINEMENT;
+extern std::vector<double> PROP_FACTOR_BETA;
+
 extern std::vector<double> PROP_PAR_CLASSE;
 extern std::vector<std::string> NAMES_COMPARTIMENT;
 extern std::vector<std::string> NAMES_COMPARTIMENT_CSV;
@@ -108,6 +112,11 @@ extern std::vector<std::string> SELECT_CLASSE_AGE;
 #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_Classe_1" CLASSE_FILENAME_PART
 #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_" CLASSE_FILENAME_PART "_mads" 
 #define COND_INIT_filename "../data/Conditions_initiales/" CLASSE_FILENAME_PART "_CI.csv"
+
+
+
+#define SAVE_TO_READ_for_python "../../visualisation/Model_cpp_call/input_model/param_to_read"
+#define DATA_TO_WRITE_for_python "../../visualisation/Model_cpp_call/output_model/output_compartiments"
 
 
 

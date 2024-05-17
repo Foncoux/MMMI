@@ -19,9 +19,11 @@ base_names = ["delta","gamma","eps","r","x0_infect","beta0","beta1","beta2","bet
 # Nombre de classes
 num_classes = 1  
 eigenvalue = 14.09858
+POP_TOT = 17407585.0
 
-u_bounds_original = [1,1,1,1,5000/17282163.0,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
+u_bounds_original = [1,1,1,1,5000/POP_TOT,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
 l_bounds_original = [0.000000000000001]*12
+
 
 u_bounds = []
 l_bounds = []
@@ -55,7 +57,7 @@ df.to_csv("./data/Conditions_initiales/Classe_1_CI.csv",index = False)
 # Nombre de classes
 num_classes = 2  
 eigenvalue = 14.4923
-u_bounds_original = [1,1,1,1,5000/17282163.0,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
+u_bounds_original = [1,1,1,1,5000/POP_TOT,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
 
 
 u_bounds = []
@@ -92,7 +94,7 @@ df.to_csv("./data/Conditions_initiales/Classe_2_CI.csv",index = False)
 num_classes = 4  
 
 eigenvalue = 14.9728
-u_bounds_original = [1,1,1,1,5000/17282163.0,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
+u_bounds_original = [1,1,1,1,5000/POP_TOT,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
 
 
 u_bounds = []
@@ -126,7 +128,7 @@ df.to_csv("./data/Conditions_initiales/Classe_4_CI.csv",index = False)
 num_classes = 8
 
 eigenvalue = 15.054
-u_bounds_original = [1,1,1,1,5000/17282163.0,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
+u_bounds_original = [1,1,1,1,5000/POP_TOT,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue,1/eigenvalue]
 
 
 u_bounds = []

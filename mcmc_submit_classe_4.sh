@@ -6,7 +6,7 @@
 #SBATCH --mail-user=esteban.foncoux@student.unamur.be
 #SBATCH --mail-type=ALL
 #
-#SBATCH --time=12:00:00
+#SBATCH --time=16:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=50

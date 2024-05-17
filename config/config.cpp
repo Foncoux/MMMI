@@ -9,6 +9,8 @@
 
 
 std::vector<int> TAB_DATE_CONFINEMENT;
+std::vector<double> PROP_FACTOR_BETA;
+
 std::vector<double> PROP_PAR_CLASSE;
 std::vector<std::string> NAMES_COMPARTIMENT;
 std::vector<std::string> NAMES_COMPARTIMENT_CSV;
@@ -25,17 +27,19 @@ void config_table_extern(){
     {
     case 4:
         //std::array<int, NB_CONFINEMENT> TAB_DATE_CONFINEMENT = {19,76,233,269};
-        TAB_DATE_CONFINEMENT = {20,77,98,233};
+        TAB_DATE_CONFINEMENT = {21,77,98,233};
         break;
         
     case 6:
-        TAB_DATE_CONFINEMENT = {20,77,98,133,188,233};
+        TAB_DATE_CONFINEMENT = {21,77,98,133,189,233};
         break;
 
     default:
         break;
     }
     
+
+
 
 
 
@@ -46,19 +50,27 @@ void config_table_extern(){
     {
     case 1:
         PROP_PAR_CLASSE = {1};
+        PROP_FACTOR_BETA = {1};
         break;
 
     case 2:
-        PROP_PAR_CLASSE = {0.7012859, 0.2987141};
+        PROP_PAR_CLASSE = {0.80511053, 0.19488947};
+        PROP_FACTOR_BETA = {0.771,0.9353333333};
+
         break;
 
     case 4:
-        PROP_PAR_CLASSE = {0.2309419, 0.2647056, 0.3314419, 0.1729106};
+        PROP_PAR_CLASSE = {0.21687425,0.25169953,0.33653675,0.19488947};
+        PROP_FACTOR_BETA = {0.3903333333,1.0805,0.9453333333,0.9353333333};
+
+        break;
+    case 8:
+        PROP_PAR_CLASSE = {0.21687425,0.25169953,0.12684563,0.14547785,0.06421327,0.05721919,0.05406948,0.08360080};
+        PROP_FACTOR_BETA = {0.3903333333,1.0805,1.003,0.897,0.936,0.936,0.953,0.935};
+
+
         break;
 
-    case 8:
-        PROP_PAR_CLASSE = {0.23094192, 0.26470555, 0.15196345 ,0.13124615, 0.04823235, 0.04709637,0.04459933, 0.08121488};
-        break;
 
 
     default:

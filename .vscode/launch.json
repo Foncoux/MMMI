@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/build/main",
+            "program": "${workspaceFolder}/build/Main_classe_8",
             "args": ["2"],
             "cwd": "${workspaceFolder}/build"
         }

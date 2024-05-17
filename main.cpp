@@ -23,7 +23,7 @@ int main (int argc, char* argv[])
     
     int test = CHOICE_ALGO_TYPE;
     config_table_extern();
-
+;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> param_opti;
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> cond_init;
 
@@ -82,11 +82,18 @@ int main (int argc, char* argv[])
 
 
     }else {
-        ODE f(0);
-        cond_init = read_save_parameters(SAVE_TO_READ);
-        model(f,cond_init);
-        write_data_csv(f,DATA_TO_WRITE); 
-
+        if(SCRIPT_PYTHON == false)
+        {
+            ODE f(0);
+            cond_init = read_save_parameters(SAVE_TO_READ);
+            model(f,cond_init);
+            write_data_csv(f,DATA_TO_WRITE); 
+        }else {
+            ODE f(0);
+            cond_init = read_save_parameters(SAVE_TO_READ_for_python);
+            model(f,cond_init);
+            write_data_csv(f,DATA_TO_WRITE_for_python); 
+        }
 
 
     }   

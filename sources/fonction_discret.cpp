@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <gsl/gsl_rng.h>
@@ -98,6 +97,8 @@ double force_infection_classe(int jour,int classe_age,ODE& f)
     for (size_t j = 0; j < NB_CLASSE_AGE; j++){
         result = result + SOCIAL_CONTACT_MATRIX[classe_age][j]*(f.m_result_simulation[classe_age][I_COMP][jour]) /*+ 0.51*data.social_contact_matrix[classe_age][j]*f[j].m_result_integration[A_COMP][jour]*/ ;
     }
+
+    result = result*PROP_FACTOR_BETA[classe_age];
     
     return result;
 
