@@ -6,9 +6,6 @@
 
 #include "../config/setup.hpp"
 
-#include "../headers/Parametres.hpp"
-
-#include "../headers/fonction_obj.hpp"
 #include "../headers/MCMC.hpp"
 #include "../headers/optimisation_algo.hpp"
 
