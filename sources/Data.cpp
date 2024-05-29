@@ -164,10 +164,10 @@ void write_save_parameters(const std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE>& 
 }
 
 
-std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& save_nbr)
+std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_save_parameters(const std::string& filename)
 {
     std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> p;
-    std::ifstream file(save_nbr + ".csv");
+    std::ifstream file(filename);
     if (!file.is_open()) {
         std::cout << "Impossible d'ouvrir le fichier. (read_save_parameters)" << std::endl;
         exit(0);
@@ -203,7 +203,10 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> read_nomad_best_feasible_solution(
 
         file.open(SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt");
     }else {
-        file.open(SOLUTION_FILE_MADS_filename);
+        std::ostringstream formattedStream;
+        formattedStream << std::setw(3) << std::setfill('0') << COND_INIT_NBR;
+
+        file.open(SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt");
     }
     
     if (!file.is_open()) {

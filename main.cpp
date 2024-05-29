@@ -18,8 +18,7 @@ int main (int argc, char* argv[])
     COND_INIT_NBR = stoi(argv[1]);
     (void) argc;
  
-    gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
-    gsl_rng_set(random_ptr,time(NULL));
+
     
     int test = CHOICE_ALGO_TYPE;
     config_table_extern();
@@ -33,6 +32,9 @@ int main (int argc, char* argv[])
         STATS.start_timing();
 
         if(test == 0){
+            
+            gsl_rng* random_ptr = gsl_rng_alloc(gsl_rng_mt19937);// Initialiser le générateur de nombres aléatoires
+            gsl_rng_set(random_ptr,time(NULL));
 
             ODE f(0);
             

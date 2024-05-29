@@ -129,7 +129,9 @@ void initAllParams(std::shared_ptr<NOMAD::AllParameters> allParams)
 
         best_feasible_sol_filename = SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt";
     }else {
-        best_feasible_sol_filename = SOLUTION_FILE_MADS_filename;
+        std::ostringstream formattedStream;
+        formattedStream << std::setw(3) << std::setfill('0') << COND_INIT_NBR;
+        best_feasible_sol_filename = SOLUTION_FILE_MADS_filename + formattedStream.str() + ".txt";
     }
 
     allParams->setAttributeValue("SOLUTION_FILE", best_feasible_sol_filename);

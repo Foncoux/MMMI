@@ -61,7 +61,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     double nombre_acceptation = 0;
     double taux_acceptation = 0;
     
-    double gamma = 0.4;
+    double gamma = 0.3;
 
     /*
     while (model(f,cond_init) !=0)
@@ -81,8 +81,10 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
     int iter_total=0;
     int iter_maj_sigma=0;
     bool stop = false; 
-    //std::cout << "ite_tot\t| " << "Nb_post_dist\t| " << "taux_acceptation\t| " << "LL_old\t\t| " << "\n";
-    /*
+
+    if (ON_CLUSTER == false) {
+    
+    
     std::cout << std::left  << std::setw(10) << "ite_tot"
                             << std::setw(4) << "|"
                             << std::setw(15) << "Nb_post_dist"
@@ -95,7 +97,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                             << std::setw(4) << "|"
                             << std::setw(15) << "sigma"
                             << "\r" << std::endl;
-    */
+    }
     while(stop == false)
     {
     
@@ -129,7 +131,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
             if (iter_maj_sigma > 5000)
             {
                 iter_maj_sigma = 0;
-                sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-TAUX_ACCEPT_OBJ)/(1-TAUX_ACCEPT_OBJ)));
+                sigma = sigma*gsl_sf_exp(gamma*((taux_acceptation-TAUX_ACCEPT_OBJ)/(TAUX_ACCEPT_OBJ)));
                 
                 sigma = sigma > 0.001 ? 0.001 : sigma;
                 sigma = sigma < 0.0000001 ? 0.0000001 : sigma;
@@ -138,7 +140,9 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
 
             }
             iter_maj_sigma++;
-/*
+
+        if (ON_CLUSTER == false) {
+    
             std::cout << std::left  << std::setw(10) << iter_total
                                     << std::setw(4) << "|"
                                     << std::setw(15) << j
@@ -154,7 +158,7 @@ std::array<double,NB_PARAM_TOT*NB_CLASSE_AGE> burning_phase(std::array<double,NB
                                     << std::setw(15)<< std::setprecision(10) << sigma
 
                                     << "\r" << std::flush;
-*/
+        }
 
 
 

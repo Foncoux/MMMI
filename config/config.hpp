@@ -108,7 +108,7 @@ extern std::vector<std::string> SELECT_CLASSE_AGE;
 #define DAY_HOSP_DATA_filename "../data/DATA_calibration/" CLASSE_FILENAME_PART "/hosp.csv"
 #define SOCIAL_CONTACT_MATRIX_filename "../data/DATA_calibration/" CLASSE_FILENAME_PART "/Social_contact_matrix.csv"
 
-#define SAVE_TO_READ "../data/save_dir/save_SIRQD_" CLASSE_FILENAME_PART
+#define SAVE_TO_READ "../data/save_dir/save_SIRQD_" CLASSE_FILENAME_PART ".csv"
 #define SAVE_TO_WRITE "../data/save_dir/save_SIRQD_Classe_1" CLASSE_FILENAME_PART
 #define SAVE_TO_WRITE2 "../data/save_dir/save_SIRQD_" CLASSE_FILENAME_PART "_mads" 
 #define COND_INIT_filename "../data/Conditions_initiales/" CLASSE_FILENAME_PART "_CI.csv"
@@ -127,7 +127,7 @@ extern std::vector<std::string> SELECT_CLASSE_AGE;
 
 #define STOP_ALGO 0.00001
 
-#define ITE_RECUP_MCMC 1000
+#define ITE_RECUP_MCMC 10000
 #define NB_POST_DIST 100
 
 #define RADIUS_INIT 0.05
@@ -187,7 +187,7 @@ extern std::vector<std::string> SELECT_CLASSE_AGE;
 
 #if ON_CLUSTER == false
     #define STATS_FILENAME "../data/STATS_files/" CLASSE_FILENAME_PART "/" ALGO_NAME "/" PARAMETRES_STRING_1 PARAMETRES_STRING_2 "/stat_file_"
-    #define SOLUTION_FILE_MADS_filename "../best_feasible_point.txt"
+    #define SOLUTION_FILE_MADS_filename "../data/MADS_temp/" CLASSE_FILENAME_PART "/" ALGO_NAME "/" PARAMETRES_STRING_1 PARAMETRES_STRING_2 "/best_feasible_point_"
     #define DISPLAY_DEGREE_value 2
 
 #endif
